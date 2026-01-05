@@ -1,9 +1,5 @@
 <type>(<scope>): <subject>
 
-<body>
-
-<footer>
-
 # --- COMMIT END ---
 # Type:
 #   feat      : 새로운 기능 추가
@@ -20,6 +16,4 @@
 #   comment   : 주석 추가/수정
 # ------------------
 # Subject: 50자 이내, 마침표 없음
-# Body: 72자마다 줄바꿈, 무엇을/왜 변경했는지
-# Footer: Fixes #이슈번호
 # ------------------
