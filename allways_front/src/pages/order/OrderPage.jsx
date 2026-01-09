@@ -1,36 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from "react";
 
-function SelectCard ({}) {
-     
-}
 
-function SingleSelectStep ({ title, items, value, onSelect }) {
-    return (
-        <>
-            <h2>{title}</h2>
-            <div>
-                {items.map(item => (
-                <SelectCard
-                    key={item.id}
-                    item={item}
-                    selected={value?.id === item.id}
-                    onClick={() => onSelect(item)}
-                />
-                ))}
-            </div>
-        </>
-    )
-}
-
-function orderStep ({step}) {
-    switch (step) {
-        case 1: 
-            return <SingleSelectStep>
-                
-            </SingleSelectStep>
-    }
-}
 
 function OrderPage() {
 
@@ -45,7 +16,24 @@ function OrderPage() {
         set: null
     }); 
 
+    const handleSelectSingle = (key, value) => {
+        setCart(prev => ({
+            ...prev,
+            [key]: value
+        }));
+    };
 
+    const handleSelectMulti = (key, value) => {
+        setCart(prev => {
+            const exists = prev[key].some(v => v.id === value.id);
+            return {
+                ...prev,
+                [key]: exists
+                    ? prev[key].filter(v => v.id !== value.id)
+                    : [...prev[key], value]
+            };            
+        })
+    }
 
     return<>
 
