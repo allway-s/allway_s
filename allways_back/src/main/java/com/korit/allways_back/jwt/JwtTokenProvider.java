@@ -60,4 +60,13 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload(); // 최신 0.12.x 문법 (getBody 대신)
     }
+
+    public int getUserId(String token) {
+        // 1. 토큰에서 Claims(데이터 덩어리)를 꺼냅니다.
+        Claims claims = getClaims(token);
+
+        // 2. 아까 createToken 할 때 담았던 "userId" 키값을 꺼내서 숫자로 바꿉니다.
+        return claims.get("userId", Integer.class);
+    }
+
 }

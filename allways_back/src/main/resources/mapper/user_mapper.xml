@@ -7,4 +7,34 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
 
     </insert>
+
+    <select id="findByUserId" resultType="User">
+        select
+            user_id,
+            oauth2_id,
+            nickname,
+            name,
+            email,
+            address,
+            createdAt
+        from
+            user_tb
+        where
+            user_id = #{userId}
+    </select>
+
+    <select id="findByOauth2Id" resultType="User">
+        select
+            user_id,
+            oauth2_id,
+            nickname,
+            name,
+            email,
+            address,
+            createdAt
+        from
+            user_tb
+        where
+            oauth2_id = #{oauth2Id}
+    </select>
 </mapper>
