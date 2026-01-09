@@ -16,7 +16,7 @@ function App() {
   const handleNavigateCommunity = () => console.log('커뮤니티 이동!');
   const handleLike = (id) => console.log(id + '번 좋아요!');
   const handleCopy = (preset) => console.log(preset.title + ' 복사됨!');
-
+  
   return (
     <div>
       {/* 우리가 만든 홈페이지를 여기서 불러옵니다 */}

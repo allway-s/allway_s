@@ -183,50 +183,6 @@ export function HomePage({
           </button>
         </div>
       </section>
-
-      {/* 4. 인기 프리셋 섹션: 좋아요 상위 카드 리스트 */}
-      <section css={styles.popularSection}>
-        <div css={styles.popularContainer}>
-          <div css={styles.sectionHeader}>
-             <h2 css={styles.sectionTitle}>인기 레시피</h2>
-             <button onClick={onNavigateToCommunity} css={styles.moreButton}>더보기</button>
-          </div>
-          <div css={styles.grid}>
-            {topPreSets.map((preset, index) => (
-              <div key={preset.id} css={styles.cardWrapper}>
-                {/* 1등 카드에게만 BEST 뱃지(TrendingUp) 표시 */}
-                {index === 0 && <div css={styles.bestBadge}><TrendingUp size={24} /></div>}
-                <PresetCard 
-                  preset={preset} 
-                  onLike={onLike} 
-                  onCopy={onCopy} 
-                  user={user} 
-                  showLoadButton={false} 
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. 서비스 특징 섹션: 하단 아이콘/설명 박스 */}
-      <section css={styles.featureSection}>
-        <div css={styles.featureGrid}>
-          {FEATURE_LIST.map((f) => (
-            <div key={f.id} css={styles.featureItem}>
-              <div css={styles.featureIconBox}>
-                <span css={styles.featureNumber}>{f.id}</span>
-              </div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem', color: '#111827' }}>
-                {f.title}
-              </h3>
-              <p style={{ color: '#4b5563', lineHeight: 1.6, fontSize: '1rem' }}>
-                {f.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
