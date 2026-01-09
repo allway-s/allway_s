@@ -1,64 +1,35 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import React from 'react';
-import { Heart, Copy, User } from 'lucide-react';
-import { styles } from '../pages/styles'; // 경로가 정확한지 다시 한번 확인해 주세요! 🔍
+import { Heart, Plus } from 'lucide-react'; // Copy 대신 Plus 사용
+import { S } from './PresetCard.styles';
 
-export function PresetCard({ preset, onLike, onCopy, user }) {
+export function PresetCard({ preset, onLike, onCopy }) {
   if (!preset) return null;
 
   return (
-    <div css={styles.card}>
-      {/* 1. 이미지 영역 (Placeholder) */}
-      <div css={styles.cardImagePlaceholder}>
-        <span style={{ color: '#009223', fontWeight: 'bold', fontSize: '1.125rem' }}>
-          {preset.title}
-        </span>
+    <div css={S.card}>
+      {/* 1. 우측 상단 플러스 버튼 (복사 기능) */}
+      <button onClick={() => onCopy(preset)} css={S.plusButton}>
+        <Plus size={24} color="#000" strokeWidth={3} />
+      </button>
+
+      {/* 2. 이미지 영역 (글자 대신 실제 사진) */}
+      <div css={S.imageWrapper}>
+        <img src={preset.image} alt={preset.title} css={S.image} />
       </div>
 
-      {/* 2. 카드 내용 영역 */}
-      <div css={styles.cardContent}>
-        
-        {/* 헤더 부분: 제목과 작성자 */}
-        <div css={styles.cardHeader}>
-          <div>
-            <h3 css={styles.cardTitle}>{preset.title}</h3>
-            <div css={styles.authorBox}>
-              <User size={14} />
-              <span>{preset.author || '익명 사용자'}</span>
-            </div>
-          </div>
-        </div>
+      {/* 3. 텍스트 정보 영역 */}
+      <div css={S.content}>
+        <h3 css={S.cardTitle}>{preset.title}</h3>
+        <p css={S.authorText}>작성자 : {preset.author || '익명'}</p>
+      </div>
 
-        {/* 푸터 부분: 인터랙션 버튼들 */}
-        <div css={styles.cardFooter}>
-          <div css={styles.iconGroup}>
-            {/* 좋아요 버튼 */}
-            <button 
-              onClick={() => onLike(preset.id)}
-              css={styles.actionButton('like')}
-            >
-              <Heart size={20} />
-              <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>
-                {preset.likes || 0}
-              </span>
-            </button>
-
-            {/* 복사 버튼 */}
-            <button 
-              onClick={() => onCopy(preset)}
-              css={styles.actionButton('copy')}
-            >
-              <Copy size={20} />
-              <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>복사</span>
-            </button>
-          </div>
-          
-          {/* 상세보기 버튼 */}
-          <button css={styles.detailButton}>
-            상세보기
-          </button>
-        </div>
+      {/* 4. 우측 하단 좋아요 영역 (세로 배치) */}
+      <div css={S.footer}>
+        <button onClick={() => onLike(preset.id)} css={S.likeButton}>
+          <Heart size={28} color="#000" />
+          <span css={S.likeCount}>{preset.likes || 0}</span>
+        </button>
       </div>
     </div>
   );
