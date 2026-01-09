@@ -65,7 +65,6 @@ export function HomePage({
         user={user}
       />
 
-      {/* 5. 서비스 특징 섹션 (분절 완료) */}
       
     </div>
   );

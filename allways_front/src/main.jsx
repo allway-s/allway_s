@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './pages/Home/Home'
 import { PresetCard } from './components/PresetCard'
-import { HomePage } from './pages/MainPage//HomePage/index';
+import { HomePage } from './pages/MainPage/HomePage/index';
+import App from './App';
 
 
 
