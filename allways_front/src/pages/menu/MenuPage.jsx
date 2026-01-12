@@ -1,6 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, ShoppingCart } from 'lucide-react'; 
 import { s } from './styles';
+
+import MainLogo from '../../assets/images/MainUpperImages/MainLogo.png';
 
 const CATEGORIES = ['샌드위치', '샐러드', '랩&기타'];
 
@@ -51,29 +55,52 @@ const SAMPLE_ITEMS = [
   },
 ];
 
-export function MenuPage() {
+// ✅ 핵심: 부모로부터 isLoggedIn과 onLogout을 props로 전달받습니다.
+export function MenuPage({ isLoggedIn, onLogout }) {
+  const navigate = useNavigate();
   const [activeCat, setActiveCat] = useState('샌드위치');
 
   const items = useMemo(() => {
-    // 실제론 activeCat에 따라 필터링
     return SAMPLE_ITEMS;
   }, [activeCat]);
 
   return (
     <div css={s.page}>
-      {/* 1) Top bar */}
       <header css={s.topBar}>
         <div css={s.topInner}>
           <div css={s.brandLeft}>
-            <div css={s.brandMark}>S</div>
+            <button onClick={() => navigate('/')} css={s.backBtn}>
+              <ArrowLeft size={24} />
+            </button>
+            <div css={s.brandMark} onClick={() => navigate('/')}>
+              <img src={MainLogo} alt="Logo" css={s.logoImage} />
+            </div>
           </div>
 
-          <div css={s.brandCenter}>ALLWAY-S</div>
+          <div css={s.brandCenter} onClick={() => navigate('/')}>
+            ALLWAY-<span>S</span>
+          </div>
 
           <nav css={s.topNav}>
-            <button css={s.topNavBtn}>장바구니</button>
-            <button css={s.topNavBtn}>마이페이지</button>
-            <button css={s.topNavBtn}>로그아웃</button>
+            {/* ✅ [해결] 로그인 상태에 따라 헤더 버튼을 조건부 렌더링합니다. */}
+            {isLoggedIn ? (
+              <>
+                <button css={s.topNavBtn} onClick={() => navigate('/cart')}>장바구니</button>
+                <button css={s.topNavBtn} onClick={() => navigate('/mypage')}>마이페이지</button>
+                <button css={s.topNavBtn} onClick={onLogout}>로그아웃</button>
+              </>
+            ) : (
+              <>
+                <button 
+                  css={s.topNavBtn} 
+                  onClick={() => navigate('/login')}
+                  aria-label="장바구니"
+                >
+                  <ShoppingCart size={20} />
+                </button>
+                <button css={s.topNavBtn} onClick={() => navigate('/login')}>로그인</button>
+              </>
+            )}
           </nav>
         </div>
 
@@ -108,12 +135,10 @@ export function MenuPage() {
         </div>
       </header>
 
-      {/* 3) Grid */}
       <main css={s.main}>
         <div css={s.grid}>
           {items.map((it) => (
             <article key={it.id} css={s.card}>
-              {/* ✅ 회색까지 덮는 overlay */}
               <div className='cardOverlay' css={s.cardOverlay}>
                 <button css={s.hoverBtnGreen}>
                   쉽고 빠르게,

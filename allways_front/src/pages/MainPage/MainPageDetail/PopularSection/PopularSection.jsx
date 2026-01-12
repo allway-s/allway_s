@@ -11,13 +11,9 @@ export function PopularSection({
   onCopy, 
   user 
 }) {
-  /** [내부 로직] 좋아요 순으로 상위 3개 추출 */
+  // ✅ 유저 객체가 존재하고 내부 정보가 있는지 체크
+  const isLoggedInUser = user && (user.name || user.id || Object.keys(user).length > 0);
 
-  // 🔍 여기입니다! 이 로그를 추가해서 데이터가 넘어오는지 확인하세요.
-  console.log('--- PopularSection 진입 ---');
-  console.log('부모에게서 받은 presets:', presets);
-
-  
   const topPreSets = [...presets]
     .sort((a, b) => (b.likes || 0) - (a.likes || 0))
     .slice(0, 3);
@@ -28,9 +24,15 @@ export function PopularSection({
         <div css={S.header}>
             <h2 css={S.title}>Recipe Community</h2>
             <div css={S.headerRight}>
-                <span css={S.headerText}>로그인 후 더 다양한 조합들을 만나보세요!</span>
+                {/* ✅ 유저 정보 유무에 따른 문구 조건부 렌더링 */}
+                {!isLoggedInUser ? (
+                  <span css={S.headerText}>로그인 후 더 다양한 조합들을 만나보세요!</span>
+                ) : (
+                  <span css={S.headerText}>{user.name || '진현'}님을 위한 인기 레시피입니다!</span>
+                )}
+
                 <button onClick={onNavigate} css={S.iconButton}>
-                <ChevronRight size={24} /> {/* ArrowRight 대신 ChevronRight가 시안과 비슷합니다 */}
+                  <ChevronRight size={24} />
                 </button>
             </div>
         </div>
@@ -38,7 +40,6 @@ export function PopularSection({
         <div css={S.grid}>
           {topPreSets.map((preset, index) => (
             <div key={preset.id} css={S.cardWrapper}>
-              {/* 1등에게만 뱃지 표시 */}
               {index === 0 && (
                 <div css={S.bestBadge}>
                   <TrendingUp size={24} />

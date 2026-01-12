@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
 export const s = {
@@ -7,278 +8,310 @@ export const s = {
     min-width: 100%;
     min-height: 100vh;
   `,
-  /* Top bar */
+
   topBar: css`
-    /* ✅ 스크롤 따라 고정 */
+    position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 1000;
     background: #ffffff;
+    border-bottom: 1px solid #f3f4f6;
   `,
+
   topInner: css`
-    position: sticky; /* ✅ brandCenter absolute 기준 */
-    min-width: 1100px;
+    max-width: 1100px;
     margin: 0 auto;
-    height: 50px;
-    padding: 18px 20px;
+    height: 60px;
+    padding: 0 20px;
     display: flex;
     align-items: center;
+    position: relative;
   `,
+
   brandLeft: css`
     display: flex;
     align-items: center;
+    gap: 12px;
+    z-index: 10;
   `,
+
+  backBtn: css`
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    padding: 4px;
+    transition: color 0.2s;
+    &:hover { color: #009223; }
+  `,
+
   brandMark: css`
     width: 44px;
     height: 44px;
-    border-radius: 12px;
-    background: #f3f4f6;
-    display: grid;
-    place-items: center;
-    font-weight: 900;
-    color: #009223;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
   `,
+
+  logoImage: css`
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  `,
+
   brandCenter: css`
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     font-weight: 900;
-    font-size: 28px;
+    font-size: 24px;
     letter-spacing: -0.03em;
     color: #009223;
+    cursor: pointer;
+    white-space: nowrap;
+
+    /* span(S 부분)에만 사진 속 노란색 적용 */
+    & span {
+      color: #f6c000;
+    }
   `,
+
   topNav: css`
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
+    z-index: 10;
   `,
+
   topNavBtn: css`
     border: 0;
     background: transparent;
     cursor: pointer;
     font-weight: 700;
-    color: #111;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    font-size: 14px;
+    color: #374151;
+    &:hover { color: #009223; }
   `,
 
-  pageTitle: css`
-    margin: 0;
-    font-size: 45px;
-    font-weight: 400;
-    letter-spacing: -0.03em;
-  `,
-
-  categoryTabs: css`
-    position: sticky;
-    justify-self: center;
-    display: flex;
-    gap: 22px;
-    align-items: center;
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    color: #9ca3af;
-
-    &:hover {
-    }
-  `,
   midBar: css`
-    justify-content: center;
     width: 100%;
-    min-width: 1100px;
+    background: #fff;
   `,
 
   lineWrap: css`
     width: 100%;
-    padding: 0 12px; /* ✅ 좌우 여백 원하는 만큼 */
-    box-sizing: border-box;
+    max-width: 1100px;
+    margin: 0 auto;
   `,
 
   TopLine: css`
-    justify-content: center;
     height: 2px;
     background: #009223;
   `,
 
   BottomLine: css`
-    justify-content: center;
     height: 2px;
     background: #f6c000;
   `,
 
   midContent: css`
-    position: relative; /* ✅ 중앙 기준 */
-    height: 85px;
-    padding: 0 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 100px;
+    padding: 0 20px;
     display: flex;
     align-items: center;
+    position: relative;
+  `,
+
+  pageTitle: css`
+    font-size: 40px;
+    font-weight: 900;
+    color: #292929;
+    margin: 0;
   `,
 
   categoryTabs: css`
-    justify-self: center; /* ✅ 우측 영역 안에서 가로 중앙 */
-    display: flex;
-    align-items: center; /* ✅ 세로 중앙 */
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%); /* ✅ 진짜 중앙 */
+    transform: translateX(-50%);
+    display: flex;
     gap: 30px;
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: -0.03em;
+    align-items: center;
   `,
 
   tabBtn: (active) => css`
     border: 0;
     background: transparent;
     cursor: pointer;
-    font: inherit;
+    font-size: 18px;
+    font-weight: ${active ? '900' : '500'};
     color: ${active ? '#111827' : '#b6bcc7'};
-
-    &:hover {
-      color: #111827;
-    }
+    transition: color 0.2s;
+    &:hover { color: #111827; }
   `,
 
   tabDivider: css`
     color: #c7ccd6;
-    font-weight: 900;
+    font-size: 16px;
   `,
 
-  /* Main grid */
   main: css`
     max-width: 1100px;
     margin: 0 auto;
-    padding: 22px 20px 50px;
+    padding: 40px 20px;
   `,
+
   grid: css`
     display: grid;
-    grid-template-columns: repeat(3, 320px); /* ✅ 3열 고정 */
-    justify-content: center;
-    min-width: 1100px;
-    gap: 26px;
-
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
   `,
 
-card: css`
-  background: #f3f4f6;
-  border-radius: 6px;
-  padding: 16px;
+  card: css`
+    background: #f3f4f6;
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    &:hover { transform: translateY(-4px); }
+    &:hover .cardOverlay { opacity: 1; pointer-events: auto; }
+  `,
 
-  position: relative;      /* ✅ overlay 기준 */
-  overflow: hidden;        /* ✅ 라운드 밖으로 안 새게 */
-
-  &:hover .cardOverlay {
-    opacity: 1;
-    pointer-events: auto;
-  }
-`,
-
+/* 1) 오버레이 컨테이너: 가로 정렬(row)로 변경 */
 cardOverlay: css`
-  position: absolute;
-  inset: 0;                /* ✅ 회색까지 전체 덮기 */
-  z-index: 5;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  background: rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-`,
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: row; /* 가로 배치 */
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* 버튼 사이 적절한 간격 */
+    background: rgba(0, 0, 0, 0.4); 
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 0 10px;
+  `,
 
   cardInner: css`
     background: #ffffff;
-    height: 280px;
-    width: 100%;
-    border-radius: 2px;
-    position: relative;
-    justify-content: center;
-    display: grid;
-    grid-template-rows: 1fr auto;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   `,
 
-  hoverBtnGreen: css`
+/* 2) 초록색 버튼: 사진처럼 둥근 사각형 형태로 너비 조정 */
+hoverBtnGreen: css`
+    /* 가로로 더 길쭉한 비율로 조정 */
+    width: 135px; 
+    height: 85px; 
     border: 0;
     background: #009223;
     color: #ffffff;
-    font-weight: 900;
-    font-size: 13px;
-    line-height: 1.3;
-    padding: 14px 16px;
-    border-radius: 18px;
+    font-weight: 800;
+    font-size: 13px; /* 텍스트가 잘 보이도록 조정 */
+    padding: 8px;
+    border-radius: 20px; /* 둥근 직사각형 느낌 */
     cursor: pointer;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    word-break: keep-all; /* 단어 단위로 줄바꿈 방지 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    &:hover { background: #007a1d; }
   `,
-  hoverBtnYellow: css`
+
+/* 3) 노란색 버튼: 사진처럼 둥근 사각형 형태로 너비 조정 */
+hoverBtnYellow: css`
+    width: 135px;
+    height: 85px;
     border: 0;
     background: #f6c000;
     color: #111;
-    font-weight: 900;
+    font-weight: 800;
     font-size: 13px;
-    line-height: 1.3;
-    padding: 14px 16px;
-    border-radius: 18px;
+    padding: 8px;
+    border-radius: 20px;
     cursor: pointer;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    word-break: keep-all;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    &:hover { background: #e5b300; }
   `,
 
+  
   badgeWrap: css`
     position: absolute;
-    top: 12px;
-    display: grid;
+    top: 25px;
+    left: 25px;
+    display: flex;
+    flex-direction: column;
     gap: 6px;
+    z-index: 2;
   `,
+
   badge: (type) => css`
-    display: inline-block;
-    padding: 4px 10px;
+    padding: 4px 12px;
     font-weight: 900;
-    font-size: 12px;
-    border-radius: 2px;
+    font-size: 11px;
+    border-radius: 4px;
     color: #fff;
     background: ${type === 'NEW' ? '#f6b000' : '#009223'};
   `,
+
   subBadge: css`
-    display: inline-block;
-    padding: 4px 10px;
+    padding: 4px 12px;
     font-weight: 900;
-    font-size: 12px;
-    border-radius: 2px;
+    font-size: 11px;
+    border-radius: 4px;
     color: #fff;
     background: #009223;
   `,
 
   imageArea: css`
-    position: relative; /* ✅ overlay 기준 */
-    display: grid;
-    place-items: center;
-    padding: 26px 18px 8px;
+    padding: 40px 20px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   `,
+
   image: css`
-    width: 240px;
-    height: 150px;
+    width: 100%;
+    max-width: 220px;
+    height: auto;
     object-fit: contain;
   `,
 
   nameArea: css`
-    padding: 0 18px 18px;
+    padding: 15px 10px 25px;
     text-align: center;
   `,
+
   nameKo: css`
     font-size: 20px;
     font-weight: 900;
-    letter-spacing: -0.03em;
+    color: #111;
+    margin-bottom: 4px;
   `,
+
   nameEn: css`
-    margin-top: 6px;
-    font-size: 13px;
-    color: #6b7280;
-    font-weight: 600;
+    font-size: 14px;
+    color: #9ca3af;
+    font-weight: 500;
   `,
 };

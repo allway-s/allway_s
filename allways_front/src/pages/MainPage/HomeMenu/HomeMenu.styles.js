@@ -8,6 +8,7 @@ export const S = {
   `,
   container: css`
     max-width: 1100px;
+    min-width: 1100px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
