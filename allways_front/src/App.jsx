@@ -6,6 +6,8 @@ import { HomePage } from './pages/MainPage/HomePage/index.jsx';
 import Login from './pages/AuthPage/LoginPage/Login.jsx';
 import Signup from './pages/AuthPage/SignupPage/Signup.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx'; 
+import CartPage from './pages/CartPage/CartPage.jsx';
+import MenuPage from './pages/menu/MenuPage.jsx';
 
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
@@ -64,6 +66,9 @@ function App() {
         
         {/* [해결] 마이페이지 경로를 최종 유지합니다 */}
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/cart" element={<CartPage />} />
+
+        <Route path="/menu" element={<MenuPage/>}/>
       </Routes>
     </Router>
   );

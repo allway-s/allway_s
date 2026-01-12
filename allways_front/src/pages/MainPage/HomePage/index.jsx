@@ -60,7 +60,7 @@ export function HomePage({
             나만의 <span css={styles.heroTitleGreen}>Recipe</span> 를 만들고<br />
             <span css={styles.heroTitleGreen}>Recipe</span><span css={styles.heroTitleYellow}>-s</span> 에 공유하세요!
           </h1>
-          <button onClick={onStartOrder} css={styles.orderButton}>
+          <button onClick={() => navigate('/menu')} css={styles.orderButton}>
             지금 주문하기 <ArrowRight size={20} />
           </button>
         </div>
