@@ -7,5 +7,4 @@ import java.util.List;
 @Data
 public class OrderReqDto {
     private List<CartItemDto> cartItems;
-    
 }

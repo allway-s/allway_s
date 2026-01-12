@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@RestController("/api/order")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<List<Integer>> createProducts(@RequestBody OrderReqDto dto) {
         List<Integer> productIds = new ArrayList<>();
 
