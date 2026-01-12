@@ -116,7 +116,7 @@ export const styles = {
     /* margin-right: 30.5rem;  */
 
     &:hover {
-      background: #000;
+      background: #1e6a1a;
       color: #fff;
       transform: scale(1.05);
     }
