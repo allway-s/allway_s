@@ -16,7 +16,7 @@
             name,
             email,
             address,
-            createdAt
+            created_at
         from
             user_tb
         where
@@ -31,7 +31,7 @@
             name,
             email,
             address,
-            createdAt
+            created_at
         from
             user_tb
         where
