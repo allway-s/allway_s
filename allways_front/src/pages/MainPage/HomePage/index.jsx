@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styles } from './HomePage.styles.js'; 
 import { ArrowRight, ShoppingCart } from 'lucide-react'; 
 
@@ -7,11 +8,12 @@ import { MainBanner } from '../MainPageDetail/MainBanner/MainBanner.jsx';
 import { PopularSection } from '../MainPageDetail/PopularSection/PopularSection.jsx';
 import { FeatureSection } from '../MainPageDetail/FeatureSection/FeatureSection.jsx';
 
-// 데이터 상수
 import { BANNER_ITEMS } from './constants.js'; 
 import { HomeMenu } from '../HomeMenu/HomeMenu.jsx';
 
 export function HomePage({ 
+  isLoggedIn, 
+  onLogout,
   communityPreSets = [], 
   onStartOrder, 
   onNavigateToCommunity, 
@@ -19,28 +21,39 @@ export function HomePage({
   onCopy, 
   user 
 }) {
+  const navigate = useNavigate();
   
   return (
     <div css={styles.wrapper}>
-      {/* 1. 헤더 영역*/}
       <header css={styles.header}>
         <div css={styles.headerInner}>
-          <div css={styles.logoArea}>
-            <h2 style={{ color: '#009223', fontWeight: 900, margin: 0, fontSize: '1.5rem', cursor: 'pointer' }}>
-              ALLWAY-S
+          <div css={styles.logoArea} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+            <h2 style={{ color: '#009223', fontWeight: 900, margin: 0, fontSize: '1.5rem' }}>
+              ALLWAY-<span style={{ color: '#ffc107' }}>S</span>
             </h2>
           </div>
+
           <div css={styles.utilMenu}>
-            <button aria-label="장바구니"><ShoppingCart size={24} /></button>
-            <button>로그인</button>
+            {isLoggedIn ? (
+              <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                <button onClick={() => navigate('/cart')} style={textButtonStyle}>장바구니</button>
+                <button onClick={() => navigate('/mypage')} style={textButtonStyle}>마이페이지</button>
+                <button onClick={onLogout} style={textButtonStyle}>로그아웃</button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <button aria-label="장바구니" onClick={() => navigate('/login')}>
+                  <ShoppingCart size={22} />
+                </button>
+                <button onClick={() => navigate('/login')} style={textButtonStyle}>로그인</button>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
-      {/* 2. 메인 배너 섹션*/}
       <MainBanner items={BANNER_ITEMS} />
 
-      {/* 3. 히어로 섹션*/}
       <section css={styles.heroSection}>
         <div css={styles.heroContent}>
           <h1 css={styles.heroTitle}>
@@ -53,10 +66,8 @@ export function HomePage({
         </div>
       </section>
 
-      {/*4. 메뉴영역 추가 예정 */}
       <HomeMenu />
 
-      {/* 5. 인기 프리셋 섹션 */}
       <PopularSection 
         presets={communityPreSets} 
         onNavigate={onNavigateToCommunity}
@@ -64,9 +75,17 @@ export function HomePage({
         onCopy={onCopy}
         user={user}
       />
-
-      {/* 5. 서비스 특징 섹션 (분절 완료) */}
-      
+      {/* [해결] 충돌 기호와 불필요한 공백을 제거했습니다. */}
     </div>
   );
 }
+
+const textButtonStyle = {
+  background: 'none',
+  border: 'none',
+  padding: '5px',
+  fontSize: '0.9rem',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  color: '#333'
+};
