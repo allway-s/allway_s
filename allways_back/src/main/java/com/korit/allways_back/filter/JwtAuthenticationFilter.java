@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -51,7 +52,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
                 // PrincipalUser: 시큐리티가 사용할 커스텀 유저 객체
-                PrincipalUser principalUser = new PrincipalUser(foundUser, authorities);
+                // null 대신 Map.of()를 넣어 NullPointerException 방지
+                PrincipalUser principalUser = new PrincipalUser(foundUser, Map.of(), "id");
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(principalUser, null, authorities);
