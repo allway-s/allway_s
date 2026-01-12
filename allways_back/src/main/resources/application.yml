@@ -1,0 +1,24 @@
+spring:
+  profiles:
+    active: local
+    group:
+      local: common, secret  # local을 켜면 아래의 common 블록과 외부 secret 파일을 합침
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: common
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local # 'local'이 활성화될 때 이 아래 설정을 읽으라고 명시!
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.korit.allways_back.entity

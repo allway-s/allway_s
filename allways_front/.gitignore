@@ -1,4 +1,8 @@
 .env
+.idea/
+*.iml
+*.zip
+
 
 # Logs
 logs
