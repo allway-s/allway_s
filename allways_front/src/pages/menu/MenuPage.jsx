@@ -153,3 +153,5 @@ export function MenuPage() {
     </div>
   );
 }
+
+export default MenuPage;
