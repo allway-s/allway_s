@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.allways_back.mapper.ProductMapper">
+
+    <select id="findExistingProductId" resultType="java.lang.Integer">
+        SELECT product_id
+        FROM product_detail_tb
+        WHERE item_id = #{itemId}
+        GROUP BY product_id
+        HAVING COUNT(ingredient_id) = #{ingredientCount}
+            AND COUNT(CASE WHEN ingredient_id IN
+                <foreach collection="ingredientIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+                THEN 1 END) = #{ingredientCount}
+        LIMIT 1
+    </select>
+
+    <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO product_tb (is_sys)
+        VALUES (#{isSys})
+    </insert>
+
+    <insert id="insertProductDetails">
+        INSERT INTO product_detail_tb (product_id, item_id, ingredient_id)
+            VALUES
+                <foreach collection="ingredientIds" item="ingId" separator=",">
+                    (#{productId}, #{itemId}, #{ingId})
+                </foreach>
+    </insert>
+</mapper>
