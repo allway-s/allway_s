@@ -21,11 +21,7 @@ export const S = {
       display: flex;
       align-items: center;
       cursor: pointer;
-      img { 
-        height: 50px; 
-        width: auto;
-        object-fit: contain;
-      }
+      img { height: 50px; width: auto; object-fit: contain; }
     }
 
     .title-section {
@@ -99,30 +95,24 @@ export const S = {
       gap: 20px;
     }
 
-    .checkbox-custom {
-      width: 20px;
-      height: 20px;
-      accent-color: #009223;
-      cursor: pointer;
+    .right-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 15px;
     }
   `,
 
-  // [중요] 진현님의 JSX <div css={S.itemImage}>와 일치하도록 수정
   itemImage: css`
-    width: 120px;  /* 이미지 박스 가로 크기 고정 */
-    height: 90px;  /* 이미지 박스 세로 크기 고정 */
+    width: 120px;
+    height: 90px;
     background: #f8f8f8;
     border-radius: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-
-    img {
-      width: 100%;    /* 박스 너비에 맞춤 */
-      height: 100%;   /* 박스 높이에 맞춤 */
-      object-fit: contain; /* 비율 유지하며 박스 안에 쏙 들어감 */
-    }
+    img { width: 100%; height: 100%; object-fit: contain; }
   `,
 
   itemInfo: css`
@@ -147,12 +137,27 @@ export const S = {
     span { font-weight: 700; min-width: 20px; text-align: center; }
   `,
 
+  /* ✅ 연한 노란색 삭제 버튼 디자인 */
+  deleteButton: css`
+    background: #fffbe6; /* 아주 연한 노란색 */
+    border: 1px solid #ffe58f; /* 노란색 테두리 */
+    color: #d48806; /* 짙은 황금색 글자 */
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    &:hover { background: #fff1b8; border-color: #ffcc00; }
+  `,
+
   optionButton: css`
     border: 1px solid #eee;
     background: #f8f9fa;
     padding: 8px 15px;
     border-radius: 10px;
     font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s;
     &:hover { background: #f1f1f1; }
@@ -200,8 +205,8 @@ export const S = {
     span { font-size: 1.2rem; font-weight: 700; }
     strong { 
       font-size: 1.8rem; 
-      color: #4facfe; 
-      background: #fdf2f2; 
+      color: #009223; /* 브랜드색상으로 조화롭게 변경 */
+      background: #f0f9f1; 
       padding: 5px 15px; 
       border-radius: 10px; 
     }
@@ -218,8 +223,7 @@ export const S = {
     font-size: 1.2rem;
     font-weight: 800;
     cursor: pointer;
-    transition: background 0.2s;
-    &:hover { background: #007a1d; }
-    &:active { transform: scale(0.98); }
+    transition: all 0.2s;
+    &:hover { background: #007a1d; transform: translateY(-2px); }
   `,
 };

@@ -9,6 +9,7 @@ export const styles = {
 
   header: css`
     width: 100%;
+    min-width: 1100px;
     height: 70px;
     background: #fff;
     display: flex;
@@ -20,7 +21,7 @@ export const styles = {
   `,
 
   headerInner: css`
-    max-width: 1200px;
+    min-width: 1100px;
     margin: 0 auto;
     width: 100%;
     padding: 0 1rem;
@@ -65,12 +66,12 @@ export const styles = {
   `,
 
   heroContent: css`
-    max-width: 1200px;
+    min-width: 1100px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     /* 🌟 버튼을 오른쪽 끝으로 밀기 위해 items를 flex-end로 설정 */
-    align-items: flex-end; 
+    align-items: center; 
   `,
 
   heroTitle: css`
@@ -112,7 +113,7 @@ export const styles = {
     transition: all 0.2s;
     
     /* 🌟 부모가 flex-end이므로 자동으로 오른쪽 배치됨. 우측 여백만 시안에 맞춰 조정 */
-    margin-right: 30.5rem; 
+    /* margin-right: 30.5rem;  */
 
     &:hover {
       background: #000;
