@@ -68,7 +68,16 @@ function App() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/cart" element={<CartPage />} />
 
-        <Route path="/menu" element={<MenuPage/>}/>
+        {/* ✅ [여기입니다!] MenuPage에 상태값과 로그아웃 함수를 전달해야 합니다 */}
+        <Route 
+          path="/menu" 
+          element={
+            <MenuPage 
+              isLoggedIn={isLoggedIn} 
+              onLogout={handleLogout} 
+            />
+          }
+        />
       </Routes>
     </Router>
   );
