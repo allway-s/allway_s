@@ -22,7 +22,7 @@
         INSERT INTO product_tb (is_sys)
         VALUES (#{isSys})
     </insert>
-
+    
     <insert id="insertProductDetails">
         INSERT INTO product_detail_tb (product_id, item_id, ingredient_id)
             VALUES

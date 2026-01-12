@@ -14,12 +14,6 @@ public class ProductService {
 
     private final ProductMapper productMapper;
 
-    @PostMapping
-    public List<Product> createProduct() {
-        productMapper.insertProduct(Product.builder()
-
-                .build())
-    }
 
 
 }
