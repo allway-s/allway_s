@@ -18,7 +18,7 @@ import java.net.URLEncoder;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
 
     @Override
