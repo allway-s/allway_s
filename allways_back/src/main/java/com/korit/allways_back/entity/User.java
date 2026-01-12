@@ -18,6 +18,7 @@ public class User {
     private String nickname;
     private String name;
     private String email;
+    private String phoneNumber;
     private String address;
     private LocalDateTime createdAt;
 

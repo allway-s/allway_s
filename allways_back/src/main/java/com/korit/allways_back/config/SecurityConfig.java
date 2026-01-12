@@ -33,10 +33,12 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // 3. 요청 권한 설정
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll() // 로그인 관련 API는 누구나 접근 가능
-                .anyRequest().authenticated()           // 그 외 모든 요청은 인증 필요
-        );
+        http.authorizeHttpRequests(auth -> {
+            auth.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll();
+            auth.requestMatchers("/api/auth/").permitAll();
+            // 로그인 관련 API는 누구나 접근 가능
+            auth.anyRequest().authenticated();        // 그 외 모든 요청은 인증 필요
+        });
 
         http.oauth2Login(oauth2 -> oauth2
                 .successHandler(oAuth2SuccessHandler) // 로그인 성공 시 처리할 핸들러
