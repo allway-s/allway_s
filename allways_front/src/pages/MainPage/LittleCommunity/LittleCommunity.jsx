@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { HomePage } from '../MainPage/HomePage/index.jsx'; // HomePage.jsx와 같은 위치에 있다고 가정
+import { HomePage } from '../HomePage/index.jsx'; // HomePage.jsx와 같은 위치에 있다고 가정
 
-import PresetImage1 from '../../assets/images/PresetImages/PresetImage1.png';
-import PresetImage2 from '../../assets/images/PresetImages/PresetImage2.png';
-import PresetImage3 from '../../assets/images/PresetImages/PresetImage3.png';
+import PresetImage1 from '../../../assets/images/PresetImages/PresetImage1.png';
+import PresetImage2 from '../../../assets/images/PresetImages/PresetImage2.png';
+import PresetImage3 from '../../../assets/images/PresetImages/PresetImage3.png';
 
-function App() {
+function LittleCommunity() {
   // 1. 화면에 보여줄 임시 데이터
   const [presets] = useState([
     { 
@@ -57,4 +57,4 @@ function App() {
   );
 }
 
-export default App;
+export default LittleCommunity;

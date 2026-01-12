@@ -1,7 +1,7 @@
-import image1 from '../../../assets/images/image1.png';
-import image2 from '../../../assets/images/image2.png';
-import image3 from '../../../assets/images/image3.png';
-import image4 from '../../../assets/images/image4.png';
+import image1 from '../../../assets/images/MainBannerImages/image1.png';
+import image2 from '../../../assets/images/MainBannerImages/image2.png';
+import image3 from '../../../assets/images/MainBannerImages/image3.png';
+import image4 from '../../../assets/images/MainBannerImages/image4.png';
 
 export const BANNER_ITEMS = [
   {
