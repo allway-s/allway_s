@@ -75,6 +75,7 @@ export function HomePage({
         onCopy={onCopy}
         user={user}
       />
+      {/* [해결] 충돌 기호와 불필요한 공백을 제거했습니다. */}
     </div>
   );
 }

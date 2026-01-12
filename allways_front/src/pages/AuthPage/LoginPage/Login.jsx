@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { S } from './Login.styles.js';
 
-// [해결] Props로 setIsLoggedIn을 받는 버전 선택
+// [해결] Props로 setIsLoggedIn을 받는 버전 유지
 const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ const Login = ({ setIsLoggedIn }) => {
 
   return (
     <div css={S.container}>
-      {/* [해결] 로고 클릭 시 메인 이동 기능 포함 버전 선택 */}
+      {/* [해결] 로고 클릭 시 메인 이동 기능 포함 버전 유지 */}
       <header css={S.header} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
         <div css={S.logo}>ALLWAY-<span>S</span></div>
       </header>

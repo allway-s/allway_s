@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// [해결] App 컴포넌트 임포트를 다시 살려줍니다.
+// [해결] App 컴포넌트 임포트를 유지합니다.
 import App from './App'
 
-// [유지] 필요한 컴포넌트들 (지금 당장 안 써도 임포트해두셔도 무방합니다)
+// [유지] 필요한 컴포넌트들
 import { PresetCard } from './components/PresetCard'
 import OrderPage from './pages/order/OrderPage';
 import Login from './pages/AuthPage/LoginPage/Login';

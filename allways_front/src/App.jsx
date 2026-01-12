@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/MainPage/HomePage/index.jsx';
-import Login from './pages/AuthPage/LoginPage/Login';
-import Signup from './pages/AuthPage/SignupPage/Signup';
-import MyPage from './pages/MyPage/MyPage.jsx'; // [추가] 마이페이지 임포트
+
+// [해결] 서버의 .jsx 확장자 경로와 진현님의 MyPage 임포트를 합칩니다.
+import Login from './pages/AuthPage/LoginPage/Login.jsx';
+import Signup from './pages/AuthPage/SignupPage/Signup.jsx';
+import MyPage from './pages/MyPage/MyPage.jsx'; 
 
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
@@ -20,7 +22,7 @@ function App() {
 
   const [user] = useState({ name: '진현', id: 'jinhyeon123' });
 
-  // 로그아웃 핸들러 (확인 팝업 추가)
+  // 로그아웃 핸들러
   const handleLogout = () => {
     const isConfirm = window.confirm("정말 로그아웃 하시겠습니까?");
     if (isConfirm) {
@@ -40,6 +42,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* [해결] Props가 모두 포함된 진현님의 HomePage 루트를 선택합니다 */}
         <Route 
           path="/" 
           element={
@@ -55,9 +58,11 @@ function App() {
             />
           } 
         />
+        {/* [해결] 로그인 상태 변경 함수를 전달하는 진현님의 경로를 선택합니다 */}
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
-        {/* 마이페이지 경로 연결 */}
+        
+        {/* [해결] 마이페이지 경로를 최종 유지합니다 */}
         <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </Router>
