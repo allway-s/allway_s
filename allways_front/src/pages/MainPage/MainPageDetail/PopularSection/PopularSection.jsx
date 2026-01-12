@@ -12,6 +12,12 @@ export function PopularSection({
   user 
 }) {
   /** [내부 로직] 좋아요 순으로 상위 3개 추출 */
+
+  // 🔍 여기입니다! 이 로그를 추가해서 데이터가 넘어오는지 확인하세요.
+  console.log('--- PopularSection 진입 ---');
+  console.log('부모에게서 받은 presets:', presets);
+
+  
   const topPreSets = [...presets]
     .sort((a, b) => (b.likes || 0) - (a.likes || 0))
     .slice(0, 3);
