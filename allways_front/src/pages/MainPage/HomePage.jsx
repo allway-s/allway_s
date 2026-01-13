@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { styles } from './HomePage.styles.js'; 
+import { styles } from './HomePage.styles.js';
 import { ArrowRight, ShoppingCart } from 'lucide-react'; 
 
-import { MainBanner } from '../MainPageDetail/MainBanner/MainBanner.jsx';
-import { PopularSection } from '../MainPageDetail/PopularSection/PopularSection.jsx';
-import { FeatureSection } from '../MainPageDetail/FeatureSection/FeatureSection.jsx';
+import { MainBanner } from './components/MainBanner.jsx';
+import { PopularSection } from './components/PopularSection.jsx';
+import { FeatureSection } from './components/FeatureSection.jsx';
 
-import { BANNER_ITEMS } from './constants.js'; 
-import { HomeMenu } from '../HomeMenu/HomeMenu.jsx';
+import { BANNER_ITEMS } from './constants.js';
+import { HomeMenu } from './components/HomeMenu.jsx';
 
 export function HomePage({ 
   isLoggedIn, 
