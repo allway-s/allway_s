@@ -30,39 +30,16 @@ export const s = {
   brandLeft: css`
     display: flex;
     align-items: center;
-    gap: 12px;
     z-index: 10;
-  `,
-
-  backBtn: css`
-    border: 0;
-    background: transparent;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    padding: 4px;
-    transition: color 0.2s;
-    &:hover {
-      color: #009223;
-    }
+    /* 로고 영역의 너비를 명확히 제한하여 너무 커지지 않게 합니다 */
+    width: 120px; 
   `,
 
-  brandMark: css`
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    overflow: hidden;
-  `,
-
-  /* ✅ 로고가 너무 커 보여서 실제 표시 크기만 줄임 (클릭 영역 44x44는 유지) */
+  /* ✅ 로고 이미지 스타일을 더 직관적으로 수정 */
   logoImage: css`
-    width: 30px;
-    height: 30px;
+    width: 100%;      /* brandLeft 너비인 120px에 맞춤 */
+    max-height: 40px; /* 상단바 높이(60px)를 고려한 최대 높이 */
     object-fit: contain;
     display: block;
   `,
@@ -78,7 +55,6 @@ export const s = {
     cursor: pointer;
     white-space: nowrap;
 
-    /* span(S 부분)에만 사진 속 노란색 적용 */
     & span {
       color: #f6c000;
     }
@@ -198,7 +174,6 @@ export const s = {
     }
   `,
 
-  /* 1) 오버레이 컨테이너: 가로 정렬(row) */
   cardOverlay: css`
     position: absolute;
     inset: 0;
@@ -223,7 +198,6 @@ export const s = {
     height: 100%;
   `,
 
-  /* 2) 초록 버튼 */
   hoverBtnGreen: css`
     width: 135px;
     height: 85px;
@@ -247,7 +221,6 @@ export const s = {
     }
   `,
 
-  /* 3) 노랑 버튼 */
   hoverBtnYellow: css`
     width: 135px;
     height: 85px;
