@@ -1,5 +1,6 @@
 package com.korit.allways_back.mapper;
 
+import com.korit.allways_back.dto.response.OrderHistoryRespDto;
 import com.korit.allways_back.entity.Order;
 import com.korit.allways_back.entity.OrderDetail;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,6 +18,6 @@ public interface OrderMapper {
             @Param("orderDetails") List<OrderDetail> orderDetails
     );
 
-    void getOrderHistory();
+    OrderHistoryRespDto getOrderHistory();
 
 }
