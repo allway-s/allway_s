@@ -41,15 +41,16 @@ public class SecurityConfig {
 
         // 3. 요청 권한 설정
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll();
-            auth.requestMatchers("/api/auth/").permitAll();
-            auth.requestMatchers("/api/**").permitAll();
-            auth.requestMatchers("/swagger-ui/**").permitAll();
-            auth.requestMatchers("/swagger-ui.html").permitAll();
-            auth.requestMatchers("/v3/api-docs/**").permitAll();
-            auth.requestMatchers("/swagger-resources/**").permitAll();
-            auth.requestMatchers("/webjars/**").permitAll();
-            auth.requestMatchers("/doc").permitAll();
+//            auth.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll();
+//            auth.requestMatchers("/api/auth/**").permitAll();
+//            auth.requestMatchers("/api/**").permitAll();
+//            auth.requestMatchers("/swagger-ui/**").permitAll();
+//            auth.requestMatchers("/swagger-ui.html").permitAll();
+//            auth.requestMatchers("/v3/api-docs/**").permitAll();
+//            auth.requestMatchers("/swagger-resources/**").permitAll();
+//            auth.requestMatchers("/webjars/**").permitAll();
+//            auth.requestMatchers("/doc").permitAll();
+            auth.requestMatchers("/**").permitAll();
             // 로그인 관련 API는 누구나 접근 가능
             auth.anyRequest().authenticated();        // 그 외 모든 요청은 인증 필요
         });

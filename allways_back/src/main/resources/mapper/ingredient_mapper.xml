@@ -11,8 +11,8 @@
             c.ingredient_category_name
         FROM ingredient_tb i
         INNER JOIN ingredient_category_tb c
-            ON i.ingredient_category_tb = c.ingredient_category_tb
-        WHERE c.ingredient_category_tb = #{categoryName};
+            ON i.ingredient_category_id = c.ingredient_category_id
+        WHERE c.ingredient_category_name = #{categoryName};
     </select>
 
 </mapper>

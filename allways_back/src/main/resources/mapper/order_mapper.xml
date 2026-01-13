@@ -15,4 +15,29 @@
                     (#{orderId}, #{detail.productId}, #{detail.unitPrice}, #{detail.quantity})
                 </foreach>
     </insert>
+
+    <select id="getOrderHistory" resultType="com.korit.allways_back.dto.response.OrderHistoryRespDto">
+        SELECT
+            ot.ordered_at,
+            pt.product_name,
+            GROUP_CONCAT(it.ingredient_name SEPARATOR ' / '),
+            odt.unit_price,
+            ot.total_price
+        FROM
+            order_tb ot
+            INNER JOIN order_detail_tb odt
+            ON ot.order_id = odt.order_id
+            INNER JOIN product_tb pt
+            ON odt.product_id = pt.product_id
+            INNER JOIN product_detail_tb pdt
+            ON pt.product_id = pdt.product_id
+            INNER JOIN ingredient_tb it
+            ON pit.ingredient_id = it.ingredient_id
+        WHERE
+            ot.user_id = #{userId}
+        GROUP BY
+            odt.order_detail_id
+        ORDER BY
+            ot.ordered_at DESC
+    </select>
 </mapper>

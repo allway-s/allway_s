@@ -36,6 +36,7 @@ public class ProductService {
                 .build();
 
         productMapper.insertProduct(product);
+
         productMapper.insertProductDetails(product.getProductId(), itemId, ingredientIds);
 
         return product;

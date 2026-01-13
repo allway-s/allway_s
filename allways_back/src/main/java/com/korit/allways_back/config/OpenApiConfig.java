@@ -16,9 +16,9 @@ public class OpenApiConfig {
         OpenAPI openAPI = new OpenAPI();
 
         Info info = new Info();
-        info.title("스프링 부트 수업");
+        info.title("allways project swagger");
         info.version("1.0");
-        info.description("JWT 인증 적용을 위한 설정중.");
+        info.description("기능 시험중");
 
 //        SecurityRequirement securityRequirement = new SecurityRequirement();
 //        securityRequirement.addList("Bearer Authentication");
