@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, TrendingUp } from 'lucide-react';
-import { PresetCard } from '../../../../components/PresetCard.jsx';
+import { PresetCard } from '../../../components/PresetCard.jsx';
 import { S } from './PopularSection.styles.js';
 
 export function PopularSection({ 

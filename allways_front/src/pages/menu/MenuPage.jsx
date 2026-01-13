@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart } from 'lucide-react'; 
-import { s } from './styles';
+import { s } from './MenuPage.styles.js';
 
 import MainLogo from '../../assets/images/MainUpperImages/MainLogo.png';
 

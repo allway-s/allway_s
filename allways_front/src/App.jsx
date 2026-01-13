@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { HomePage } from './pages/MainPage/HomePage/index.jsx';
+import { HomePage } from './pages/MainPage/HomePage.jsx';
 
 // [해결] 서버의 .jsx 확장자 경로와 진현님의 MyPage 임포트를 합칩니다.
-import Login from './pages/AuthPage/LoginPage/Login.jsx';
-import Signup from './pages/AuthPage/SignupPage/Signup.jsx';
+import Login from './pages/AuthPage/LoginPage.jsx';
+import Signup from './pages/AuthPage/Signup.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx'; 
 import CartPage from './pages/CartPage/CartPage.jsx';
 import MenuPage from './pages/menu/MenuPage.jsx';
