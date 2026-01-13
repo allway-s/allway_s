@@ -9,10 +9,14 @@ import java.util.List;
 
 @Mapper
 public interface OrderMapper {
-    int insertOrder(Order order); // orderId가 여기 주입됨
+
+    void insertOrder(Order order);
 
     int insertOrderDetails(
             @Param("orderId") int orderId,
             @Param("orderDetails") List<OrderDetail> orderDetails
     );
+
+    void getOrderHistory();
+
 }

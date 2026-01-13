@@ -17,10 +17,17 @@ spring:
     activate:
       on-profile: local # 'local'이 활성화될 때 이 아래 설정을 읽으라고 명시!
 
+springdoc:
+  swagger-ui:
+    path: doc
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
   type-aliases-package: com.korit.allways_back.entity
+
+logging:
+  level:
+    com.korit.allways_back.mapper: debug
 

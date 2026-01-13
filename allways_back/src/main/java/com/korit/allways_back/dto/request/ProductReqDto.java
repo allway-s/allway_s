@@ -5,8 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CartItemDto {
+public class ProductReqDto {
     private int itemId;
     private List<Integer> ingredientIds;
-    private int count;
 }
