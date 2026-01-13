@@ -52,7 +52,7 @@ export const S = {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    h1 { font-size: 2.2rem; font-weight: 800; color: #333; margin: 0; }
+    h1 { font-size: 2.2rem; font-weight: 800; color: #2da950; margin: 0; }
   `,
 
   homeButton: css`

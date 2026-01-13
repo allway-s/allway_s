@@ -12,6 +12,8 @@ import MenuPage from './pages/menu/MenuPage.jsx';
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
 import PresetImage3 from './assets/images/PresetImages/PresetImage3.png';
+import MyPreSet from './pages/MyPage/MyPreset.jsx';
+import RecentOrder from './pages/MyPage/RecentOrder.jsx';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
@@ -78,6 +80,29 @@ function App() {
             />
           }
         />
+
+        <Route 
+          path="/mypreset" 
+          element={
+            <MyPreSet 
+              isLoggedIn={isLoggedIn} 
+              onLogout={handleLogout} 
+              user={user} 
+            />
+          } 
+        />
+
+        {/* ✅ [추가] 최근 주문 내역 라우트 등록 */}
+        <Route 
+          path="/recent-order" 
+          element={
+            <RecentOrder
+              isLoggedIn={isLoggedIn} 
+              onLogout={handleLogout} 
+            />
+          } 
+        />
+
       </Routes>
     </Router>
   );

@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 
 export const S = {
+
   section: css`
     padding: 5rem 1rem;
     background-color: #fff;
@@ -13,6 +14,7 @@ export const S = {
     grid-template-cols: repeat(auto-fit, minmax(280px, 1fr));
     gap: 3rem;
   `,
+
   item: css`
     padding: 2.5rem;
     background: #f8fbf8;
@@ -40,12 +42,14 @@ export const S = {
     font-weight: 900;
     font-size: 1.5rem;
   `,
+
   title: css`
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 0.75rem;
     color: #111827;
   `,
+  
   desc: css`
     color: #4b5563;
     line-height: 1.6;

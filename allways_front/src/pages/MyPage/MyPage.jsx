@@ -1,12 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { S } from './MyPage.styles.js'; // 분리한 스타일 가져오기
+import { S } from './MyPage.styles.js';
 
 export const MyPage = () => {
   const navigate = useNavigate();
-  
-  // 가입 시 저장한 이름이나 기본값을 가져옵니다.
   const userName = localStorage.getItem('userName') || '진현';
 
   return (
@@ -18,7 +16,8 @@ export const MyPage = () => {
         </div>
         <nav css={S.nav}>
           <span onClick={() => navigate('/cart')}>장바구니</span>
-          <span style={{ color: '#009223' }}>마이페이지</span>
+          {/* 현재 페이지임을 나타내기 위해 마이페이지 텍스트 클릭 시 상단으로 이동하거나 유지 */}
+          <span style={{ color: '#009223', cursor: 'pointer' }}>마이페이지</span>
           <span onClick={() => { 
             if(window.confirm("로그아웃 하시겠습니까?")) { 
               localStorage.removeItem('isLoggedIn');
@@ -49,19 +48,35 @@ export const MyPage = () => {
           </div>
         </section>
 
-        {/* 2. 프리셋 섹션 */}
+        {/* 2. 프리셋 섹션 - 클릭 이벤트 연결 */}
         <section css={S.section}>
           <div css={S.sectionHeader}>
             <h3 css={S.sectionTitle}>프리셋</h3>
-            <span css={S.moreLink}>프리셋 관리 ＞</span>
+            {/* '프리셋 관리 >' 클릭 시 세부 페이지로 이동 */}
+            <span 
+              css={S.moreLink} 
+              onClick={() => navigate('/mypreset')} 
+              style={{ cursor: 'pointer' }}
+            >
+              프리셋 관리 ＞
+            </span>
           </div>
           <div css={S.presetGrid}>
             {[1, 2, 3].map((i) => (
-              <div key={i} css={S.presetCard}>
+              <div 
+                key={i} 
+                css={S.presetCard} 
+                onClick={() => navigate('/mypreset')} // 카드 자체를 눌러도 이동
+                style={{ cursor: 'pointer' }}
+              >
                 <div css={S.imgBox}>샌드위치 이미지</div>
                 <p style={{ fontWeight: 'bold', margin: '10px 0 5px' }}>새우를 극상으로</p>
                 <p style={{ fontSize: '0.8rem', color: '#888' }}>작성자 : {userName}</p>
-                <button css={S.orderBtn}>주문하기</button>
+                {/* 주문하기 버튼은 이동하지 않고 주문 로직을 태우고 싶다면 stopPropagation이 필요할 수 있습니다 */}
+                <button css={S.orderBtn} onClick={(e) => {
+                  e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
+                  alert('주문 페이지로 이동합니다.');
+                }}>주문하기</button>
               </div>
             ))}
           </div>
@@ -71,7 +86,14 @@ export const MyPage = () => {
         <section css={S.section}>
           <div css={S.sectionHeader}>
             <h3 css={S.sectionTitle}>주문내역</h3>
-            <span css={S.moreLink}>최근 주문 내역 ＞</span>
+            {/* 클릭 시 주문 내역 페이지로 이동 */}
+            <span 
+              css={S.moreLink} 
+              onClick={() => navigate('/recent-order')}
+              style={{ cursor: 'pointer' }}
+            >
+              최근 주문 내역 ＞
+            </span>
           </div>
           <div css={S.card}>
             {[1, 2].map((i) => (

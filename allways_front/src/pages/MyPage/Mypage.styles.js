@@ -102,14 +102,17 @@ export const S = {
   `,
   moreLink: css`
     font-size: 0.8rem;
-    color: #555;
+    color: #009223;
+    font-weight: bold;
     cursor: pointer;
-    background-color: #f2f2f2;
-    padding: 5px 12px;
-    border-radius: 12px;
-    transition: background 0.2s;
+    background-color: #fff;
+    padding: 6px 14px;
+    border-radius: 15px;
+    border: 1px solid #009223;
+    transition: all 0.2s;
     &:hover {
-      background-color: #e5e5e5;
+      background-color: #009223;
+      color: #fff;
     }
   `,
   presetGrid: css`
@@ -123,9 +126,12 @@ export const S = {
     padding: 20px;
     text-align: center;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
+    background-color: #fff;
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px);
+      border-color: #ffc107;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
   `,
   imgBox: css`
@@ -144,16 +150,18 @@ export const S = {
   `,
   orderBtn: css`
     margin-top: 15px;
-    padding: 8px 20px;
-    border-radius: 20px;
+    padding: 10px 24px;
+    border-radius: 25px;
     border: none;
-    background-color: #f0f0f0;
+    background-color: #ffc107;
+    color: #000;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: bold;
+    transition: all 0.2s;
     &:hover {
-      background-color: #009223;
-      color: #fff;
+      background-color: #ffdb0f;
+      transform: scale(1.05);
     }
   `,
   orderItem: css`
@@ -176,16 +184,18 @@ export const S = {
   `,
   detailBtn: css`
     margin-left: 20px;
-    padding: 6px 14px;
+    padding: 8px 16px;
     border-radius: 12px;
-    border: 1px solid #eee;
+    border: 1px solid #009223;
     background: #fff;
+    color: #009223;
     font-size: 0.8rem;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.2s;
     &:hover {
-      border-color: #009223;
-      color: #009223;
+      background: #009223;
+      color: #fff;
     }
   `
 };
