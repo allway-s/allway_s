@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { S } from './CartPage.styles.js';
-import MainLogo from '../../assets/images/MainUpperImages/MainLogo.png';
+import MainLogo from '../../assets/images/MainUpperImages/MainLogo2.png';
 import OrderImg1 from '../../assets/images/PresetImages/PresetImage1.png';
 import OrderImg2 from '../../assets/images/PresetImages/PresetImage2.png';
 import { ChevronDown, ChevronUp } from 'lucide-react';
