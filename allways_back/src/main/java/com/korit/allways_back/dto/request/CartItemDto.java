@@ -9,4 +9,5 @@ public class CartItemDto {
     private int itemId;
     private List<Integer> ingredientIds;
     private int count;
+    private int unitPrice;
 }

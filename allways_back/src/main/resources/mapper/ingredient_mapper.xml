@@ -6,11 +6,12 @@
 
     <select id="getIngredientsByCategoryName" resultType="com.korit.allways_back.entity.Ingredient">
         SELECT
-            i.ingredient_id,
-            i.ingredient_name,
-            c.ingredient_category_name
+            i.ingredient_id AS ingredientId,
+            i.ingredient_name AS ingredientName,
+            i.ingredient_category_id AS ingredientCategoryId,
+            c.ingredient_category_name AS ingredientCategoryName
         FROM ingredient_tb i
-        INNER JOIN ingredient_category_tb c
+            INNER JOIN ingredient_category_tb c
             ON i.ingredient_category_id = c.ingredient_category_id
         WHERE c.ingredient_category_name = #{categoryName};
     </select>

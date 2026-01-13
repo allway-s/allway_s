@@ -18,6 +18,6 @@ public interface OrderMapper {
             @Param("orderDetails") List<OrderDetail> orderDetails
     );
 
-    OrderHistoryRespDto getOrderHistory();
+    List<OrderHistoryRespDto> getOrderHistory(@Param("userId") int userId);
 
 }

@@ -1,11 +1,13 @@
 package com.korit.allways_back.service;
 
+import com.korit.allways_back.dto.request.OrderReqDto;
 import com.korit.allways_back.dto.response.OrderHistoryRespDto;
 import com.korit.allways_back.entity.Order;
 import com.korit.allways_back.entity.OrderDetail;
 import com.korit.allways_back.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,20 +19,21 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
 
-    public Order createNewOrder(int userId, int totalPrice, List<Integer> productIds) {
+    @Transactional
+    public Order createNewOrder(int userId, OrderReqDto orderReqDto) {
 
         Order order = Order.builder()
                 .userId(userId)
-                .totalPrice(totalPrice)
-                .orderedAt(LocalDateTime.now())
+                .totalPrice(orderReqDto.getTotalPrice())
                 .build();
 
         orderMapper.insertOrder(order);
 
-        List<OrderDetail> orderDetails = productIds.stream().map(pid -> OrderDetail.builder()
+        List<OrderDetail> orderDetails = orderReqDto.getCartItems().stream().map(item -> OrderDetail.builder()
                 .orderId(order.getOrderId())
-                .productId(pid)
-                .quantity(1)
+                .productId(item.getItemId())
+                .quantity(item.getCount())
+                .unitPrice(0)
                 .build()).toList();
 
         orderMapper.insertOrderDetails(order.getOrderId(), orderDetails);
@@ -38,8 +41,8 @@ public class OrderService {
         return order;
     }
 
-    public OrderHistoryRespDto getOrderHistory() {
-        return orderMapper.getOrderHistory();
+    public List<OrderHistoryRespDto> getOrderHistory(int userId) {
+        return orderMapper.getOrderHistory(userId);
     }
 
 

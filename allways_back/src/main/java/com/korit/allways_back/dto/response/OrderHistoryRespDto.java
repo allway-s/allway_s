@@ -12,7 +12,7 @@ public class OrderHistoryRespDto {
 
     private LocalDateTime orderedAt;
     private String productName;
-    private List<String> ingredients;
+    private String ingredients;
     private int unitPrice;
     private int totalPrice;
 
