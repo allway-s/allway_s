@@ -44,7 +44,9 @@ export const s = {
     color: #666;
     padding: 4px;
     transition: color 0.2s;
-    &:hover { color: #009223; }
+    &:hover {
+      color: #009223;
+    }
   `,
 
   brandMark: css`
@@ -57,10 +59,12 @@ export const s = {
     overflow: hidden;
   `,
 
+  /* ✅ 로고가 너무 커 보여서 실제 표시 크기만 줄임 (클릭 영역 44x44는 유지) */
   logoImage: css`
-    width: 100%;
-    height: 100%;
+    width: 30px;
+    height: 30px;
     object-fit: contain;
+    display: block;
   `,
 
   brandCenter: css`
@@ -95,7 +99,9 @@ export const s = {
     font-weight: 700;
     font-size: 14px;
     color: #374151;
-    &:hover { color: #009223; }
+    &:hover {
+      color: #009223;
+    }
   `,
 
   midBar: css`
@@ -153,7 +159,9 @@ export const s = {
     font-weight: ${active ? '900' : '500'};
     color: ${active ? '#111827' : '#b6bcc7'};
     transition: color 0.2s;
-    &:hover { color: #111827; }
+    &:hover {
+      color: #111827;
+    }
   `,
 
   tabDivider: css`
@@ -180,21 +188,27 @@ export const s = {
     position: relative;
     overflow: hidden;
     transition: transform 0.2s ease;
-    &:hover { transform: translateY(-4px); }
-    &:hover .cardOverlay { opacity: 1; pointer-events: auto; }
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+    &:hover .cardOverlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
   `,
 
-/* 1) 오버레이 컨테이너: 가로 정렬(row)로 변경 */
-cardOverlay: css`
+  /* 1) 오버레이 컨테이너: 가로 정렬(row) */
+  cardOverlay: css`
     position: absolute;
     inset: 0;
     z-index: 10;
     display: flex;
-    flex-direction: row; /* 가로 배치 */
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 12px; /* 버튼 사이 적절한 간격 */
-    background: rgba(0, 0, 0, 0.4); 
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.4);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -209,31 +223,32 @@ cardOverlay: css`
     height: 100%;
   `,
 
-/* 2) 초록색 버튼: 사진처럼 둥근 사각형 형태로 너비 조정 */
-hoverBtnGreen: css`
-    /* 가로로 더 길쭉한 비율로 조정 */
-    width: 135px; 
-    height: 85px; 
+  /* 2) 초록 버튼 */
+  hoverBtnGreen: css`
+    width: 135px;
+    height: 85px;
     border: 0;
     background: #009223;
     color: #ffffff;
     font-weight: 800;
-    font-size: 13px; /* 텍스트가 잘 보이도록 조정 */
+    font-size: 13px;
     padding: 8px;
-    border-radius: 20px; /* 둥근 직사각형 느낌 */
+    border-radius: 20px;
     cursor: pointer;
     line-height: 1.4;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    word-break: keep-all; /* 단어 단위로 줄바꿈 방지 */
+    word-break: keep-all;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    &:hover { background: #007a1d; }
+    &:hover {
+      background: #007a1d;
+    }
   `,
 
-/* 3) 노란색 버튼: 사진처럼 둥근 사각형 형태로 너비 조정 */
-hoverBtnYellow: css`
+  /* 3) 노랑 버튼 */
+  hoverBtnYellow: css`
     width: 135px;
     height: 85px;
     border: 0;
@@ -251,10 +266,11 @@ hoverBtnYellow: css`
     text-align: center;
     word-break: keep-all;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    &:hover { background: #e5b300; }
+    &:hover {
+      background: #e5b300;
+    }
   `,
 
-  
   badgeWrap: css`
     position: absolute;
     top: 25px;
