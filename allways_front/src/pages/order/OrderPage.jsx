@@ -28,7 +28,6 @@ function OrderPage() {
     const handleSelect = () => {
         
         setCart((prev) => {
-            
             if (type === 'single') {
                 return {
                     ...prev

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { HomePage } from './pages/MainPage/HomePage/index.jsx';
+import { HomePage } from './pages/MainPage/HomePage.jsx';
 
 // [해결] 서버의 .jsx 확장자 경로와 진현님의 MyPage 임포트를 합칩니다.
-import Login from './pages/AuthPage/LoginPage/Login.jsx';
-import Signup from './pages/AuthPage/SignupPage/Signup.jsx';
-import MyPage from './pages/MyPage/MyPage.jsx'; 
+import Login from './pages/AuthPage/LoginPage.jsx';
+import Signup from './pages/AuthPage/Signup.jsx';
+import MyPage from './pages/MyPage/MyPage.jsx';
 import CartPage from './pages/CartPage/CartPage.jsx';
 import MenuPage from './pages/menu/MenuPage.jsx';
 import MenuPage2 from './pages/menu/MenuPage2.jsx';
@@ -34,7 +34,7 @@ function App() {
       localStorage.removeItem('userName');
       setIsLoggedIn(false);
       alert("로그아웃 되었습니다.");
-      window.location.href = '/'; 
+      window.location.href = '/';
     }
   };
 
@@ -47,10 +47,10 @@ function App() {
     <Router>
       <Routes>
         {/* [해결] Props가 모두 포함된 진현님의 HomePage 루트를 선택합니다 */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
-            <HomePage 
+            <HomePage
               isLoggedIn={isLoggedIn}
               onLogout={handleLogout}
               communityPreSets={presets}
@@ -60,19 +60,30 @@ function App() {
               onCopy={handleCopy}
               user={user}
             />
-          } 
+          }
         />
+
         {/* [해결] 로그인 상태 변경 함수를 전달하는 진현님의 경로를 선택합니다 */}
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
-        
+
         {/* [해결] 마이페이지 경로를 최종 유지합니다 */}
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/cart" element={<CartPage />} />
 
-        <Route path="/menu/sandwich" element={<MenuPage/>}/>
-        <Route path="/menu/salad" element={<MenuPage2/>}/>
-        <Route path="/menu/wrap" element={<MenuPage3/>}/>
+        {/* main 쪽 /menu 라우트 유지 (props 전달) */}
+        <Route
+          path="/menu"
+          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
+        />
+
+        {/* 네 브랜치의 세부 라우트들도 유지 */}
+        <Route
+          path="/menu/sandwich"
+          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
+        />
+        <Route path="/menu/salad" element={<MenuPage2 />} />
+        <Route path="/menu/wrap" element={<MenuPage3 />} />
       </Routes>
     </Router>
   );

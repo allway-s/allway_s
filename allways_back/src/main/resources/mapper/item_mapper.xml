@@ -11,12 +11,12 @@
             i.content,
             i.price,
             i.size,
-            i.imgUrl,
+            i.img_url,
             c.item_category_name
         FROM item_tb i
         INNER JOIN item_category_tb c
             ON i.item_category_id = c.item_category_id
-        WHERE c.item_category_name = #{categoryName};aa
+        WHERE c.item_category_name = #{categoryName}
     </select>
 </mapper>
 

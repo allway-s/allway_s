@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.allways_back.mapper.OrderMapper">
+    <insert id="insertOrder" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO order_tb (user_id, total_price, ordered_at)
+        VALUES (#{userId}, #{totalPrice}, now())
+    </insert>
+
+    <insert id="insertOrderDetails">
+        INSERT INTO order_detail_tb (order_id, product_id, unit_price, quantity)
+            VALUES
+                <foreach collection="orderDetails" item="detail" separator=",">
+                    (#{orderId}, #{detail.productId}, #{detail.unitPrice}, #{detail.quantity})
+                </foreach>
+    </insert>
+</mapper>

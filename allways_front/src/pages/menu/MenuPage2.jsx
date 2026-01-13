@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { s } from './styles';
+import { s } from './MenuPage.styles.js';
 import MainLogo from '../../assets/images/MainUpperImages/MainLogo2.png';
 
 const CATEGORIES = ['샌드위치', '샐러드', '랩&기타'];

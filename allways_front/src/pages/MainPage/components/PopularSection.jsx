@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronRight, TrendingUp } from 'lucide-react';
-import { PresetCard } from '../../../../components/PresetCard.jsx';
+import { PresetCard } from '../../../components/PresetCard.jsx';
 import { S } from './PopularSection.styles.js';
 
 export function PopularSection({ 
@@ -11,13 +12,11 @@ export function PopularSection({
   onCopy, 
   user 
 }) {
-  /** [내부 로직] 좋아요 순으로 상위 3개 추출 */
-
-  // 🔍 여기입니다! 이 로그를 추가해서 데이터가 넘어오는지 확인하세요.
-  console.log('--- PopularSection 진입 ---');
-  console.log('부모에게서 받은 presets:', presets);
-
+  const navigate = useNavigate();
   
+  // ✅ 유저 로그인 여부 판단
+  const isLoggedInUser = user && (user.name || user.id || Object.keys(user).length > 0);
+
   const topPreSets = [...presets]
     .sort((a, b) => (b.likes || 0) - (a.likes || 0))
     .slice(0, 3);
@@ -28,17 +27,35 @@ export function PopularSection({
         <div css={S.header}>
             <h2 css={S.title}>Recipe Community</h2>
             <div css={S.headerRight}>
-                <span css={S.headerText}>로그인 후 더 다양한 조합들을 만나보세요!</span>
+                {!isLoggedInUser ? (
+                  <span css={S.headerText}>로그인 후 더 다양한 조합들을 만나보세요!</span>
+                ) : (
+                  <span css={S.headerText}>{user.name || '진현'}님을 위한 인기 레시피입니다!</span>
+                )}
+
                 <button onClick={onNavigate} css={S.iconButton}>
-                <ChevronRight size={24} /> {/* ArrowRight 대신 ChevronRight가 시안과 비슷합니다 */}
+                  <ChevronRight size={24} />
                 </button>
             </div>
         </div>
         
         <div css={S.grid}>
+          {/* ✅ 비로그인 시 카드 중앙에 안내 버튼 노출 */}
+          {!isLoggedInUser && (
+            <button 
+              css={S.blurMessage} 
+              onClick={() => navigate('/login')}
+            >
+              로그인하고 인기 레시피 확인하기
+            </button>
+          )}
+
           {topPreSets.map((preset, index) => (
-            <div key={preset.id} css={S.cardWrapper}>
-              {/* 1등에게만 뱃지 표시 */}
+            <div 
+              key={preset.id} 
+              /* ✅ 로그인 안됐을 때만 true 전달하여 블러 처리 */
+              css={S.cardWrapper(!isLoggedInUser)}
+            >
               {index === 0 && (
                 <div css={S.bestBadge}>
                   <TrendingUp size={24} />

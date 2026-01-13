@@ -5,28 +5,45 @@ import { S } from './CartPage.styles.js';
 import MainLogo from '../../assets/images/MainUpperImages/MainLogo.png';
 import OrderImg1 from '../../assets/images/PresetImages/PresetImage1.png';
 import OrderImg2 from '../../assets/images/PresetImages/PresetImage2.png';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const CartPage = () => {
   const navigate = useNavigate();
   
   const [cartItems, setCartItems] = useState([
-    { 
-      id: 1, 
-      name: "안창 비프&머쉬룸", 
-      ingredientIds: [10, 22, 35], 
-      price: 19700, 
-      quantity: 1,
-      image: OrderImg1 // 상품 썸네일 (public 폴더 확인)
-    },
-    { 
-      id: 2, 
-      name: "에그마요", 
-      ingredientIds: [5, 12, 40], 
-      price: 15500, 
-      quantity: 1,
-      image: OrderImg2 
-    }
+    { id: 1, name: "안창 비프&머쉬룸", ingredientIds: [10, 22, 35], price: 19700, quantity: 1, image: OrderImg1, selectedOption: "쿠키 음료 세트" },
+    { id: 2, name: "에그마요", ingredientIds: [5, 12, 40], price: 15500, quantity: 1, image: OrderImg2, selectedOption: "단품" }
   ]);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [orderType, setOrderType] = useState('배달');
+  const [deliveryFee, setDeliveryFee] = useState(3000);
+  const [openOptionId, setOpenOptionId] = useState(null);
+
+  const orderOptions = [
+    { label: '배달', fee: 3000 },
+    { label: '픽업', fee: 0 },
+    { label: '매장에서 취식', fee: 0 }
+  ];
+
+  const productOptions = ["단품", "쿠키 음료 세트", "웨지 감자 세트"];
+
+  // ✅ 추가된 handleOrder 함수
+  const handleOrder = () => {
+    if (cartItems.length === 0) {
+      alert("장바구니가 비어있습니다. 상품을 담아주세요!");
+      return;
+    }
+
+    const confirmMessage = `${orderType}(으)로 총 ${totalPrice.toLocaleString()}원을 주문하시겠습니까?`;
+    
+    if (window.confirm(confirmMessage)) {
+      // 실제 서비스라면 여기서 API 호출을 진행합니다.
+      alert("주문이 성공적으로 접수되었습니다!");
+      setCartItems([]); // 주문 완료 후 장바구니 비우기
+      navigate('/'); // 메인 페이지로 이동
+    }
+  };
 
   const updateQuantity = (id, delta) => {
     setCartItems(prev => prev.map(item => 
@@ -34,21 +51,33 @@ const CartPage = () => {
     ));
   };
 
-  const handleOrder = () => {
-    alert("주문이 완료되었습니다!");
-    navigate('/');
+  const removeItem = (id) => {
+    if (window.confirm("선택한 상품을 삭제하시겠습니까?")) {
+      setCartItems(prev => prev.filter(item => item.id !== id));
+    }
+  };
+
+  const handleTypeSelect = (opt) => {
+    setOrderType(opt.label);
+    setDeliveryFee(opt.fee);
+    setIsDropdownOpen(false);
+  };
+
+  const handleOptionSelect = (itemId, option) => {
+    setCartItems(prev => prev.map(item => 
+      item.id === itemId ? { ...item, selectedOption: option } : item
+    ));
+    setOpenOptionId(null);
   };
 
   const subTotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const totalPrice = subTotal + 3000;
+  const totalPrice = cartItems.length > 0 ? subTotal + deliveryFee : 0;
 
   return (
     <div css={S.container}>
-      {/* 1. 최상단 네비게이션 바: 로고 위치 확인 */}
       <nav css={S.navBar}>
         <div className="logo-section" onClick={() => navigate('/')}>
-          {/* 진현님, 이 부분의 src가 실제 public 폴더의 파일명과 일치해야 합니다! */}
-          <img src= {MainLogo} alt="Logo" /> 
+          <img src={MainLogo} alt="Logo" /> 
         </div>
         <div className="title-section" onClick={() => navigate('/')}>
           ALLWAY-<span>S</span>
@@ -59,7 +88,6 @@ const CartPage = () => {
         </div>
       </nav>
 
-      {/* 2. 장바구니 타이틀 */}
       <header css={S.header}>
         <h1>장바구니</h1>
         <button css={S.homeButton} onClick={() => navigate('/')}>
@@ -68,42 +96,82 @@ const CartPage = () => {
       </header>
 
       <div css={S.contentWrapper}>
-        {/* 3. 좌측 상품 리스트 */}
         <div css={S.cartList}>
-          {cartItems.map(item => (
-            <div key={item.id} css={S.cartItem}>
-              <div className="left-group">
-                <input type="checkbox" defaultChecked className="checkbox-custom" />
-                
-                {/* 각 아이템 왼쪽의 샌드위치 이미지 */}
-                <div css={S.itemImage}>
-                  <img src={item.image} alt={item.name} />
+          {cartItems.length > 0 ? (
+            cartItems.map(item => (
+              <div key={item.id} css={S.cartItemCard}>
+                <div className="item-main">
+                  <div className="info-flex">
+                    <div css={S.itemImage}>
+                      <img src={item.image} alt={item.name} />
+                    </div>
+                    <div css={S.itemInfo}>
+                      <span className="item-name">{item.name}</span>
+                      <span className="item-sub">{item.selectedOption}</span>
+                      <span className="item-price">{(item.price * item.quantity).toLocaleString()}원</span>
+                      
+                      <div css={S.quantityControl}>
+                        <button onClick={() => updateQuantity(item.id, -1)}>-</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+                      </div>
+                    </div>
+                  </div>
+                  <button className="delete-icon-btn" onClick={() => removeItem(item.id)}>삭제</button>
                 </div>
 
-                <div css={S.itemInfo}>
-                  <span className="item-name">{item.name}</span>
-                  <span className="item-option">재료 구성: {item.ingredientIds.length}가지</span>
-                  <span className="item-price">{item.price.toLocaleString()}원</span>
-                  
-                  <div css={S.quantityControl}>
-                    <button onClick={() => updateQuantity(item.id, -1)}>-</button>
-                    <span>{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+                <div css={S.itemOptionDropdown}>
+                  <div 
+                    className="dropdown-header" 
+                    onClick={() => setOpenOptionId(openOptionId === item.id ? null : item.id)}
+                  >
+                    <span>옵션변경</span>
+                    {openOptionId === item.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </div>
+                  
+                  {openOptionId === item.id && (
+                    <ul className="option-list">
+                      {productOptions.map(opt => (
+                        <li key={opt} onClick={() => handleOptionSelect(item.id, opt)}>
+                          {opt}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
-              <button css={S.optionButton}>옵션변경 ∨</button>
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', padding: '100px 0', color: '#999', fontSize: '1.2rem' }}>
+              장바구니가 비어있습니다.
             </div>
-          ))}
+          )}
         </div>
 
-        {/* 4. 우측 주문 정보 */}
         <aside css={S.orderSidebar}>
           <h2>주문 정보</h2>
           <div css={S.infoSection}>
             <div css={S.typeSelector}>
-              <div className="type-item">배달 ✅ <span>+3,000 원</span></div>
+              <div className="selected-item" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                <div>
+                  <span>{orderType}</span>
+                  {deliveryFee > 0 && <span className="fee-highlight">+{deliveryFee.toLocaleString()} 원</span>}
+                </div>
+                {isDropdownOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              </div>
+
+              {isDropdownOpen && (
+                <ul className="options-list">
+                  {orderOptions.map((opt) => (
+                    <li key={opt.label} onClick={() => handleTypeSelect(opt)}>
+                      <span>{opt.label}</span>
+                      {opt.fee > 0 && <span className="fee-text">+{opt.fee.toLocaleString()} 원</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
+
             <div className="label-group">
               <label>연락처</label>
               <input type="text" value="010-1234-5678" readOnly />
@@ -113,6 +181,7 @@ const CartPage = () => {
               <input type="text" value="경남 김해시 장유3동" readOnly />
             </div>
           </div>
+
           <div css={S.totalPriceArea}>
             <span>총 금액</span>
             <strong>{totalPrice.toLocaleString()} 원</strong>
