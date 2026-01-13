@@ -8,6 +8,8 @@ import Signup from './pages/AuthPage/Signup.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
 import CartPage from './pages/CartPage/CartPage.jsx';
 import MenuPage from './pages/menu/MenuPage.jsx'; 
+import MenuPage2 from './pages/Menu/MenuPage2.jsx';
+import MenuPage3 from './pages/Menu/MenuPage3.jsx';
 
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
@@ -73,21 +75,15 @@ function App() {
 
         {/* ✅ [중요] 모든 메뉴 경로를 MenuPage 하나로 통합 */}
         {/* 이렇게 하면 MenuPage 내부의 로고 수정 사항이 모든 탭에 공통 적용됩니다 */}
+        
         <Route
-          path="/menu"
-          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
-        />
-        <Route
-          path="/menu/sandwich"
-          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
+          path="/menu/sandwich" element={<MenuPage />}
         />
         <Route 
-          path="/menu/salad" 
-          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />} 
+          path="/menu/salad" element={<MenuPage2/>} 
         />
         <Route 
-          path="/menu/wrap" 
-          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />} 
+          path="/menu/wrap" element={<MenuPage3 />} 
         />
 
         {/* 프리셋 및 최근 주문 내역 */}

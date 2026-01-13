@@ -26,7 +26,7 @@ export function HomePage({
   // ✅ 비로그인 상태에서도 메뉴 이동은 허용
   // 단, 이동한 페이지에서도 isLoggedIn props를 전달받아 헤더를 그려야 모순이 없습니다.
   const handleOrderClick = () => {
-    navigate('/menu');
+    navigate('/menu/sandwich');
   };
 
   return (
