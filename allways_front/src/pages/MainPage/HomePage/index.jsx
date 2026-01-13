@@ -29,7 +29,7 @@ export function HomePage({
         <div css={styles.headerInner}>
           <div css={styles.logoArea} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <h2 style={{ color: '#009223', fontWeight: 900, margin: 0, fontSize: '1.5rem' }}>
-              ALLWAY-<span style={{ color: '#ffc107' }}>S</span>
+              ALLWAY<span style={{color: '#000000'}}>-</span><span style={{ color: '#ffc107' }}>S</span>
             </h2>
           </div>
 
@@ -60,7 +60,7 @@ export function HomePage({
             나만의 <span css={styles.heroTitleGreen}>Recipe</span> 를 만들고<br />
             <span css={styles.heroTitleGreen}>Recipe</span><span css={styles.heroTitleYellow}>-s</span> 에 공유하세요!
           </h1>
-          <button onClick={() => navigate('/menu')} css={styles.orderButton}>
+          <button onClick={() => navigate('/menu/sandwich')} css={styles.orderButton}>
             지금 주문하기 <ArrowRight size={20} />
           </button>
         </div>

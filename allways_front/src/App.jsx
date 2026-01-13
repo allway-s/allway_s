@@ -8,6 +8,8 @@ import Signup from './pages/AuthPage/SignupPage/Signup.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx'; 
 import CartPage from './pages/CartPage/CartPage.jsx';
 import MenuPage from './pages/menu/MenuPage.jsx';
+import MenuPage2 from './pages/menu/MenuPage2.jsx';
+import MenuPage3 from './pages/menu/MenuPage3.jsx';
 
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
@@ -68,7 +70,9 @@ function App() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/cart" element={<CartPage />} />
 
-        <Route path="/menu" element={<MenuPage/>}/>
+        <Route path="/menu/sandwich" element={<MenuPage/>}/>
+        <Route path="/menu/salad" element={<MenuPage2/>}/>
+        <Route path="/menu/wrap" element={<MenuPage3/>}/>
       </Routes>
     </Router>
   );

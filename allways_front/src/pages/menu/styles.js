@@ -9,10 +9,19 @@ export const s = {
   `,
   /* Top bar */
   topBar: css`
-    /* ✅ 스크롤 따라 고정 */
     top: 0;
     z-index: 1;
     background: #ffffff;
+    .logo-section {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      img {
+        height: 50px;
+        width: auto;
+        object-fit: contain;
+      }
+    }
   `,
   topInner: css`
     position: sticky; /* ✅ brandCenter absolute 기준 */
@@ -27,16 +36,7 @@ export const s = {
     display: flex;
     align-items: center;
   `,
-  brandMark: css`
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: #f3f4f6;
-    display: grid;
-    place-items: center;
-    font-weight: 900;
-    color: #009223;
-  `,
+
   brandCenter: css`
     position: absolute;
     left: 50%;
@@ -160,38 +160,37 @@ export const s = {
     justify-content: center;
     min-width: 1100px;
     gap: 26px;
-
   `,
 
-card: css`
-  background: #f3f4f6;
-  border-radius: 6px;
-  padding: 16px;
+  card: css`
+    background: #f3f4f6;
+    border-radius: 2px;
+    padding: 16px;
 
-  position: relative;      /* ✅ overlay 기준 */
-  overflow: hidden;        /* ✅ 라운드 밖으로 안 새게 */
+    position: relative; /* ✅ overlay 기준 */
+    overflow: hidden; /* ✅ 라운드 밖으로 안 새게 */
 
-  &:hover .cardOverlay {
-    opacity: 1;
-    pointer-events: auto;
-  }
-`,
+    &:hover .cardOverlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  `,
 
-cardOverlay: css`
-  position: absolute;
-  inset: 0;                /* ✅ 회색까지 전체 덮기 */
-  z-index: 5;
+  cardOverlay: css`
+    position: absolute;
+    inset: 0; /* ✅ 회색까지 전체 덮기 */
+    z-index: 5;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 
-  background: rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-`,
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  `,
 
   cardInner: css`
     background: #ffffff;
@@ -272,13 +271,14 @@ cardOverlay: css`
   `,
   nameKo: css`
     font-size: 20px;
-    font-weight: 900;
+    font-weight: 700;
+    white-space: nowrap;
     letter-spacing: -0.03em;
   `,
   nameEn: css`
     margin-top: 6px;
     font-size: 13px;
     color: #6b7280;
-    font-weight: 600;
+    font-weight: 500;
   `,
 };
