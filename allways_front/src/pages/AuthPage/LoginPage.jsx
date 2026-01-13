@@ -31,6 +31,12 @@ const Login = ({ setIsLoggedIn }) => {
     }
   };
 
+  const handleOAuth2LoginOnClick = (e) => {
+        const clientName = e.target.id;
+        window.location.href = "http://localhost:8080/oauth2/authorization/" + clientName;
+    }
+
+
   return (
     <div css={S.container}>
       {/* [해결] 로고 클릭 시 메인 이동 기능 포함 버전 유지 */}
@@ -43,8 +49,9 @@ const Login = ({ setIsLoggedIn }) => {
         
         <div css={S.buttonGroup}>
           <button 
+            id="naver"
             css={S.socialButton('naver')} 
-            onClick={() => handleLogin('네이버')}
+            onClick={handleOAuth2LoginOnClick}
           >
             네이버 로그인
           </button>
