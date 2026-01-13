@@ -5,7 +5,17 @@
 
 <mapper namespace="com.korit.allways_back.mapper.UserMapper">
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
-
+        INSERT INTO user_tb
+        VALUES (
+            default,
+            #{oauth2Id},
+            #{nickname},
+            #{name},
+            #{email},
+            #{phoneNumber},
+            #{address},
+            now()
+        )
     </insert>
 
     <select id="findByUserId" resultType="User">
