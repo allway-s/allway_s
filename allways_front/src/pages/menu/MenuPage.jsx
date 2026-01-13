@@ -1,68 +1,152 @@
 /** @jsxImportSource @emotion/react */
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart } from 'lucide-react'; 
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom'; // useLocation 추가
+import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import { s } from './MenuPage.styles.js';
-
 import MainLogo from '../../assets/images/MainUpperImages/MainLogo.png';
 
 const CATEGORIES = ['샌드위치', '샐러드', '랩&기타'];
 
-const SAMPLE_ITEMS = [
-  {
+const CATEGORY_PATH = {
+  샌드위치: 'sandwich',
+  샐러드: 'salad',
+  '랩&기타': 'wrap',
+};
+
+// 샘플 데이터를 카테고리별로 관리하면 관리가 더 쉽습니다!
+const MOCK_DATA = {
+  sandwich: [
+    {
     id: 1,
     badge: 'NEW',
     nameKo: '랍스터&쉬림프',
     nameEn: 'Lobster & Shrimp',
     img: 'https://www.subway.co.kr/upload/menu/1763392140518_G1a9dG.png',
-  },
-  {
-    id: 2,
-    badge: 'NEW',
-    nameKo: '랍스터',
-    nameEn: 'Lobster',
-    img: 'https://www.subway.co.kr/upload/menu/1763392124489_kSN1t9.png',
-  },
-  {
-    id: 3,
-    badge: 'SUBPICK',
-    nameKo: 'New머쉬룸',
-    nameEn: 'New Mushroom',
-    img: 'https://www.subway.co.kr/upload/menu/1757375591323_zQLUtM.png',
-  },
-  {
-    id: 4,
-    badge: 'SUBPICK',
-    nameKo: '안창 비프&New머쉬룸',
-    nameEn: 'Beef & New Mushroom',
-    img: 'https://www.subway.co.kr/upload/menu/%EC%95%88%EC%B0%BD-%EB%B9%84%ED%94%84&%EB%A8%B8%EC%89%AC%EB%A3%B8_20240912031749239.png',
-  },
-  {
-    id: 5,
-    badge: 'SUBPICK',
-    subBadge: '추천',
-    nameKo: '스테이크 & 치즈',
-    nameEn: 'Steak & Cheese',
-    img: 'https://www.subway.co.kr/upload/menu/Steak-&-Cheese_20211231095455613.png',
-  },
-  {
-    id: 6,
-    badge: 'SUBPICK',
-    subBadge: '추천',
-    nameKo: '이탈리안 비엠티',
-    nameEn: 'Italian B.M.T.™',
-    img: 'https://www.subway.co.kr/upload/menu/Italian_B.M.T_20211231094910899.png',
-  },
-];
+    },
+    {
+      id: 2,
+      badge: 'NEW',
+      nameKo: '랍스터',
+      nameEn: 'Lobster',
+      img: 'https://www.subway.co.kr/upload/menu/1763392124489_kSN1t9.png',
+    },
+    {
+      id: 3,
+      badge: 'SUBPICK',
+      nameKo: 'New머쉬룸',
+      nameEn: 'New Mushroom',
+      img: 'https://www.subway.co.kr/upload/menu/1757375591323_zQLUtM.png',
+    },
+    {
+      id: 4,
+      badge: 'SUBPICK',
+      nameKo: '안창 비프&New머쉬룸',
+      nameEn: 'Beef & New Mushroom',
+      img: 'https://www.subway.co.kr/upload/menu/%EC%95%88%EC%B0%BD-%EB%B9%84%ED%94%84&%EB%A8%B8%EC%89%AC%EB%A3%B8_20240912031749239.png',
+    },
+    {
+      id: 5,
+      badge: 'SUBPICK',
+      subBadge: '추천',
+      nameKo: '스테이크 & 치즈',
+      nameEn: 'Steak & Cheese',
+      img: 'https://www.subway.co.kr/upload/menu/Steak-&-Cheese_20211231095455613.png',
+    },
+    {
+      id: 6,
+      badge: 'SUBPICK',
+      subBadge: '추천',
+      nameKo: '이탈리안 비엠티',
+      nameEn: 'Italian B.M.T.™',
+      img: 'https://www.subway.co.kr/upload/menu/Italian_B.M.T_20211231094910899.png',
+    },
+  ],
+  
+  salad: [
+      {
+      id: 1,
+      badge: 'NEW',
+      nameKo: '토시 비프 & New 머쉬룸 샐러드',
+      nameEn: 'TOSHI Beef & New Mushroom Salad',
+      img: '	https://www.subway.co.kr/upload/menu/1757328156731_SMeD7j.png',
+      },
+      {
+        id: 2,
+        badge: 'NEW',
+        nameKo: '토시 비프 샐러드',
+        nameEn: 'TOSHI Beef Salad',
+        img: 'https://www.subway.co.kr/upload/menu/1757328262726_R1C8GN.png',
+      },
+      {
+        id: 3,
+        badge: 'SUBPICK',
+        nameKo: '이탈리안 비엠티',
+        nameEn: 'Italian B.M.T™',
+        img: 'https://www.subway.co.kr/upload/menu/%EC%9D%B4%ED%83%88%EB%A6%AC%EC%95%88%EB%B9%84%EC%97%A0%ED%8B%B0_20220413025527215.png',
+      },
+      {
+        id: 4,
+        badge: 'SUBPICK',
+        nameKo: '비엘티',
+        nameEn: 'B.L.T.',
+        img: '	https://www.subway.co.kr/upload/menu/BLT_20220413025509426.png',
+      },
+      {
+        id: 5,
+        badge: 'SUBPICK',
+        nameKo: '햄',
+        nameEn: 'Ham',
+        img: 'https://www.subway.co.kr/upload/menu/%ED%96%84_20220413025435077.png',
+      },
+      {
+        id: 6,
+        badge: 'SUBPICK',
+        nameKo: '참치',
+        nameEn: 'Tuna',
+        img: '	https://www.subway.co.kr/upload/menu/%EC%B0%B8%EC%B9%98_20220413025420234.png',
+      },
+  ],
+  wrap: [
+      {
+      id: 1,
+      badge: '',
+      nameKo: '스테이크 & 치즈 아보카도 랩',
+      nameEn: 'Steak & Cheese Avocado Wrap',
+      img: 'https://www.subway.co.kr/upload/menu/steak_n_cheese_avocado_wrap_20210315105638140.jpg',
+    },
+    {
+      id: 2,
+      badge: '',
+      nameKo: '쉬림프 에그마요 랩',
+      nameEn: 'Shrimp Egg Mayo Wrap',
+      img: 'https://www.subway.co.kr/upload/menu/shrimp_egg_mayo_wrap_20210315105650669.jpg',
+    },
+    {
+      id: 3,
+      badge: '',
+      nameKo: '치킨 베이컨 미니 랩',
+      nameEn: 'Chicken Bacon Mini Wrap',
+      img: 'https://www.subway.co.kr/upload/menu/chicken_bacon_mini_wrap_20210315105919945.jpg',
+    },
+  ]
+};
 
-// ✅ 핵심: 부모로부터 isLoggedIn과 onLogout을 props로 전달받습니다.
 export function MenuPage({ isLoggedIn, onLogout }) {
   const navigate = useNavigate();
-  const [activeCat, setActiveCat] = useState('샌드위치');
+  const location = useLocation(); // 현재 URL 정보를 가져옴
+  
+  // URL에서 현재 카테고리 추출 (예: /menu/salad -> salad)
+  const currentPath = location.pathname.split('/').pop() || 'sandwich';
+  
+  // URL 경로에 맞춰 activeCat 상태 동기화
+  const activeCat = useMemo(() => {
+    return Object.keys(CATEGORY_PATH).find(key => CATEGORY_PATH[key] === currentPath) || '샌드위치';
+  }, [currentPath]);
 
+  // 카테고리에 맞는 데이터 선택
   const items = useMemo(() => {
-    return SAMPLE_ITEMS;
-  }, [activeCat]);
+    return MOCK_DATA[currentPath] || MOCK_DATA.sandwich;
+  }, [currentPath]);
 
   return (
     <div css={s.page}>
@@ -73,6 +157,7 @@ export function MenuPage({ isLoggedIn, onLogout }) {
               <ArrowLeft size={24} />
             </button>
             <div css={s.brandMark} onClick={() => navigate('/')}>
+              {/* ✅ 수정한 logoImage 스타일 적용됨 */}
               <img src={MainLogo} alt="Logo" css={s.logoImage} />
             </div>
           </div>
@@ -82,7 +167,6 @@ export function MenuPage({ isLoggedIn, onLogout }) {
           </div>
 
           <nav css={s.topNav}>
-            {/* ✅ [해결] 로그인 상태에 따라 헤더 버튼을 조건부 렌더링합니다. */}
             {isLoggedIn ? (
               <>
                 <button css={s.topNavBtn} onClick={() => navigate('/cart')}>장바구니</button>
@@ -91,13 +175,7 @@ export function MenuPage({ isLoggedIn, onLogout }) {
               </>
             ) : (
               <>
-                <button 
-                  css={s.topNavBtn} 
-                  onClick={() => navigate('/login')}
-                  aria-label="장바구니"
-                >
-                  <ShoppingCart size={20} />
-                </button>
+                <button css={s.topNavBtn} onClick={() => navigate('/login')}><ShoppingCart size={20} /></button>
                 <button css={s.topNavBtn} onClick={() => navigate('/login')}>로그인</button>
               </>
             )}
@@ -105,33 +183,24 @@ export function MenuPage({ isLoggedIn, onLogout }) {
         </div>
 
         <div css={s.midBar}>
-          <div css={s.lineWrap}>
-            <div css={s.TopLine} />
-          </div>
-
+          <div css={s.lineWrap}><div css={s.TopLine} /></div>
           <div css={s.midContent}>
             <h1 css={s.pageTitle}>Menu</h1>
-
             <div css={s.categoryTabs}>
               {CATEGORIES.map((c, idx) => (
                 <React.Fragment key={c}>
                   <button
                     css={s.tabBtn(c === activeCat)}
-                    onClick={() => setActiveCat(c)}
+                    onClick={() => navigate(`/menu/${CATEGORY_PATH[c]}`)} // 클릭 시 URL 이동
                   >
                     {c}
                   </button>
-                  {idx !== CATEGORIES.length - 1 && (
-                    <span css={s.tabDivider}>|</span>
-                  )}
+                  {idx !== CATEGORIES.length - 1 && <span css={s.tabDivider}>|</span>}
                 </React.Fragment>
               ))}
             </div>
           </div>
-
-          <div css={s.lineWrap}>
-            <div css={s.BottomLine} />
-          </div>
+          <div css={s.lineWrap}><div css={s.BottomLine} /></div>
         </div>
       </header>
 
@@ -139,33 +208,18 @@ export function MenuPage({ isLoggedIn, onLogout }) {
         <div css={s.grid}>
           {items.map((it) => (
             <article key={it.id} css={s.card}>
-              <div className='cardOverlay' css={s.cardOverlay}>
-                <button css={s.hoverBtnGreen}>
-                  쉽고 빠르게,
-                  <br />
-                  썹픽! 한 번에 주문
-                </button>
-                <button css={s.hoverBtnYellow}>
-                  내가 선택하는,
-                  <br />
-                  나만의 조합 주문
-                </button>
+              <div className="cardOverlay" css={s.cardOverlay}>
+                <button css={s.hoverBtnGreen}>쉽고 빠르게,<br />썹픽! 한 번에 주문</button>
+                <button css={s.hoverBtnYellow}>내가 선택하는,<br />나만의 조합 주문</button>
               </div>
-
               <div css={s.cardInner}>
                 {(it.badge || it.subBadge) && (
                   <div css={s.badgeWrap}>
-                    {it.badge && (
-                      <span css={s.badge(it.badge)}>{it.badge}</span>
-                    )}
+                    {it.badge && <span css={s.badge(it.badge)}>{it.badge}</span>}
                     {it.subBadge && <span css={s.subBadge}>{it.subBadge}</span>}
                   </div>
                 )}
-
-                <div css={s.imageArea}>
-                  <img css={s.image} src={it.img} alt={it.nameKo} />
-                </div>
-
+                <div css={s.imageArea}><img css={s.image} src={it.img} alt={it.nameKo} /></div>
                 <div css={s.nameArea}>
                   <div css={s.nameKo}>{it.nameKo}</div>
                   <div css={s.nameEn}>{it.nameEn}</div>

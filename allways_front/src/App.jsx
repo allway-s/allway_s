@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/MainPage/HomePage.jsx';
 
-// [해결] 서버의 .jsx 확장자 경로와 진현님의 MyPage 임포트를 합칩니다.
+// [수정] MenuPage 하나로 통합하기 위해 2, 3 임포트 제거
 import Login from './pages/AuthPage/LoginPage.jsx';
 import Signup from './pages/AuthPage/Signup.jsx';
-import MyPage from './pages/MyPage/MyPage.jsx'; 
+import MyPage from './pages/MyPage/MyPage.jsx';
 import CartPage from './pages/CartPage/CartPage.jsx';
-import MenuPage from './pages/menu/MenuPage.jsx';
+import MenuPage from './pages/menu/MenuPage.jsx'; 
 
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
@@ -34,7 +34,7 @@ function App() {
       localStorage.removeItem('userName');
       setIsLoggedIn(false);
       alert("로그아웃 되었습니다.");
-      window.location.href = '/'; 
+      window.location.href = '/';
     }
   };
 
@@ -46,11 +46,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* [해결] Props가 모두 포함된 진현님의 HomePage 루트를 선택합니다 */}
-        <Route 
-          path="/" 
+        {/* 메인 홈페이지 */}
+        <Route
+          path="/"
           element={
-            <HomePage 
+            <HomePage
               isLoggedIn={isLoggedIn}
               onLogout={handleLogout}
               communityPreSets={presets}
@@ -60,27 +60,37 @@ function App() {
               onCopy={handleCopy}
               user={user}
             />
-          } 
-        />
-        {/* [해결] 로그인 상태 변경 함수를 전달하는 진현님의 경로를 선택합니다 */}
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
-        
-        {/* [해결] 마이페이지 경로를 최종 유지합니다 */}
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/cart" element={<CartPage />} />
-
-        {/* ✅ [여기입니다!] MenuPage에 상태값과 로그아웃 함수를 전달해야 합니다 */}
-        <Route 
-          path="/menu" 
-          element={
-            <MenuPage 
-              isLoggedIn={isLoggedIn} 
-              onLogout={handleLogout} 
-            />
           }
         />
 
+        {/* 인증 관련 */}
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
+
+        {/* 마이페이지 및 기본 기능 */}
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/cart" element={<CartPage />} />
+
+        {/* ✅ [중요] 모든 메뉴 경로를 MenuPage 하나로 통합 */}
+        {/* 이렇게 하면 MenuPage 내부의 로고 수정 사항이 모든 탭에 공통 적용됩니다 */}
+        <Route
+          path="/menu"
+          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
+        />
+        <Route
+          path="/menu/sandwich"
+          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
+        />
+        <Route 
+          path="/menu/salad" 
+          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />} 
+        />
+        <Route 
+          path="/menu/wrap" 
+          element={<MenuPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />} 
+        />
+
+        {/* 프리셋 및 최근 주문 내역 */}
         <Route 
           path="/mypreset" 
           element={
@@ -92,7 +102,6 @@ function App() {
           } 
         />
 
-        {/* ✅ [추가] 최근 주문 내역 라우트 등록 */}
         <Route 
           path="/recent-order" 
           element={
@@ -102,7 +111,6 @@ function App() {
             />
           } 
         />
-
       </Routes>
     </Router>
   );
