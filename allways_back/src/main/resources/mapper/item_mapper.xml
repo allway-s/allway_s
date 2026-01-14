@@ -17,6 +17,7 @@
             INNER JOIN item_category_tb c
             ON i.item_category_id = c.item_category_id
         WHERE c.item_category_name = #{categoryName}
+        AND (i.size = 15 OR i.size is Null)
     </select>
 </mapper>
 
