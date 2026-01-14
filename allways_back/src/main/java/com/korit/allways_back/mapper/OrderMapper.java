@@ -15,9 +15,10 @@ public interface OrderMapper {
 
     void insertOrderDetails(
             @Param("orderId") int orderId,
-            @Param("orderDetails") List<OrderItemReqDto> orderDetails
+            @Param("items") List<OrderItemReqDto> items
     );
 
     List<OrderHistoryRespDto> getOrderHistory(@Param("userId") int userId);
 
+    int getProductPrice(int productId);
 }

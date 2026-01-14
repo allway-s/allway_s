@@ -8,6 +8,5 @@ import java.util.List;
 public class OrderReqDto {
 
     private List<OrderItemReqDto> orders;
-    private int totalPrice;
 
 }
