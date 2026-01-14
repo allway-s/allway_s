@@ -18,22 +18,18 @@
 
     <select id="getOrderHistory" resultType="com.korit.allways_back.dto.response.OrderHistoryRespDto">
         SELECT
-        ot.ordered_at AS orderedAt,
-            pt.product_name AS productName,
-            GROUP_CONCAT(it.ingredient_name SEPARATOR ' / ') AS ingredients,
-            odt.unit_price AS unitPrice,
-            ot.total_price AS totalPrice
-        FROM
-            order_tb ot
-            INNER JOIN order_detail_tb odt ON ot.order_id = odt.order_id
-            INNER JOIN product_tb pt ON odt.product_id = pt.product_id
-            INNER JOIN product_detail_tb pdt ON pt.product_id = pdt.product_id
-            INNER JOIN ingredient_tb it ON pdt.ingredient_id = it.ingredient_id
-        WHERE
-            ot.user_id = #{userId}
-        GROUP BY
-            odt.order_detail_id -- [작동 방식] 주문 상세 항목별로 묶어서 보여줍니다.
-        ORDER BY
-            ot.ordered_at DESC
+        o.ordered_at as orderedAt,
+        i.name as productName,
+        GROUP_CONCAT(ing.name SEPARATOR ', ') as ingredients,
+        od.unit_price as unitPrice,
+        (od.unit_price * od.quantity) as totalPrice
+        FROM order_tb o
+        JOIN order_detail_tb od ON o.order_id = od.order_id
+        JOIN product_detail_tb pd ON od.product_id = pd.product_id
+        JOIN item_tb i ON pd.item_id = i.item_id
+        LEFT JOIN ingredient_tb ing ON pd.ingredient_id = ing.ingredient_id
+        WHERE o.user_id = #{userId}
+        GROUP BY o.order_id, od.order_detail_id, i.name, od.unit_price
+        ORDER BY o.ordered_at DESC
     </select>
 </mapper>

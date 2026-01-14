@@ -1,15 +1,16 @@
 package com.korit.allways_back.service;
 
+import com.korit.allways_back.dto.request.OrderItemReqDto;
+import com.korit.allways_back.dto.request.OrderReqDto;
 import com.korit.allways_back.dto.response.OrderHistoryRespDto;
 import com.korit.allways_back.entity.Order;
-import com.korit.allways_back.entity.OrderDetail;
 import com.korit.allways_back.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
@@ -17,30 +18,28 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
 
-    public Order createNewOrder(int userId, int totalPrice, List<Integer> productIds) {
+    @Transactional
+    public Order createOrder(int userId, OrderReqDto orderReqDto) {
 
         Order order = Order.builder()
                 .userId(userId)
-                .totalPrice(totalPrice)
-                .orderedAt(LocalDateTime.now())
+                .totalPrice(orderReqDto.getTotalPrice())
                 .build();
 
         orderMapper.insertOrder(order);
 
-        List<OrderDetail> orderDetails = productIds.stream().map(pid -> OrderDetail.builder()
-                .orderId(order.getOrderId())
-                .productId(pid)
-                .quantity(1)
-                .build()).toList();
+        List<OrderItemReqDto> orderItems = orderReqDto.getOrders();
+        for (OrderItemReqDto item : orderItems) {
+            item.setOrderId(order.getOrderId());
+        }
 
-        orderMapper.insertOrderDetails(order.getOrderId(), orderDetails);
+        orderMapper.insertOrderDetails(order.getOrderId(), orderReqDto.getOrders());
 
         return order;
     }
 
-    public OrderHistoryRespDto getOrderHistory() {
-        return orderMapper.getOrderHistory();
+
+    public List<OrderHistoryRespDto> getOrderHistory(int userId) {
+        return orderMapper.getOrderHistory(userId);
     }
-
-
 }

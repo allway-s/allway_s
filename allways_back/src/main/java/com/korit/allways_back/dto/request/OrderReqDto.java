@@ -6,5 +6,9 @@ import java.util.List;
 
 @Data
 public class OrderReqDto {
-    private List<CartItemDto> cartItems;
+
+    private List<OrderItemReqDto> orders;
+    private int userId;
+    private int totalPrice;
+
 }
