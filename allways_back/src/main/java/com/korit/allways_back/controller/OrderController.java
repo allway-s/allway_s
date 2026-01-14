@@ -24,13 +24,11 @@ public class OrderController {
             @AuthenticationPrincipal PrincipalUser principalUser,
             @RequestBody OrderReqDto orderReqDto
     ) {
-        int userId;
-        if (principalUser != null && principalUser.getUser() != null) {
-            userId = principalUser.getUser().getUserId();
-        } else {
-            userId = orderReqDto.getUserId();
+        if (principalUser == null || principalUser.getUser() == null) {
+            return ResponseEntity.status(401).build();
         }
 
+        int userId = principalUser.getUser().getUserId();
         Order order = orderService.createOrder(userId, orderReqDto);
 
         return ResponseEntity.ok(order);
@@ -41,12 +39,16 @@ public class OrderController {
     public ResponseEntity<List<OrderHistoryRespDto>> getOrderHistory(
             @AuthenticationPrincipal PrincipalUser principalUser
     ) {
-        if (principalUser == null || principalUser.getUser() == null) {
+        int userId;
+
+        if (principalUser != null && principalUser.getUser() != null) {
+            userId = principalUser.getUser().getUserId();
+        } else {
             return ResponseEntity.status(401).build();
         }
 
         return ResponseEntity.ok(
-                orderService.getOrderHistory(principalUser.getUser().getUserId())
+                orderService.getOrderHistory(userId)
         );
     }
 }
