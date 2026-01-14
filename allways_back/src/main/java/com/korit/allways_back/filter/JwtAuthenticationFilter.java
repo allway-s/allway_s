@@ -53,7 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // PrincipalUser: 시큐리티가 사용할 커스텀 유저 객체
                 // null 대신 Map.of()를 넣어 NullPointerException 방지
-                PrincipalUser principalUser = new PrincipalUser(foundUser, Map.of(), "id");
+                Map<String, Object> attributes = Map.of("id", foundUser.getUserId());
+                PrincipalUser principalUser = new PrincipalUser(foundUser, attributes, "id");
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(principalUser, null, authorities);
