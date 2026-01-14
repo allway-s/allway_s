@@ -11,9 +11,9 @@
     <insert id="insertOrderDetails">
         INSERT INTO order_detail_tb (order_id, product_id, unit_price, quantity)
             VALUES
-                <foreach collection="orderDetails" item="detail" separator=",">
-                    (#{orderId}, #{detail.productId}, #{detail.unitPrice}, #{detail.quantity})
-                </foreach>
+            <foreach collection="items" item="item" separator=",">
+                (#{orderId}, #{item.productId}, #{item.unitPrice}, #{item.quantity})
+            </foreach>
     </insert>
 
     <select id="getOrderHistory" resultType="com.korit.allways_back.dto.response.OrderHistoryRespDto">
@@ -37,5 +37,18 @@
             o.ordered_at
         ORDER BY
             o.ordered_at DESC
+    </select>
+
+    <select id="getProductPrice" resultType="java.lang.Integer">
+        SELECT
+            i.price + SUM(IFNULL(ing.price, 0)) AS unitPrice
+        FROM
+            product_detail_tb pd
+            JOIN item_tb i ON pd.item_id = i.item_id
+            LEFT JOIN ingredient_tb ing ON pd.ingredient_id = ing.ingredient_id
+        WHERE
+            pd.product_id = #{productId}
+        GROUP BY
+            pd.product_id, i.price
     </select>
 </mapper>
