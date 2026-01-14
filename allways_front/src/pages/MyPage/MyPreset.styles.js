@@ -7,7 +7,6 @@ export const S = {
   `,
   header: css`
     width: 100%;
-    border-bottom: 1px solid #f5f5f5; 
   `,
   headerInner: css`
     max-width: 1400px;

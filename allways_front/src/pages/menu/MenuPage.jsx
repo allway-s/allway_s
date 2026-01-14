@@ -71,7 +71,7 @@ export function MenuPage() {
   return (
     <div css={s.page}>
       {/* 1) Top bar */}
-      <header css={s.topBar}>
+      {/* <header css={s.topBar}>
         <div css={s.topInner}>
           <div css={s.brandLeft}>
             <div className='logo-section' onClick={() => navigate('/')}>
@@ -108,7 +108,7 @@ export function MenuPage() {
               로그아웃
             </button>
           </nav>
-        </div>
+        </div> */}
 
         <div css={s.midBar}>
           <div css={s.lineWrap}>
@@ -142,7 +142,7 @@ export function MenuPage() {
             <div css={s.BottomLine} />
           </div>
         </div>
-      </header>
+      {/* </header> */}
 
       {/* 3) Grid */}
       <main css={s.main}>
