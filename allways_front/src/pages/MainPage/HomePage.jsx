@@ -31,34 +31,7 @@ export function HomePage({
 
   return (
     <div css={styles.wrapper}>
-      <header css={styles.header}>
-        <div css={styles.headerInner}>
-          <div css={styles.logoArea} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-            <h2 style={{ color: '#009223', fontWeight: 900, margin: 0, fontSize: '1.5rem' }}>
-              ALLWAY<span style={{ color: '#000000' }}>-</span><span style={{ color: '#ffc107' }}>S</span>
-            </h2>
-          </div>
-
-          <div css={styles.utilMenu}>
-            {/* ✅ [해결] 현재 isLoggedIn 상태에 따라 헤더 버튼을 완벽히 분리합니다. */}
-            {isLoggedIn ? (
-              <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                <button onClick={() => navigate('/cart')} style={textButtonStyle}>장바구니</button>
-                <button onClick={() => navigate('/mypage')} style={textButtonStyle}>마이페이지</button>
-                <button onClick={onLogout} style={textButtonStyle}>로그아웃</button>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                <button aria-label="장바구니" onClick={() => navigate('/login')}>
-                  <ShoppingCart size={22} />
-                </button>
-                <button onClick={() => navigate('/login')} style={textButtonStyle}>로그인</button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
+      
       <MainBanner items={BANNER_ITEMS} />
 
       <section css={styles.heroSection}>
@@ -88,6 +61,7 @@ export function HomePage({
     </div>
   );
 }
+
 
 const textButtonStyle = {
   background: 'none',

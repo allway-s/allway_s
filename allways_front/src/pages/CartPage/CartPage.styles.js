@@ -14,7 +14,6 @@ export const S = {
     justify-content: space-between;
     align-items: center;
     padding: 20px 0;
-    border-bottom: 1px solid #eee;
     margin-bottom: 20px;
 
     .logo-section {
@@ -79,13 +78,13 @@ export const S = {
     gap: 25px;
   `,
 
-  /* ✅ 도안 반영: 개별 상품 카드 스타일 */
+
   cartItemCard: css`
     background: #fff;
     border-radius: 25px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     border: 1px solid #f0f0f0;
-    overflow: hidden; /* 하단 드롭다운 포함을 위해 */
+    overflow: hidden;
     position: relative;
 
     .item-main {
@@ -101,7 +100,7 @@ export const S = {
       align-items: center;
     }
 
-    /* 도안처럼 우측 상단에 배치되는 삭제 버튼 */
+    
     .delete-icon-btn {
       background: #fffbe6;
       border: 1px solid #ffe58f;
@@ -148,7 +147,7 @@ export const S = {
     span { font-weight: 700; min-width: 20px; text-align: center; }
   `,
 
-  /* ✅ 도안 반영: 상품 카드 하단 옵션변경 드롭다운 */
+
   itemOptionDropdown: css`
     border-top: 1px solid #f5f5f5;
     background: #fafafa;
