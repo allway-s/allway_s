@@ -16,6 +16,7 @@ import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
 import PresetImage3 from './assets/images/PresetImages/PresetImage3.png';
 import MyPreSet from './pages/MyPage/MyPreset.jsx';
 import RecentOrder from './pages/MyPage/RecentOrder.jsx';
+import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
@@ -66,8 +67,9 @@ function App() {
         />
 
         {/* 인증 관련 */}
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/" element={<Main />} />
+        <Route path="/auth/signup" element={<Signup />} />
+        <Route path="/auth/oauth2/login/success" element={<LoginSuccess />} />
 
         {/* 마이페이지 및 기본 기능 */}
         <Route path="/mypage" element={<MyPage />} />
