@@ -3,9 +3,11 @@ package com.korit.allways_back.controller;
 import com.korit.allways_back.dto.request.OrderReqDto;
 import com.korit.allways_back.dto.response.OrderHistoryRespDto;
 import com.korit.allways_back.entity.Order;
+import com.korit.allways_back.security.PrincipalUser;
 import com.korit.allways_back.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,19 +21,32 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(
-            @RequestBody OrderReqDto orderReqDto,
-            @RequestParam int userId
+            @AuthenticationPrincipal PrincipalUser principalUser,
+            @RequestBody OrderReqDto orderReqDto
     ) {
+        int userId;
+        if (principalUser != null && principalUser.getUser() != null) {
+            userId = principalUser.getUser().getUserId();
+        } else {
+            userId = orderReqDto.getUserId();
+        }
 
-        Order order = orderService.createNewOrder(userId, orderReqDto);
+        Order order = orderService.createOrder(userId, orderReqDto);
 
-        return ResponseEntity.status(201).body(order);
+        return ResponseEntity.ok(order);
     }
 
+
     @GetMapping("/history")
-    public ResponseEntity<List<OrderHistoryRespDto>> getOrderHistory(@RequestParam int userId) {
+    public ResponseEntity<List<OrderHistoryRespDto>> getOrderHistory(
+            @AuthenticationPrincipal PrincipalUser principalUser
+    ) {
+        if (principalUser == null || principalUser.getUser() == null) {
+            return ResponseEntity.status(401).build();
+        }
 
-        return ResponseEntity.ok(orderService.getOrderHistory(userId));
-
+        return ResponseEntity.ok(
+                orderService.getOrderHistory(principalUser.getUser().getUserId())
+        );
     }
 }
