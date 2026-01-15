@@ -9,23 +9,6 @@ export const MyPage = () => {
 
   return (
     <div css={S.container}>
-      {/* 상단 헤더 */}
-      {/* <header css={S.header}>
-        <div css={S.logo} onClick={() => navigate('/')}>
-          ALLWAY-<span>S</span>
-        </div>
-        <nav css={S.nav}>
-          <span onClick={() => navigate('/cart')}>장바구니</span>
-          <span style={{ color: '#009223', cursor: 'pointer' }}>마이페이지</span>
-          <span onClick={() => { 
-            if(window.confirm("로그아웃 하시겠습니까?")) { 
-              localStorage.removeItem('isLoggedIn');
-              localStorage.removeItem('userName');
-              navigate('/'); 
-            }
-          }}>로그아웃</span>
-        </nav>
-      </header> */}
 
       <main css={S.main}>
         <h1 css={S.title}>My <span>Page</span></h1>

@@ -14,6 +14,7 @@ public class Ingredient {
     private int ingredientId;
     private int ingredientCategoryId;
     private String ingredientName;
+    private String imgUrl;
     private int price;
 
 }
