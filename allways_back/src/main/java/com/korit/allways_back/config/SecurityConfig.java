@@ -55,7 +55,8 @@ public class SecurityConfig {
             // 나중에 authenticated 해줘야할 것들
             auth.requestMatchers("/api/v1/orders/**").permitAll();
 
-            auth.anyRequest().authenticated();        // 그 외 모든 요청은 인증 필요
+            // 그 외 모든 요청은 인증 필요
+            auth.anyRequest().authenticated();
         });
 
         http.oauth2Login(oauth2 -> oauth2
@@ -73,6 +74,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+    // cors 허용 범위 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
