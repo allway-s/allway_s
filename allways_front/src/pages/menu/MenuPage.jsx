@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { s } from './MenuPage.styles.js';
 import MainLogo from '../../assets/images/MainUpperImages/MainLogo2.png';
-import SubwayNearby from '../../components/SubwayNearby.jsx';
 
 const CATEGORIES = ['샌드위치', '샐러드', '랩&기타'];
 
@@ -21,58 +20,28 @@ const SAMPLE_ITEMS = [
     nameEn: 'Lobster & Shrimp',
     img: 'https://www.subway.co.kr/upload/menu/1763392140518_G1a9dG.png',
   },
-  {
-    id: 2,
-    badge: 'NEW',
-    nameKo: '랍스터',
-    nameEn: 'Lobster',
-    img: 'https://www.subway.co.kr/upload/menu/1763392124489_kSN1t9.png',
-  },
-  {
-    id: 3,
-    badge: 'SUBPICK',
-    nameKo: 'New머쉬룸',
-    nameEn: 'New Mushroom',
-    img: 'https://www.subway.co.kr/upload/menu/1757375591323_zQLUtM.png',
-  },
-  {
-    id: 4,
-    badge: 'SUBPICK',
-    nameKo: '안창 비프&New머쉬룸',
-    nameEn: 'Beef & New Mushroom',
-    img: 'https://www.subway.co.kr/upload/menu/%EC%95%88%EC%B0%BD-%EB%B9%84%ED%94%84&%EB%A8%B8%EC%89%AC%EB%A3%B8_20240912031749239.png',
-  },
-  {
-    id: 5,
-    badge: 'SUBPICK',
-    subBadge: '추천',
-    nameKo: '스테이크 & 치즈',
-    nameEn: 'Steak & Cheese',
-    img: 'https://www.subway.co.kr/upload/menu/Steak-&-Cheese_20211231095455613.png',
-  },
-  {
-    id: 6,
-    badge: 'SUBPICK',
-    subBadge: '추천',
-    nameKo: '이탈리안 비엠티',
-    nameEn: 'Italian B.M.T.™',
-    img: 'https://www.subway.co.kr/upload/menu/Italian_B.M.T_20211231094910899.png',
-  },
 ];
 
 export function MenuPage() {
+
+  const [category, setCategory] = useState();
   const [activeCat, setActiveCat] = useState('샌드위치');
   const navigate = useNavigate();
 
+  const categories = [
+    {id: '샌드위치', name: '샌드위치'},
+    {id: '샐러드', name: '샐러드'},
+    {id: '랩', name: '랩'},
+  ]
+
   const items = useMemo(() => {
-    // 실제론 activeCat에 따라 필터링
     return SAMPLE_ITEMS;
   }, [activeCat]);
 
   return (
     <div css={s.page}>
       {/* 1) Top bar */}
-      <header css={s.topBar}>
+      {/* <header css={s.topBar}>
         <div css={s.topInner}>
           <div css={s.brandLeft}>
             <div className='logo-section' onClick={() => navigate('/')}>
@@ -109,7 +78,8 @@ export function MenuPage() {
               로그아웃
             </button>
           </nav>
-        </div>
+        </div> */}
+
         <div css={s.midBar}>
           <div css={s.lineWrap}>
             <div css={s.TopLine} />
@@ -142,21 +112,20 @@ export function MenuPage() {
             <div css={s.BottomLine} />
           </div>
         </div>
-      </header>
+      {/* </header> */}
 
       {/* 3) Grid */}
       <main css={s.main}>
         <div css={s.grid}>
           {items.map((it) => (
             <article key={it.id} css={s.card}>
-              {/* ✅ 회색까지 덮는 overlay */}
               <div className='cardOverlay' css={s.cardOverlay}>
                 <button css={s.hoverBtnGreen}>
                   쉽고 빠르게,
                   <br />
                   썹픽! 한 번에 주문
                 </button>
-                <button css={s.hoverBtnYellow}>
+                <button css={s.hoverBtnYellow} onClick={() => navigate('/order')}>
                   내가 선택하는,
                   <br />
                   나만의 조합 주문

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// [수정] Navigate 임포트 추가 (페이지 강제 이동용)
+// [필수] Navigate: 조건에 맞지 않을 때 강제로 페이지를 되돌리는 역할
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HomePage } from './pages/MainPage/HomePage.jsx';
 
 import Login from './pages/AuthPage/LoginPage.jsx';
@@ -16,9 +18,13 @@ import PresetImage3 from './assets/images/PresetImages/PresetImage3.png';
 import MyPreSet from './pages/MyPage/MyPreset.jsx';
 import RecentOrder from './pages/MyPage/RecentOrder.jsx';
 import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
+import Header from './components/header.jsx';
+import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
+
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
+  // 토큰이 있는지 검사하여 로그인 상태 결정
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('accessToken') !== null);
 
   const [presets] = useState([
     { id: '1', title: '서브웨이클럽', likes: 150, author: 'JINHYUN1996', image: PresetImage1 },
@@ -28,11 +34,33 @@ function App() {
 
   const [user] = useState({ name: '진현', id: 'jinhyeon123' });
 
-  // 로그아웃 핸들러
+  // [추가] 로그인한 사람만 들어갈 수 있게 하는 '문지기' 컴포넌트
+  // [제안] 조금 더 꼼꼼한 문지기 로직
+  const ProtectedRoute = ({ children }) => {
+    const token = localStorage.getItem('accessToken');
+    
+    // 상태값(isLoggedIn)이 false이거나 실제 토큰이 없으면 차단
+    if (!isLoggedIn || !token) {
+      alert("로그인이 필요한 페이지입니다. 로그인 페이지로 이동합니다");
+      return <Navigate to="/login" replace />;
+    }
+    return children;
+  };
+
+  // [수정] 이미 로그인한 사람이 로그인/회원가입 페이지 접근 시 알림창 띄우기
+  const PublicRoute = ({ children }) => {
+    if (localStorage.getItem('accessToken')) {
+      alert("이미 로그인된 상태입니다. 메인 페이지로 이동합니다."); // [추가] 팝업 알림
+      return <Navigate to="/" replace />; 
+    }
+    return children;
+  };
+
   const handleLogout = () => {
     const isConfirm = window.confirm("정말 로그아웃 하시겠습니까?");
     if (isConfirm) {
       localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('accessToken'); // [수정] 토큰 삭제 추가
       localStorage.removeItem('userName');
       setIsLoggedIn(false);
       alert("로그아웃 되었습니다.");
@@ -46,12 +74,22 @@ function App() {
   const handleCopy = (preset) => console.log(preset.title + ' 복사됨!');
 
   return (
-    <Router>
+  <Router>
+    
+        {/* [변경점 1] Header 컴포넌트의 위치 
+        - Routes 밖에 배치하여 모든 페이지(홈, 메뉴, 마이페이지 등)에서 
+          헤더가 상단에 항상 고정되도록 했습니다.
+      */}
+      <Header 
+        isLoggedIn={isLoggedIn} 
+        user={user} 
+        onLogout={handleLogout} 
+        logoSrc={MainLogo}
+      />
+
       <Routes>
         {/* 메인 홈페이지 */}
-        <Route
-          path="/"
-          element={
+        <Route path="/" element={
             <HomePage
               isLoggedIn={isLoggedIn}
               onLogout={handleLogout}
@@ -65,49 +103,26 @@ function App() {
           }
         />
 
-        {/* 인증 관련 */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/auth/signup" element={<Signup />} />
-        <Route path="/auth/oauth2/login/success" element={<LoginSuccess />} />
-
-        {/* 마이페이지 및 기본 기능 */}
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/cart" element={<CartPage />} />
-
-        {/* ✅ [중요] 모든 메뉴 경로를 MenuPage 하나로 통합 */}
-        {/* 이렇게 하면 MenuPage 내부의 로고 수정 사항이 모든 탭에 공통 적용됩니다 */}
+        {/* [변경점 2] ProtectedRoute 범위 확장 */}
+        {/* 마이페이지뿐만 아니라 '장바구니'도 로그인이 필요한 페이지로 묶었습니다. */}
+        <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
         
-        <Route
-          path="/menu/sandwich" element={<MenuPage />}
-        />
-        <Route 
-          path="/menu/salad" element={<MenuPage2/>} 
-        />
-        <Route 
-          path="/menu/wrap" element={<MenuPage3 />} 
-        />
+        <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+        <Route path="/mypreset" element={<ProtectedRoute><MyPreSet isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} /></ProtectedRoute>} />
+        <Route path="/recent-order" element={<ProtectedRoute><RecentOrder isLoggedIn={isLoggedIn} onLogout={handleLogout} /></ProtectedRoute>} />
 
-        {/* 프리셋 및 최근 주문 내역 */}
-        <Route 
-          path="/mypreset" 
-          element={
-            <MyPreSet 
-              isLoggedIn={isLoggedIn} 
-              onLogout={handleLogout} 
-              user={user} 
-            />
-          } 
-        />
+        {/* [변경점 3] PublicRoute 적용 유지 
+          - 로그인/회원가입 페이지는 이미 로그인된 진현님이 접근할 경우 
+            알림을 띄우고 메인으로 튕겨내는 '문지기' 역할을 그대로 유지합니다.
+        */}
+        <Route path="/login" element={<PublicRoute><Login setIsLoggedIn={setIsLoggedIn} /></PublicRoute>} />
+        <Route path="/auth/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+        <Route path="/auth/oauth2/login/success" element={<LoginSuccess setIsLoggedIn={setIsLoggedIn} />} />
 
-        <Route 
-          path="/recent-order" 
-          element={
-            <RecentOrder
-              isLoggedIn={isLoggedIn} 
-              onLogout={handleLogout} 
-            />
-          } 
-        />
+        {/* 메뉴 관련은 누구나 접근 가능 */}
+        <Route path="/menu/sandwich" element={<MenuPage />} />
+        <Route path="/menu/salad" element={<MenuPage2/>} />
+        <Route path="/menu/wrap" element={<MenuPage3 />} />
       </Routes>
     </Router>
   );
