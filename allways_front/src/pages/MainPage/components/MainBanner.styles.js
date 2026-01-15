@@ -4,9 +4,11 @@ import { css } from '@emotion/react';
 export const S = {
   section: css`
     width: 100%;
-    height: 400px;
+    height: 450px;
     overflow: hidden;
     position: relative;
+
+    margin-top: 75px;
     &:hover .arrow-btn { opacity: 1; }
   `,
   wrapper: css`

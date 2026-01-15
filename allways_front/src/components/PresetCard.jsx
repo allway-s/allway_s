@@ -33,4 +33,4 @@ export function PresetCard({ preset, onLike, onCopy }) {
       </div>
     </div>
   );
-}
+} 
