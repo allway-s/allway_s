@@ -31,26 +31,30 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // 다른 도메인도 허용
         http.cors(Customizer.withDefaults());
-        // 1. CSRF 보안 비활성화 (Rest API이므로 불필요)
+        // Rest API라서 CSRF 비활
         http.csrf(csrf -> csrf.disable());
 
-        // 2. 세션을 사용하지 않음 (JWT를 사용하기 때문)
+        // JWT를 사용하니까 세션 사용안함
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // 3. 요청 권한 설정
+        // 권한 설정
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll();
+            // 로그인 관련으로 누구나 접근 가능하게
+            auth.requestMatchers("/", "/login", "/signup").permitAll();
             auth.requestMatchers("/api/auth/**").permitAll();
-            auth.requestMatchers("/api/**").permitAll();
-            auth.requestMatchers("/swagger-ui/**").permitAll();
-            auth.requestMatchers("/swagger-ui.html").permitAll();
-            auth.requestMatchers("/v3/api-docs/**").permitAll();
-            auth.requestMatchers("/swagger-resources/**").permitAll();
-            auth.requestMatchers("/webjars/**").permitAll();
-            auth.requestMatchers("/doc").permitAll();
-            // 로그인 관련 API는 누구나 접근 가능
+
+            // swagger 관련 필요한 설정
+            auth.requestMatchers(
+                    "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
+                    "/swagger-resources/**", "/webjars/**", "/doc"
+            ).permitAll();
+
+            // 나중에 authenticated 해줘야할 것들
+            auth.requestMatchers("/api/v1/orders/**").permitAll();
+
             auth.anyRequest().authenticated();        // 그 외 모든 요청은 인증 필요
         });
 
@@ -61,7 +65,7 @@ public class SecurityConfig {
                 )
         );
 
-        // 4. JWT 필터를 UsernamePasswordAuthenticationFilter보다 먼저 실행하도록 설정
+        // UsernamePasswordAuthenticationFilter보다 먼저 실행하도록 설정
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
