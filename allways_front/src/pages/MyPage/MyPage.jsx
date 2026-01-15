@@ -16,7 +16,6 @@ export const MyPage = () => {
         </div>
         <nav css={S.nav}>
           <span onClick={() => navigate('/cart')}>장바구니</span>
-          {/* 현재 페이지임을 나타내기 위해 마이페이지 텍스트 클릭 시 상단으로 이동하거나 유지 */}
           <span style={{ color: '#009223', cursor: 'pointer' }}>마이페이지</span>
           <span onClick={() => { 
             if(window.confirm("로그아웃 하시겠습니까?")) { 
@@ -72,7 +71,6 @@ export const MyPage = () => {
                 <div css={S.imgBox}>샌드위치 이미지</div>
                 <p style={{ fontWeight: 'bold', margin: '10px 0 5px' }}>새우를 극상으로</p>
                 <p style={{ fontSize: '0.8rem', color: '#888' }}>작성자 : {userName}</p>
-                {/* 주문하기 버튼은 이동하지 않고 주문 로직을 태우고 싶다면 stopPropagation이 필요할 수 있습니다 */}
                 <button css={S.orderBtn} onClick={(e) => {
                   e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
                   alert('주문 페이지로 이동합니다.');

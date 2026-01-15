@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-// ✅ 분리한 스타일 파일을 가져옵니다.
 import { S } from './RecentOrder.styles.js'; 
 
 export const RecentOrder = () => {
