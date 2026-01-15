@@ -10,7 +10,7 @@ export const MyPage = () => {
   return (
     <div css={S.container}>
       {/* 상단 헤더 */}
-      <header css={S.header}>
+      {/* <header css={S.header}>
         <div css={S.logo} onClick={() => navigate('/')}>
           ALLWAY-<span>S</span>
         </div>
@@ -25,7 +25,7 @@ export const MyPage = () => {
             }
           }}>로그아웃</span>
         </nav>
-      </header>
+      </header> */}
 
       <main css={S.main}>
         <h1 css={S.title}>My <span>Page</span></h1>
