@@ -11,6 +11,7 @@ export const S = {
     margin-top: 75px;
     &:hover .arrow-btn { opacity: 1; }
   `,
+  
   wrapper: css`
     display: flex;
     width: 100%;
