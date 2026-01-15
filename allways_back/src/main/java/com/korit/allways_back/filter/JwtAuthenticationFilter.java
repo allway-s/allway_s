@@ -33,29 +33,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 1. 요청 헤더에서 이름표(Bearer)를 떼고 알맹이(토큰)만 추출
+        // 헤더에서 토큰 추출
         String token = resolveToken(request);
 
-        // 2. 토큰이 유효한지 확인
+        // 토큰이 유효한지 확인하기
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 3. 토큰에서 사용자 식별값 추출 (userId 대신 이메일이나 oauth2Id를 쓸 수도 있음)
-            // 여기서는 예전 코드처럼 userId를 기준으로 작성합니다.
+            // 토큰에서 값 꺼내기
+            // userId를 기준(다른 것도 써도됨, 이메일 같은 거)
             int userId = jwtTokenProvider.getUserId(token);
 
-            // 4. DB에서 실제 유저 정보 조회
+            // DB에서 실제 유저 정보 조회
             User foundUser = userMapper.findByUserId(userId);
 
             if (foundUser != null) {
-                // 5. 인증 객체 생성 및 SecurityContext 등록
-                // authorities: ROLE_USER 등의 권한 정보
+                // ROLE_USER만 쓰니까 authorities에 이것만 직접 주입
                 Collection<? extends GrantedAuthority> authorities =
                         List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
-                // PrincipalUser: 시큐리티가 사용할 커스텀 유저 객체
-                // null 대신 Map.of()를 넣어 NullPointerException 방지
+                // 필요한 정보 attributes에 들어가는 Map에 넣으셈
                 Map<String, Object> attributes = Map.of("id", foundUser.getUserId());
                 PrincipalUser principalUser = new PrincipalUser(foundUser, attributes, "id");
 
+                // password 딱히 안쓰니까 null
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(principalUser, null, authorities);
 
