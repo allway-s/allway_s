@@ -7,7 +7,6 @@ export const S = {
   `,
   header: css`
     width: 100%;
-    border-bottom: 1px solid #f5f5f5; 
   `,
   headerInner: css`
     max-width: 1400px;
@@ -81,7 +80,7 @@ export const S = {
   grid: css`
     display: grid;
     grid-template-columns: repeat(auto-fill, 350px); 
-    gap: 100px 75px; /* 진현님의 요청대로 넓게 설정 */
+    gap: 100px 75px;
     justify-content: flex-start; 
     padding: 60px 0;
   `,

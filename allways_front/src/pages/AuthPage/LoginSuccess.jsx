@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-export const LoginSuccess = () => {
+export const LoginSuccess = ({ setIsLoggedIn }) => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -14,6 +14,12 @@ export const LoginSuccess = () => {
             // 앞으로 우리가 만든 api.js(인터셉터)가 여기서 토큰을 꺼내 쓸 거예요.
             localStorage.setItem("accessToken", token);
             
+            // [중요 추가] App.jsx의 로그인 상태를 true로 변경합니다.
+            // 이 코드가 실행되는 순간 App.jsx의 문지기(ProtectedRoute)들이 길을 열어줍니다.
+            if (setIsLoggedIn) {
+                setIsLoggedIn(true);
+            }
+
             // 3. 성공 알림을 띄우고 메인 페이지로 보냅니다.
             alert("로그인에 성공하였습니다!");
             navigate("/"); 
@@ -22,7 +28,7 @@ export const LoginSuccess = () => {
             alert("로그인 정보가 유효하지 않습니다.");
             navigate("/auth/login");
         }
-    }, [searchParams, navigate]);
+    }, [searchParams, navigate, setIsLoggedIn ]);
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

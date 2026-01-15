@@ -7,6 +7,7 @@ export const styles = {
     background-color: #f8fbf8;
   `,
 
+
   header: css`
     width: 100%;
     min-width: 1100px;
@@ -22,7 +23,7 @@ export const styles = {
 
   headerInner: css`
     min-width: 1100px;
-    margin: 0 auto;
+    margin: 0;
     width: 100%;
     padding: 0 1rem;
     display: flex;

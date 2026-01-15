@@ -12,7 +12,6 @@ export const S = {
     justify-content: space-between;
     align-items: center;
     padding: 20px 10%;
-    border-bottom: 1px solid #eee;
   `,
   logo: css`
     cursor: pointer;

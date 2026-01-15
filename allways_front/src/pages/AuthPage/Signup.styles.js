@@ -13,7 +13,6 @@ export const S = {
   header: css`
     width: 100%;
     padding: 1.2rem 0;
-    border-bottom: 2px solid #009223;
     display: flex;
     justify-content: center;
     align-items: center;

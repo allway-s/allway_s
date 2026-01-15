@@ -9,9 +9,12 @@ export const s = {
   `,
   /* Top bar */
   topBar: css`
+    position: sticky;
     top: 0;
     z-index: 1;
     background: #ffffff;
+    
+    
     .logo-section {
       display: flex;
       align-items: center;
@@ -23,8 +26,9 @@ export const s = {
       }
     }
   `,
+
   topInner: css`
-    position: sticky; /* ✅ brandCenter absolute 기준 */
+    position: sticky;
     min-width: 1100px;
     margin: 0 auto;
     height: 50px;
@@ -86,22 +90,21 @@ export const s = {
     }
   `,
   midBar: css`
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     width: 100%;
     min-width: 1100px;
+    margin-top: 70px;
   `,
 
   lineWrap: css`
     width: 100%;
-    padding: 0 12px; /* ✅ 좌우 여백 원하는 만큼 */
+    padding: 0 12px; 
     box-sizing: border-box;
   `,
 
-  TopLine: css`
-    justify-content: center;
-    height: 2px;
-    background: #009223;
-  `,
+
 
   BottomLine: css`
     justify-content: center;
@@ -110,7 +113,7 @@ export const s = {
   `,
 
   midContent: css`
-    position: relative; /* ✅ 중앙 기준 */
+    position: relative;
     height: 85px;
     padding: 0 24px;
     display: flex;
@@ -118,13 +121,13 @@ export const s = {
   `,
 
   categoryTabs: css`
-    justify-self: center; /* ✅ 우측 영역 안에서 가로 중앙 */
+    justify-self: center; 
     display: flex;
-    align-items: center; /* ✅ 세로 중앙 */
+    align-items: center; 
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%); /* ✅ 진짜 중앙 */
+    transform: translate(-50%, -50%); 
     gap: 30px;
     font-size: 18px;
     font-weight: 500;
@@ -148,15 +151,15 @@ export const s = {
     font-weight: 900;
   `,
 
-  /* Main grid */
+  
   main: css`
     max-width: 1100px;
     margin: 0 auto;
-    padding: 22px 20px 50px;
+    padding: 90px 20px 50px;
   `,
   grid: css`
     display: grid;
-    grid-template-columns: repeat(3, 320px); /* ✅ 3열 고정 */
+    grid-template-columns: repeat(3, 320px);
     justify-content: center;
     min-width: 1100px;
     gap: 26px;
@@ -167,8 +170,8 @@ export const s = {
     border-radius: 2px;
     padding: 16px;
 
-    position: relative; /* ✅ overlay 기준 */
-    overflow: hidden; /* ✅ 라운드 밖으로 안 새게 */
+    position: relative;
+    overflow: hidden; 
 
     &:hover .cardOverlay {
       opacity: 1;
@@ -178,7 +181,7 @@ export const s = {
 
   cardOverlay: css`
     position: absolute;
-    inset: 0; /* ✅ 회색까지 전체 덮기 */
+    inset: 0; 
     z-index: 5;
 
     display: flex;
@@ -254,7 +257,7 @@ export const s = {
   `,
 
   imageArea: css`
-    position: relative; /* ✅ overlay 기준 */
+    position: relative; 
     display: grid;
     place-items: center;
     padding: 26px 18px 8px;

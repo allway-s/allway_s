@@ -28,7 +28,7 @@ const CartPage = () => {
 
   const productOptions = ["단품", "쿠키 음료 세트", "웨지 감자 세트"];
 
-  // ✅ 추가된 handleOrder 함수
+
   const handleOrder = () => {
     if (cartItems.length === 0) {
       alert("장바구니가 비어있습니다. 상품을 담아주세요!");
@@ -38,10 +38,9 @@ const CartPage = () => {
     const confirmMessage = `${orderType}(으)로 총 ${totalPrice.toLocaleString()}원을 주문하시겠습니까?`;
     
     if (window.confirm(confirmMessage)) {
-      // 실제 서비스라면 여기서 API 호출을 진행합니다.
       alert("주문이 성공적으로 접수되었습니다!");
-      setCartItems([]); // 주문 완료 후 장바구니 비우기
-      navigate('/'); // 메인 페이지로 이동
+      setCartItems([]); 
+      navigate('/'); 
     }
   };
 
