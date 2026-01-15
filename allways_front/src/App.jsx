@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/MainPage/HomePage.jsx';
 
-// [수정] MenuPage 하나로 통합하기 위해 2, 3 임포트 제거
 import Login from './pages/AuthPage/LoginPage.jsx';
 import Signup from './pages/AuthPage/Signup.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
@@ -67,7 +66,7 @@ function App() {
         />
 
         {/* 인증 관련 */}
-        <Route path="/" element={<Main />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/oauth2/login/success" element={<LoginSuccess />} />
 

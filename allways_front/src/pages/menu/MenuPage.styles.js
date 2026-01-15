@@ -9,6 +9,8 @@ export const s = {
   `,
   /* Top bar */
   topBar: css`
+    position: fixed;
+    width: 100%;
     top: 0;
     z-index: 1;
     background: #ffffff;
@@ -24,11 +26,10 @@ export const s = {
     }
   `,
   topInner: css`
-    position: sticky; /* ✅ brandCenter absolute 기준 */
     min-width: 1100px;
     margin: 0 auto;
-    height: 50px;
-    padding: 18px 20px;
+    height: 70px;
+    padding: 0 18px;
     display: flex;
     align-items: center;
   `,
@@ -70,20 +71,18 @@ export const s = {
     font-weight: 400;
     letter-spacing: -0.03em;
   `,
-
   categoryTabs: css`
-    position: sticky;
-    justify-self: center;
+    justify-self: center; /* ✅ 우측 영역 안에서 가로 중앙 */
     display: flex;
-    gap: 22px;
-    align-items: center;
-    font-size: 24px;
-    font-weight: 900;
+    align-items: center; /* ✅ 세로 중앙 */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* ✅ 진짜 중앙 */
+    gap: 30px;
+    font-size: 18px;
+    font-weight: 500;
     letter-spacing: -0.03em;
-    color: #9ca3af;
-
-    &:hover {
-    }
   `,
   midBar: css`
     justify-content: center;
@@ -116,7 +115,32 @@ export const s = {
     display: flex;
     align-items: center;
   `,
-
+  categoryTabs: css`
+    justify-self: center; /* ✅ 우측 영역 안에서 가로 중앙 */
+    display: flex;
+    align-items: center; /* ✅ 세로 중앙 */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* ✅ 진짜 중앙 */
+    gap: 30px;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  `,
+  categoryTabs: css`
+    justify-self: center; /* ✅ 우측 영역 안에서 가로 중앙 */
+    display: flex;
+    align-items: center; /* ✅ 세로 중앙 */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* ✅ 진짜 중앙 */
+    gap: 30px;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  `,
   categoryTabs: css`
     justify-self: center; /* ✅ 우측 영역 안에서 가로 중앙 */
     display: flex;
@@ -156,6 +180,7 @@ export const s = {
   `,
   grid: css`
     display: grid;
+    padding-top: 155px;
     grid-template-columns: repeat(3, 320px); /* ✅ 3열 고정 */
     justify-content: center;
     min-width: 1100px;

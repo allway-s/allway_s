@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { s } from './MenuPage.styles.js';
 import MainLogo from '../../assets/images/MainUpperImages/MainLogo2.png';
+import SubwayNearby from '../../components/SubwayNearby.jsx';
 
 const CATEGORIES = ['샌드위치', '샐러드', '랩&기타'];
 
@@ -109,7 +110,6 @@ export function MenuPage() {
             </button>
           </nav>
         </div>
-
         <div css={s.midBar}>
           <div css={s.lineWrap}>
             <div css={s.TopLine} />

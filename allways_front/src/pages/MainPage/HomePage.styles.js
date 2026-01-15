@@ -15,7 +15,7 @@ export const styles = {
     display: flex;
     align-items: center;
     border-bottom: 1px solid #eee;
-    position: sticky;
+    position: fixed;
     top: 0;
     z-index: 100;
   `,
@@ -24,7 +24,7 @@ export const styles = {
     min-width: 1100px;
     margin: 0 auto;
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 18px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 
 export const S = {
   container: css`
-    min-height: 100vh;
+    height: 100%;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -12,7 +12,7 @@ export const S = {
 
   header: css`
     width: 100%;
-    padding: 1.2rem 0;
+    height: 70px;
     border-bottom: 2px solid #009223;
     display: flex;
     justify-content: center;
@@ -30,6 +30,7 @@ export const S = {
 
   card: css`
     width: 100%;
+    padding-top: 155px;
     max-width: 480px;
     background: #fcfcfc;
     border-radius: 12px;
