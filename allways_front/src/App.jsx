@@ -59,28 +59,6 @@ const ProtectedRoute = ({ children }) => {
     return children;
   };
 
-  // // [추가] 로그인한 사람만 들어갈 수 있게 하는 '문지기' 컴포넌트
-  // // [제안] 조금 더 꼼꼼한 문지기 로직
-  // const ProtectedRoute = ({ children }) => {
-  //   const token = localStorage.getItem('accessToken');
-    
-  //   // 상태값(isLoggedIn)이 false이거나 실제 토큰이 없으면 차단
-  //   if (!isLoggedIn || !token) {
-  //     alert("로그인이 필요한 페이지입니다. 로그인 페이지로 이동합니다");
-  //     return <Navigate to="/login" replace />;
-  //   }
-  //   return children;
-  // };
-
-  // // [수정] 이미 로그인한 사람이 로그인/회원가입 페이지 접근 시 알림창 띄우기
-  // const PublicRoute = ({ children }) => {
-  //   if (localStorage.getItem('accessToken')) {
-  //     alert("이미 로그인된 상태입니다. 메인 페이지로 이동합니다."); // [추가] 팝업 알림
-  //     return <Navigate to="/" replace />; 
-  //   }
-  //   return children;
-  // };
-
   const handleLogout = () => {
     const isConfirm = window.confirm("정말 로그아웃 하시겠습니까?");
     if (isConfirm) {

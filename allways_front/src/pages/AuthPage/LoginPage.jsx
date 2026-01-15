@@ -46,8 +46,9 @@ const Login = () => {
             네이버 로그인
           </button>
           <button
+            id='google'
             css={S.socialButton('google')}
-            onClick={() => handleLogin('구글')}
+            onClick={handleOAuth2LoginOnClick}
           >
             구글 로그인
           </button>
