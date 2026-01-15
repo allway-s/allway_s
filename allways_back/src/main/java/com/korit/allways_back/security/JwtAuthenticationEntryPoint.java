@@ -14,14 +14,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        // 1. 응답 타입을 JSON으로 설정
+        // 응답 타입을 JSON으로 설정
         response.setContentType("application/json;charset=UTF-8");
-        // 2. 상태 코드를 401(Unauthorized)로 설정
+        // 상태 코드를 401(Unauthorized)로 설정
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        // 3. 프론트엔드에게 전달할 에러 메시지 구성 (JSON 형태)
-        // 실제로는 별도의 ErrorResponse 객체를 만들어 JSON으로 변환하는 것이 좋지만,
-        // 이해를 돕기 위해 직접 문자열로 작성
+        // 프론트엔드에 전달할 에러 메시지
         String jsonError = "{"
                 + "\"status\": 401,"
                 + "\"error\": \"Unauthorized\","

@@ -26,7 +26,7 @@ public class PrincipalUser extends DefaultOAuth2User {
         this.user = user;
     }
 
-    // 어디서든 유저 정보를 꺼내 쓸 수 있는 static 메서드
+    // 유저 정보를 꺼낼 수 있는 static 메서드
     public static PrincipalUser get() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof PrincipalUser)) {
