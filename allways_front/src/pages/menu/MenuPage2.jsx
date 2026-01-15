@@ -148,7 +148,6 @@ export function MenuPage2() {
         <div css={s.grid}>
           {items.map((it) => (
             <article key={it.id} css={s.card}>
-              {/* ✅ 회색까지 덮는 overlay */}
               <div className='cardOverlay' css={s.cardOverlay}>
                 <button css={s.hoverBtnGreen}>
                   쉽고 빠르게,
