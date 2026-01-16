@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Preset {
 
+    private int presetId;
     private int userId;
     private int productId;
     private String presetName;

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { S } from './Login.styles.js';
 
 const Login = () => {
+
   const handleOAuth2LoginOnClick = (clientName) => {
     window.location.href =
       `http://localhost:8080/oauth2/authorization/${clientName}`;

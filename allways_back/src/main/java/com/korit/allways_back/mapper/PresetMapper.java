@@ -10,11 +10,7 @@ import java.util.List;
 @Mapper
 public interface PresetMapper {
 
-    Preset createPreset(
-            @Param("userId") int userId,
-            @Param("productId") int productId,
-            @Param("presetName") int presetName
-    );
+    void createPreset(Preset preset);
 
     List<Preset> findByUserId(int userId);
 
