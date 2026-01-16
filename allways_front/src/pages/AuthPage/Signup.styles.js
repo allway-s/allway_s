@@ -8,23 +8,7 @@ export const S = {
     display: flex;
     flex-direction: column;
     align-items: center;
-  `,
-
-  header: css`
-    width: 100%;
-    padding: 1.2rem 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 3.5rem;
-  `,
-
-  logo: css`
-    color: #009223;
-    font-weight: 900;
-    font-size: 1.6rem;
-    letter-spacing: -0.05em;
-    span { color: #ffc608; }
+    padding-top: 120px;
   `,
 
   card: css`
@@ -42,7 +26,7 @@ export const S = {
   title: css`
     text-align: center;
     color: #8ed06c; /* 시안의 연두색 텍스트 */
-    font-size: 1.3rem;
+    font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 2rem;
   `,

@@ -8,7 +8,7 @@ export const S = {
     overflow: hidden;
     position: relative;
 
-    margin-top: 75px;
+    /* margin-top: 75px; */
     &:hover .arrow-btn { opacity: 1; }
   `,
   
