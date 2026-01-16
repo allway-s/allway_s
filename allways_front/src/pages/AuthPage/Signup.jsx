@@ -5,7 +5,7 @@ import { S } from './Signup.styles.js';
 import { api } from '../../apis/config/axiosConfig.js';
 
 // [해결] App.jsx로부터 setIsLoggedIn 함수를 Props로 받는 버전 선택
-export const Signup = () => {
+export const Signup = ({setIsLoggedIn}) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const oauth2Id = searchParams.get("oauth2Id");
@@ -27,20 +27,26 @@ export const Signup = () => {
       [name]: value
     });
   };
+
   const handleSubmit = async () => {
         const signupData = {
+            ...formData,
             oauth2Id,
             email,
-            ...formData
         };
-        const response = await api.post("/api/auth/signup", signupData);
-        if (response.data.accessToken) {
-          localStorage.setItem("accessToken", response.data.accessToken);
-        }
-        alert("가입 완료!");
-        navigate("/");
-    };
+        try {
+          const response = await api.post("/api/auth/signup", signupData);
 
+          if (response.data.accessToken) {
+            localStorage.setItem("accessToken", response.data.accessToken);
+            setIsLoggedIn(true);
+            alert("가입 완료!");
+            navigate("/", { replace: true });
+          }
+        } catch(error) {
+          alert("가입 실패: " + (error.response?.data?.message || "오류 발생"));
+        }
+    };
 
   return (
     <div css={S.container}>
