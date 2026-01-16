@@ -38,9 +38,9 @@ export const S = {
   main: css`
     max-width: 1000px;
     margin: 0 auto;
-    padding: 40px 20px;
   `,
   title: css`
+    margin-top: 0;
     font-size: 2.5rem;
     color: #009223;
     border-bottom: 3px solid #ffc107;

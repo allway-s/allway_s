@@ -54,6 +54,7 @@ public class SecurityConfig {
 
             // 나중에 authenticated 해줘야할 것들
             auth.requestMatchers("/api/v1/orders/**").permitAll();
+            auth.requestMatchers("/api/ingredients").permitAll();
 
             // 그 외 모든 요청은 인증 필요
             auth.anyRequest().authenticated();

@@ -74,25 +74,7 @@ const CartPage = () => {
 
   return (
     <div css={S.container}>
-      <nav css={S.navBar}>
-        <div className="logo-section" onClick={() => navigate('/')}>
-          <img src={MainLogo} alt="Logo" /> 
-        </div>
-        <div className="title-section" onClick={() => navigate('/')}>
-          ALLWAY-<span>S</span>
-        </div>
-        <div className="menu-section">
-          <span onClick={() => navigate('/mypage')}>마이페이지</span>
-          <span onClick={() => { alert('로그아웃 되었습니다.'); navigate('/'); }}>로그아웃</span>
-        </div>
-      </nav>
 
-      <header css={S.header}>
-        <h1>장바구니</h1>
-        <button css={S.homeButton} onClick={() => navigate('/')}>
-          쇼핑 계속하기 〉
-        </button>
-      </header>
 
       <div css={S.contentWrapper}>
         <div css={S.cartList}>
