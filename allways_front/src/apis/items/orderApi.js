@@ -5,3 +5,9 @@ export const getIngredients = (categoryValue) => {
             categoryName: categoryValue
         }})
 }   
+
+export const getItems = (categoryValue) => {
+    return api.get(`/api/items`, {params: {
+            categoryName: categoryValue
+        }})
+}   
