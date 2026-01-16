@@ -9,7 +9,9 @@
             i.ingredient_id AS ingredientId,
             i.ingredient_name AS ingredientName,
             i.ingredient_category_id AS ingredientCategoryId,
-            c.ingredient_category_name AS ingredientCategoryName
+            c.ingredient_category_name AS ingredientCategoryName,
+            i.img_url AS imgUrl,
+            i.price AS price
         FROM ingredient_tb i
             INNER JOIN ingredient_category_tb c
             ON i.ingredient_category_id = c.ingredient_category_id

@@ -10,6 +10,7 @@ import { FeatureSection } from './components/FeatureSection.jsx';
 
 import { BANNER_ITEMS } from './constants.js';
 import { HomeMenu } from './components/HomeMenu.jsx';
+import SubwayNearby from '../../components/SubwayNearby.jsx';
 
 export function HomePage({
   isLoggedIn,
@@ -40,14 +41,12 @@ export function HomePage({
             나만의 <span css={styles.heroTitleGreen}>Recipe</span> 를 만들고<br />
             <span css={styles.heroTitleGreen}>Recipe</span><span css={styles.heroTitleYellow}>-s</span> 에 공유하세요!
           </h1>
-
           {/* ✅ 비로그인 상태로 주문하기를 눌러도 isLoggedIn 상태가 유지된 채 이동합니다. */}
           <button onClick={handleOrderClick} css={styles.orderButton}>
             지금 주문하기 <ArrowRight size={20} />
           </button>
         </div>
       </section>
-
       <HomeMenu />
 
       {/* ✅ 인기 섹션 역시 로그인 여부에 따라 문구를 자동 전환합니다. */}

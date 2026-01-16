@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.allways_back.mapper.PresetMapper">
+    <insert id="createPreset" useGeneratedKeys="true" keyProperty="presetId">
+        insert into preset_tb
+            values
+            (default, #{userId}, #{productId}, #{presetName})
+    </insert>
+    <select id="findByUserId" resultType="com.korit.allways_back.entity.Preset">
+        select
+            preset_id,
+            user_id,
+            product_id,
+            preset_name
+        from
+            preset_tb
+        where
+            user_id = #{userId}
+    </select>
+
+    <select id="orderToPreset" resultType="com.korit.allways_back.dto.response.PresetRespDto">
+        SELECT
+            item_id AS itemId,
+            ingredient_id AS ingredientId
+        FROM
+            product_detail_tb
+        WHERE
+            product_id = #{productId}
+    </select>
+
+    <delete id="deleteById">
+        delete
+        from
+            preset_tb
+        where
+            user_id = #{userId}
+            and preset_id = #{presetId}
+    </delete>
+
+</mapper>

@@ -62,17 +62,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // 6. 다음 필터로 진행
+        // 다음 필터로
         filterChain.doFilter(request, response);
     }
 
+    // JWT 검사를 하지 않고 통과할 주소
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        // 아래 주소로 시작하는 요청은 JWT 검사를 하지 않고 통과시킵니다.
         return path.startsWith("/api/auth/");
     }
 
+    // 토큰 뜯어보는 메서드
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

@@ -13,6 +13,7 @@ export const s = {
     display: block;           
     transform: translateZ(0); 
     backface-visibility: hidden; 
+    margin-bottom: 50px;
   `,
 
   topInner: css`
