@@ -74,7 +74,7 @@ const CartPage = () => {
 
   return (
     <div css={S.container}>
-      <nav css={S.navBar}>
+      {/* <nav css={S.navBar}>
         <div className="logo-section" onClick={() => navigate('/')}>
           <img src={MainLogo} alt="Logo" /> 
         </div>
@@ -85,7 +85,7 @@ const CartPage = () => {
           <span onClick={() => navigate('/mypage')}>마이페이지</span>
           <span onClick={() => { alert('로그아웃 되었습니다.'); navigate('/'); }}>로그아웃</span>
         </div>
-      </nav>
+      </nav> */}
 
       <header css={S.header}>
         <h1>장바구니</h1>

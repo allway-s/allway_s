@@ -3,21 +3,22 @@ import { css } from '@emotion/react';
 
 export const S = {
   container: css`
-    min-height: 100vh;
+    min-height: calc(100vh-70px);
     background-color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 100px;
   `,
 
-  header: css`
-    width: 100%;
-    padding: 1.2rem 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 5rem;
-  `,
+  // header: css`
+  //   width: 100%;
+  //   padding: 1.2rem 0;
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   margin-bottom: 5rem;
+  // `,
 
   logo: css`
     color: #009223;

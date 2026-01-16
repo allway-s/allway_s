@@ -19,7 +19,7 @@ export const RecentOrder = () => {
 
   return (
     <div css={S.wrapper}>
-      <header css={S.header}>
+      {/* <header css={S.header}>
         <div css={S.headerInner}>
           <div css={S.logoArea} onClick={() => navigate('/')}>
             <span css={S.logoText}>ALLWAY-<span>S</span></span>
@@ -30,7 +30,7 @@ export const RecentOrder = () => {
             <button>로그아웃</button>
           </nav>
         </div>
-      </header>
+      </header> */}
 
       <div css={S.titleSection}>
         <div css={S.titleContainer}>

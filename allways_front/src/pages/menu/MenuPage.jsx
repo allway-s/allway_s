@@ -40,46 +40,7 @@ export function MenuPage() {
 
   return (
     <div css={s.page}>
-      {/* 1) Top bar */}
-      {/* <header css={s.topBar}>
-        <div css={s.topInner}>
-          <div css={s.brandLeft}>
-            <div className='logo-section' onClick={() => navigate('/')}>
-              <img src={MainLogo} alt='Logo' />
-            </div>
-          </div>
-
-          <div
-            css={s.brandCenter}
-            onClick={() => navigate('/')}
-            style={{ cursor: 'pointer' }}
-          >
-            <h2
-              style={{
-                color: '#009223',
-                fontWeight: 900,
-                margin: 0,
-                fontSize: '1.5rem',
-              }}
-            >
-              ALLWAY<span style={{ color: '#000000' }}>-</span>
-              <span style={{ color: '#ffc107' }}>S</span>
-            </h2>
-          </div>
-
-          <nav css={s.topNav}>
-            <button onClick={() => navigate('/cart')} css={s.topNavBtn}>
-              장바구니
-            </button>
-            <button onClick={() => navigate('/mypage')} css={s.topNavBtn}>
-              마이페이지
-            </button>
-            <button onClick={() => navigate('/')} css={s.topNavBtn}>
-              로그아웃
-            </button>
-          </nav>
-        </div> */}
-
+      
         <div css={s.midBar}>
           <div css={s.lineWrap}>
             <div css={s.TopLine} />

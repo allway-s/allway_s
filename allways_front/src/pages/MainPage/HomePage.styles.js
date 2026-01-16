@@ -9,16 +9,7 @@ export const styles = {
 
 
   header: css`
-    width: 100%;
-    min-width: 1100px;
-    height: 70px;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    position: fixed;
-    top: 0;
-    z-index: 100;
+    display: none; /* 아예 보이지 않게 하거나, 나중에 이 코드를 삭제하세요 */
   `,
 
   headerInner: css`
@@ -62,7 +53,7 @@ export const styles = {
   `,
 
   heroSection: css`
-    padding: 8rem 1rem;
+    padding: 4rem 1rem;
     background-color: #fff;
   `,
 

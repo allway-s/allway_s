@@ -71,7 +71,8 @@ export const s = {
   pageTitle: css`
     margin: 0;
     font-size: 45px;
-    font-weight: 400;
+    font-weight: 600;
+    color: #009223; 
     letter-spacing: -0.03em;
   `,
 

@@ -20,6 +20,7 @@ import RecentOrder from './pages/MyPage/RecentOrder.jsx';
 import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
 import Header from './components/header.jsx';
 import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
+import CustomPage from './pages/order/CustomPage.jsx';
 
 
 function App() {
@@ -99,12 +100,8 @@ const ProtectedRoute = ({ children }) => {
   const handleCopy = (preset) => console.log(preset.title + ' 복사됨!');
 
   return (
-  <Router>
-    
-        {/* [변경점 1] Header 컴포넌트의 위치 
-        - Routes 밖에 배치하여 모든 페이지(홈, 메뉴, 마이페이지 등)에서 
-          헤더가 상단에 항상 고정되도록 했습니다.
-      */}
+    <Router>
+      {/* 1. 헤더는 모든 페이지 공통 */}
       <Header 
         isLoggedIn={isLoggedIn} 
         user={user} 
@@ -112,45 +109,54 @@ const ProtectedRoute = ({ children }) => {
         logoSrc={MainLogo}
       />
 
-      <Routes>
-        {/* 메인 홈페이지 */}
-        <Route path="/" element={
-            <HomePage
-              isLoggedIn={isLoggedIn}
-              onLogout={handleLogout}
-              communityPreSets={presets}
-              onStartOrder={handleStartOrder}
-              onNavigateToCommunity={handleNavigateCommunity}
-              onLike={handleLike}
-              onCopy={handleCopy}
-              user={user}
-            />
-          }
-        />
+      {/* 2. 평형을 맞추는 핵심 영역: marginTop을 70px 줍니다. */}
+      <main style={{ marginTop: '70px', minHeight: 'calc(100vh - 70px)' }}>
+        <Routes>
+          {/* 메인 홈페이지 */}
+          <Route path="/" element={
+              <HomePage
+                isLoggedIn={isLoggedIn}
+                onLogout={handleLogout}
+                communityPreSets={presets}
+                onStartOrder={handleStartOrder}
+                onNavigateToCommunity={handleNavigateCommunity}
+                onLike={handleLike}
+                onCopy={handleCopy}
+                user={user}
+              />
+            }
+          />
 
-        {/* [변경점 2] ProtectedRoute 범위 확장 */}
-        {/* 마이페이지뿐만 아니라 '장바구니'도 로그인이 필요한 페이지로 묶었습니다. */}
-        <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+          {/* 로그인 필수 페이지 */}
+          <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+          <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+          <Route path="/mypreset" element={<ProtectedRoute><MyPreSet isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} /></ProtectedRoute>} />
+          <Route path="/recent-order" element={<ProtectedRoute><RecentOrder isLoggedIn={isLoggedIn} onLogout={handleLogout} /></ProtectedRoute>} />
+
+          <Route 
+            path="/order/custom" 
+            element={
+              <ProtectedRoute>
+                <CustomPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* 로그인 시 접근 불가 페이지 */}
+          <Route path="/login" element={<PublicRoute><Login setIsLoggedIn={setIsLoggedIn} /></PublicRoute>} />
+          <Route path="/auth/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+          <Route path="/auth/oauth2/login/success" element={<LoginSuccess setIsLoggedIn={setIsLoggedIn} />} />
+
+          {/* 누구나 접근 가능 페이지 */}
+          <Route path="/menu/sandwich" element={<MenuPage />} />
+          <Route path="/menu/salad" element={<MenuPage2/>} />
+          <Route path="/menu/wrap" element={<MenuPage3 />} />
+
         
-        <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
-        <Route path="/mypreset" element={<ProtectedRoute><MyPreSet isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} /></ProtectedRoute>} />
-        <Route path="/recent-order" element={<ProtectedRoute><RecentOrder isLoggedIn={isLoggedIn} onLogout={handleLogout} /></ProtectedRoute>} />
-
-        {/* [변경점 3] PublicRoute 적용 유지 
-          - 로그인/회원가입 페이지는 이미 로그인된 사용자가 접근할 경우 
-            알림을 띄우고 메인으로 튕겨내는 '문지기' 역할을 그대로 유지
-        */}
-        <Route path="/login" element={<PublicRoute><Login setIsLoggedIn={setIsLoggedIn} /></PublicRoute>} />
-        <Route path="/auth/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-        <Route path="/auth/oauth2/login/success" element={<LoginSuccess setIsLoggedIn={setIsLoggedIn} />} />
-
-        {/* 메뉴 관련은 누구나 접근 가능 */}
-        <Route path="/menu/sandwich" element={<MenuPage />} />
-        <Route path="/menu/salad" element={<MenuPage2/>} />
-        <Route path="/menu/wrap" element={<MenuPage3 />} />
-      </Routes>
-    </Router>
+        </Routes>
+      </main> {/* main이 여기서 닫혀야 합니다. */}
+    </Router>   /* Router가 가장 마지막에 닫혀야 합니다. */
   );
+   
 }
-
 export default App;

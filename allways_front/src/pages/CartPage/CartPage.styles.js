@@ -3,55 +3,21 @@ import { css } from '@emotion/react';
 
 export const S = {
   container: css`
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 0 20px 40px;
+    padding: 40px 20px;
     font-family: 'Pretendard', sans-serif;
-  `,
-
-  navBar: css`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 0;
-    margin-bottom: 20px;
-
-    .logo-section {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      img { height: 50px; width: auto; object-fit: contain; }
-    }
-
-    .title-section {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: #009223;
-      cursor: pointer;
-      span { color: #ffce32; }
-    }
-
-    .menu-section {
-      display: flex;
-      gap: 20px;
-      span {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #333;
-        cursor: pointer;
-        &:hover { color: #009223; }
-      }
-    }
   `,
   
   header: css`
-    border-bottom: 2px solid #009223;
-    padding-bottom: 15px;
-    margin-bottom: 30px;
+    /* border-bottom: 2px solid #009223;
+    padding-bottom: 15px; */
+    margin-bottom: 40px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    h1 { font-size: 2.2rem; font-weight: 800; color: #2da950; margin: 0; }
+    h1 { font-size: 2.5rem; font-weight: 900; color: #009223; margin: 0; 
+    display: inline-block; border-bottom: 3px solid #009223; padding-bottom: 0px; }
   `,
 
   homeButton: css`
@@ -66,7 +32,7 @@ export const S = {
 
   contentWrapper: css`
     display: flex;
-    gap: 40px;
+    gap: 20px;
     align-items: flex-start;
     @media (max-width: 960px) { flex-direction: column; }
   `,
@@ -195,7 +161,7 @@ export const S = {
   `,
 
   orderSidebar: css`
-    width: 380px;
+    width: 320px;
     background: #fff;
     border-radius: 25px;
     padding: 30px;
