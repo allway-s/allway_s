@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { S } from './Signup.styles.js';
 import { api } from '../../apis/config/axiosConfig.js';
@@ -10,6 +10,14 @@ export const Signup = ({setIsLoggedIn}) => {
   const [searchParams] = useSearchParams();
   const oauth2Id = searchParams.get("oauth2Id");
   const email = searchParams.get("email");
+
+  // 주소창에 oauth2ID 없으면 차단
+  useEffect(() => {
+    if (!oauth2Id) {
+      alert("잘못된 접근입니다.");
+      navigate("/", { replace: true });
+    }
+  }, [oauth2Id, navigate]);
 
   // 1. 입력 데이터 상태 관리
   const [formData, setFormData] = useState({
