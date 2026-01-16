@@ -1,23 +1,26 @@
 import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { api } from '../../apis/config/axiosConfig.js';
-
+import { api } from "../../apis/config/axiosConfig";
 
 export const LoginSuccess = ({setIsLoggedIn}) => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
     useEffect(() => {
+        // 이미 토큰이 있는 유저가 들어온 경우 차단
+        if (!!localStorage.getItem("accessToken")) {
+            navigate("/", { replace: true });
+            return; // 아래 로직은 실행하지 않고 종료
+        }
         const token = searchParams.get("token");
 
         if (token) {
             localStorage.setItem("accessToken", token);
-
-            // 2. 내 정보 조회 API 등을 호출하여 토큰 유효성 검증
+            // 토큰 유효성 검증
             api.get("/api/user/me")
                 .then(() => {
                     setIsLoggedIn(true);
-                    alert("로그인 성공!");
+                    alert("로그인 성공!");  
                     navigate("/", { replace: true });
                 })
                 .catch(() => {
