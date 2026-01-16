@@ -44,12 +44,11 @@ export const Signup = () => {
 
   return (
     <div css={S.container}>
-      <header css={S.header}>
-        {/* [해결] 로고 클릭 시 메인으로 이동하는 기능 포함 */}
+      {/* <header css={S.header}>
         <div css={S.logo} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           ALLWAY-<span>S</span>
         </div>
-      </header>
+      </header> */}
 
       <main css={S.card}>
         <h2 css={S.title}>추가 정보 입력</h2>

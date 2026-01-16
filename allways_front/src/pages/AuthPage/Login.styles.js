@@ -8,42 +8,44 @@ export const S = {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 120px;
   `,
 
-  header: css`
-    width: 100%;
-    padding: 1.2rem 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 5rem;
-  `,
+  // header: css`
+  //   width: 100%;
+  //   padding: 1.2rem 0;
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   margin-bottom: 5rem;
+  // `,
 
-  logo: css`
-    color: #009223;
-    font-weight: 900;
-    font-size: 1.6rem;
-    letter-spacing: -0.05em;
-    span { color: #ffc608; }
-  `,
+  // logo: css`
+  //   color: #009223;
+  //   font-weight: 900;
+  //   font-size: 1.6rem;
+  //   letter-spacing: -0.05em;
+  //   span { color: #ffc608; }
+  // `,
 
   card: css`
     width: 100%;
     max-width: 480px;
     background: #fcfcfc;
-    border-radius: 12px;
+    border-radius: 25px;
     padding: 4.5rem 2rem 3rem 2rem; 
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.05); /* 조금 더 부드러운 그림자 */
     display: flex;
     flex-direction: column;
     align-items: center;
     border: 1px solid #f0f0f0;
     position: relative;
+    margin-bottom: 50px;
   `,
 
   title: css`
     color: #8ed06c;
-    font-size: 1.4rem;
+    font-size: 2.5rem;
     font-weight: 1000;
     margin-bottom: 3rem;
     text-transform: uppercase;

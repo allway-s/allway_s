@@ -46,6 +46,7 @@ export const S = {
     margin-top: 60px;
     margin-bottom: 40px;
   `,
+
   titleContainer: css`
     max-width: 1200px;
     margin: 0 auto;
@@ -54,6 +55,7 @@ export const S = {
     display: inline-block; 
     margin-left: calc((100% - 1200px) / 2 + 20px);
     
+
     &::after {
       content: '';
       position: absolute;
@@ -65,6 +67,7 @@ export const S = {
       z-index: 1;
     }
   `,
+  
   mainTitle: css`
     font-size: 3rem;
     font-weight: 800;
