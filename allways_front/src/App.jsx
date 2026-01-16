@@ -127,6 +127,7 @@ function App() {
 
         {/* 메뉴 관련은 누구나 접근 가능 */}
         <Route path="/menu" element={<MenuPage />} />
+        <Route path="/menu/sandwich" element={<MenuPage />} />
 
         {/* 커뮤니티 */}
         <Route path="/community" element={<CommunityPage />} />
