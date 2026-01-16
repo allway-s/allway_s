@@ -42,7 +42,7 @@ public class SecurityConfig {
 
         // 권한 설정
         http.authorizeHttpRequests(auth -> {
-            // 로그인 관련으로 누구나 접근 가능하게
+            // 로그인 관련으로 누구나 접근가능하게
             auth.requestMatchers("/", "/login", "/signup").permitAll();
             auth.requestMatchers("/api/auth/**").permitAll();
 
