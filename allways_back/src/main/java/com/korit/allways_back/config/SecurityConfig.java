@@ -1,6 +1,7 @@
 package com.korit.allways_back.config;
 
 import com.korit.allways_back.filter.JwtAuthenticationFilter;
+import com.korit.allways_back.security.JwAuthenticationDeniedHandler;
 import com.korit.allways_back.security.JwtAuthenticationEntryPoint;
 import com.korit.allways_back.security.OAuth2SuccessHandler;
 import com.korit.allways_back.service.OAuth2UserService;
@@ -26,6 +27,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwAuthenticationDeniedHandler jwAuthenticationDeniedHandler;
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
@@ -45,6 +47,7 @@ public class SecurityConfig {
             // 로그인 관련으로 누구나 접근가능하게
             auth.requestMatchers("/", "/login", "/signup").permitAll();
             auth.requestMatchers("/api/auth/**").permitAll();
+            auth.requestMatchers("/api/user/**").authenticated();
 
             // swagger 관련 필요한 설정
             auth.requestMatchers(
@@ -69,7 +72,10 @@ public class SecurityConfig {
         // UsernamePasswordAuthenticationFilter보다 먼저 실행하도록 설정
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwAuthenticationDeniedHandler)
+        );
 
 
         return http.build();
