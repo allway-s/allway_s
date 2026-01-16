@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 
 export const s = {
   topBar: css`
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     width: 100%;
