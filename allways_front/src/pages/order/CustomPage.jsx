@@ -1,10 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from "react"; 
 import { getIngredients } from "../../apis/items/orderApi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function CustomPage() {
-    const [ step, setStep ] = useState(1); 
+
+    const location = useLocation();
+    const categoryName = location.state?.category;
+
+    const [ step, setStep ] = useState(categoryName === '샐러드' ? 2 : 1);
     const [ ingredients, setIngredients ] = useState([]); 
 
     const navigate = useNavigate();
@@ -30,6 +34,13 @@ function CustomPage() {
         }
     }, [step]);
 
+    const handlePrevStep = () => {
+        if (categoryName === '샐러드' && step === 2) {
+            return;
+        }
+        setStep(step - 1);
+    };
+
     const handleNextStep = () => {
         if (step < categories.length) {
             setStep(step + 1);
@@ -43,12 +54,16 @@ function CustomPage() {
             <button onClick={() => navigate(`/menu`)}>
                 취소
             </button>
-            <button disabled={step === 1} onClick={() => setStep(step - 1)}>
+            <button 
+                disabled={(categoryName === '샐러드' ? step === 2 : step === 1)} 
+                onClick={handlePrevStep}
+            >
                 이전
             </button>
             
             <div>
                 <h3>{step}단계: {currentCategory?.name} 선택</h3>
+                <p>메뉴 타입: {categoryName}</p>
                 <div>
                     {
                         ingredients.map(item => (

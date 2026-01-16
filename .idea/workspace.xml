@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="" />
+    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/main.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/menu/MenuPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/menu/MenuPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/order/CustomPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/order/CustomPage.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,38 +16,38 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "rogerthat1243"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;rogerthat1243&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/allway-s/allway_s.git",
-    "accountId": "14824bec-9a1b-48d6-bec1-912a85007cfc"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/allway-s/allway_s.git&quot;,
+    &quot;accountId&quot;: &quot;14824bec-9a1b-48d6-bec1-912a85007cfc&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 8
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="38JvqvwSEuT4SLk03rMbS1p5Q0w" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "95-post-기능-백엔드-만들기",
-    "kotlin-language-version-configured": "true",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;112-front-menu-페이지-계속-만들기&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -58,6 +64,8 @@
       <option name="presentableId" value="Default" />
       <updated>1768530682375</updated>
       <workItem from="1768530683865" duration="251000" />
+      <workItem from="1768544923093" duration="116000" />
+      <workItem from="1768553090939" duration="3000" />
     </task>
     <servers />
   </component>
