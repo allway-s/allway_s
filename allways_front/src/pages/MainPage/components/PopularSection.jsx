@@ -33,7 +33,7 @@ export function PopularSection({
                   <span css={S.headerText}>{user.name || '진현'}님을 위한 인기 레시피입니다!</span>
                 )}
 
-                <button onClick={onNavigate} css={S.iconButton}>
+                <button onClick={() => navigate("/community")} css={S.iconButton}>
                   <ChevronRight size={24} />
                 </button>
             </div>

@@ -20,6 +20,8 @@ import RecentOrder from './pages/MyPage/RecentOrder.jsx';
 import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
 import Header from './components/header.jsx';
 import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
+import CommunityPage from './pages/CommunityPage/CommunityPage.jsx';
+import CommunityWritePage from './pages/CommunityPage/CommunityWritePage.jsx';
 import CustomPage from './pages/order/CustomPage.jsx';
 
 
@@ -128,6 +130,11 @@ const ProtectedRoute = ({ children }) => {
         <Route path="/menu/sandwich" element={<MenuPage />} />
         <Route path="/menu/salad" element={<MenuPage2/>} />
         <Route path="/menu/wrap" element={<MenuPage3 />} />
+
+        {/* 커뮤니티 */}
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/community/write" element={<CommunityWritePage />} />
+        
       </Routes>
     </Router>
   );
