@@ -111,7 +111,7 @@ function App() {
         {/* [변경점 2] ProtectedRoute 범위 확장 */}
         {/* 마이페이지뿐만 아니라 '장바구니'도 로그인이 필요한 페이지로 묶었습니다. */}
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-        <Route path='/custom-page' element={<ProtectedRoute><CustomPage /></ProtectedRoute>}/>
+        <Route path='/custom/:itemId' element={<ProtectedRoute><CustomPage /></ProtectedRoute>}/>
         
         <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
         <Route path="/mypreset" element={<ProtectedRoute><MyPreSet isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} /></ProtectedRoute>} />

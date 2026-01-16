@@ -23,9 +23,9 @@ const ItemCategoryPage = () => {
     };
     
     const handleCustomClick = (item) => {
-      if (selectedCategory === '샐러드') {
-        
-      }
+      navigate(`/custom-page`, { 
+            state: { category: selectedCategory } 
+      });
     }
 
     useEffect(() => {
@@ -53,7 +53,7 @@ const ItemCategoryPage = () => {
                               <button >썹픽</button>
                               {selectedCategory !== '랩' && (
                                   <button 
-                                      onClick={() => navigate(`/custom-page`, { state: { item } })}
+                                      onClick={() => handleCustomClick(item)}
                                   >
                                       커스텀
                                   </button>
