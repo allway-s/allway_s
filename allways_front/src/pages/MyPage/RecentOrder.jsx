@@ -19,18 +19,6 @@ export const RecentOrder = () => {
 
   return (
     <div css={S.wrapper}>
-      <header css={S.header}>
-        <div css={S.headerInner}>
-          <div css={S.logoArea} onClick={() => navigate('/')}>
-            <span css={S.logoText}>ALLWAY-<span>S</span></span>
-          </div>
-          <nav css={S.navMenu}>
-            <button onClick={() => navigate('/cart')}>장바구니</button>
-            <button css={S.activeMenu} onClick={() => navigate('/mypage')}>마이페이지</button>
-            <button>로그아웃</button>
-          </nav>
-        </div>
-      </header>
 
       <div css={S.titleSection}>
         <div css={S.titleContainer}>
