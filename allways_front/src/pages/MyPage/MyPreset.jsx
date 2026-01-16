@@ -14,20 +14,6 @@ export default function MyPreSet() {
 
   return (
     <div css={S.wrapper}>
-      {/* 1. 상단 네비게이션 바 */}
-
-      {/* <header css={S.header}>
-            <div css={S.headerInner}>
-                <div css={S.logoArea} onClick={() => navigate('/')}>
-                    <span css={S.logoText}>ALLWAY-<span style={{color: '#ffc107'}}>S</span></span>
-                </div>
-                <div css={S.navMenu}>
-                    <button onClick={() => navigate('/cart')}>장바구니</button>
-                    <button css={S.activeMenu} onClick={() => navigate('/mypage')}>마이페이지</button>
-                    <button>로그아웃</button>
-                </div>
-            </div>
-      </header> */}
 
       {/* 2. 타이틀 영역 (가로지르는 노란 선 포함) */}
       <section css={S.titleSection}>

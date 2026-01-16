@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { S } from './Login.styles.js';
 
-// [해결] Props로 setIsLoggedIn을 받는 버전 유지
 const Login = () => {
 
   const handleOAuth2LoginOnClick = (clientName) => {

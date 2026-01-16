@@ -9,8 +9,6 @@ import Signup from './pages/AuthPage/Signup.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
 import CartPage from './pages/CartPage/CartPage.jsx';
 import MenuPage from './pages/menu/MenuPage.jsx'; 
-import MenuPage2 from './pages/Menu/MenuPage2.jsx';
-import MenuPage3 from './pages/Menu/MenuPage3.jsx';
 
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
@@ -128,9 +126,7 @@ function App() {
         <Route path="/auth/oauth2/login/success" element={<LoginSuccess setIsLoggedIn={setIsLoggedIn} />} />
 
         {/* 메뉴 관련은 누구나 접근 가능 */}
-        <Route path="/menu/sandwich" element={<MenuPage />} />
-        <Route path="/menu/salad" element={<MenuPage2/>} />
-        <Route path="/menu/wrap" element={<MenuPage3 />} />
+        <Route path="/menu" element={<MenuPage />} />
 
         {/* 커뮤니티 */}
         <Route path="/community" element={<CommunityPage />} />

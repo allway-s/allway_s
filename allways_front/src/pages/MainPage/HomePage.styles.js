@@ -95,6 +95,10 @@ export const styles = {
     color: #009223;
   `,
 
+  heroTitleBlack: css`
+    color: rgb(0, 0, 0);
+  `,
+
   heroTitleYellow: css`
     color: #f5c835ff;
   `,

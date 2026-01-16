@@ -1,10 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from "react"; 
 import { getIngredients } from "../../apis/items/orderApi";
+import { useNavigate } from "react-router-dom";
 
 function CustomPage() {
     const [ step, setStep ] = useState(1); 
     const [ ingredients, setIngredients ] = useState([]); 
+
+    const navigate = useNavigate();
 
     const categories = [
         { id: '빵', name: '빵' }, 
@@ -36,7 +39,10 @@ function CustomPage() {
     };
 
     return (
-        <>
+        <>  
+            <button onClick={() => navigate(`/menu`)}>
+                취소
+            </button>
             <button disabled={step === 1} onClick={() => setStep(step - 1)}>
                 이전
             </button>
@@ -44,7 +50,7 @@ function CustomPage() {
             <div>
                 <h3>{step}단계: {currentCategory?.name} 선택</h3>
                 <div>
-                    {ingredients.length > 0 ? (
+                    {
                         ingredients.map(item => (
                             <button key={item.ingredientId} onClick={() => console.log(item)}>
                                 <img 
@@ -56,9 +62,7 @@ function CustomPage() {
                                 {item.price} 
                             </button>
                         ))
-                    ) : (
-                        <p>재료를 불러오는 중이거나 데이터가 없습니다.</p>
-                    )}
+                    }
                 </div>
             </div>
 
