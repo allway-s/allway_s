@@ -26,9 +26,9 @@ export const S = {
   `,
 
   title: css`
-    font-size: 2.1rem;
+    font-size: 2.5rem;
     font-weight: 900;
-    color: #000;
+    color: #080808;
     letter-spacing: -0.03em;
   `,
 
@@ -41,7 +41,7 @@ export const S = {
   `,
 
   headerText: css`
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #333;
     @media (max-width: 768px) {
