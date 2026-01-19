@@ -10,6 +10,7 @@ import MyPage from './pages/MyPage/MyPage.jsx';
 import CartPage from './pages/CartPage/CartPage.jsx';
 import MenuPage from './pages/menu/MenuPage.jsx'; 
 
+
 import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
 import PresetImage3 from './assets/images/PresetImages/PresetImage3.png';
@@ -21,7 +22,7 @@ import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
 import CommunityPage from './pages/CommunityPage/CommunityPage.jsx';
 import CommunityWritePage from './pages/CommunityPage/CommunityWritePage.jsx';
 import CustomPage from './pages/order/CustomPage.jsx';
-import { ResponseInterceptor } from './apis/config/axiosConfig.js';
+import { api, ResponseInterceptor } from './apis/config/axiosConfig.js';
 
 
 function App() {
@@ -29,9 +30,17 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
   const navigate = useNavigate();
 
+  // 토큰 유효성 검사
   useEffect(() => {
     ResponseInterceptor(navigate, setIsLoggedIn);
-  }, [navigate]);
+
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+        api.get("/api/user/me").catch(() => {
+          console.log("토큰 검증 완료")
+        });
+    }
+  }, []);
 
   
   const [presets] = useState([
@@ -111,7 +120,7 @@ function App() {
         {/* [변경점 2] ProtectedRoute 범위 확장 */}
         {/* 마이페이지뿐만 아니라 '장바구니'도 로그인이 필요한 페이지로 묶었습니다. */}
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-        <Route path='/custom/:itemId' element={<ProtectedRoute><CustomPage /></ProtectedRoute>}/>
+        <Route path='/custom-page' element={<ProtectedRoute><CustomPage /></ProtectedRoute>}/>
         
         <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
         <Route path="/mypreset" element={<ProtectedRoute><MyPreSet isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} /></ProtectedRoute>} />
@@ -126,7 +135,6 @@ function App() {
         <Route path="/auth/oauth2/login/success" element={<LoginSuccess setIsLoggedIn={setIsLoggedIn} />} />
 
         {/* 메뉴 관련은 누구나 접근 가능 */}
-        <Route path="/menu" element={<MenuPage />} />
         <Route path="/menu/sandwich" element={<MenuPage />} />
 
         {/* 커뮤니티 */}
