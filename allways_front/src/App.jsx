@@ -89,6 +89,12 @@ function App() {
   const handleCopy = (preset) => console.log(preset.title + ' 복사됨!');
 
   return (
+
+  //   <div>
+  //     <h1>테스트 화면</h1>
+  //     <p>이 글자가 보인다면 컴포넌트 연결 문제입니다.</p>
+  // </div>
+
     <>
     {/* [변경점 1] Header 컴포넌트의 위치 
         - Routes 밖에 배치하여 모든 페이지(홈, 메뉴, 마이페이지 등)에서 

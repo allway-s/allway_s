@@ -167,7 +167,7 @@ export const S = {
   `,
 
   // 수정 버튼 (다른 색상, 예: 주황색 혹은 연한 초록)
-  btnEdit: css`
+  btnDelete: css`
     flex: 1;
     background-color: #ff8c00; /* 예시로 주황색 설정 */
     border: none;
