@@ -50,9 +50,10 @@ export function HomePage({
       `'${preset.title}' 레시피가 내 프리셋에 저장되었습니다.\n마이 프리셋 페이지로 이동하여 확인하시겠습니까?`
     );
 
-    if (isMove) {
-      navigate('/mypreset');
-    }
+  // ✅ 비로그인 상태에서도 메뉴 이동은 허용
+  // 단, 이동한 페이지에서도 isLoggedIn props를 전달받아 헤더를 그려야 모순이 없습니다.
+  const handleOrderClick = () => {
+    navigate('/menu');
   };
 
   return (

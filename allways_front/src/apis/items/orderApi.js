@@ -11,3 +11,15 @@ export const getItems = (categoryValue) => {
             categoryName: categoryValue
         }})
 }   
+
+export const validateOrder = (orderData) => {
+    return api.post(`/api/v1/orders/validate`, orderData)
+}
+
+export const createOrder = (orderData) => {
+    return api.post(`/api/v1/orders`, orderData)
+}
+
+export const getOrderHistory = () => {
+    return api.get(`/api/v1/orders/history`)
+}
