@@ -42,7 +42,7 @@ export default function MyPreSet() {
 
               <div css={S.buttonGroup}>
                 <button css={S.btnShare}>공유</button>
-                <button css={S.btnEdit}>수정</button>
+                
                 <button 
                   css={S.btnOrder}
                   onClick={(e) => {
@@ -58,6 +58,7 @@ export default function MyPreSet() {
                 >
                   주문
                 </button>
+                <button css={S.btnDelete}>삭제</button>
               </div>
             </div>
           ))}
