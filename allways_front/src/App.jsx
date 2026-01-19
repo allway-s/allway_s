@@ -20,7 +20,6 @@ import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
 import Header from './components/header.jsx';
 import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
 import CommunityPage from './pages/CommunityPage/CommunityPage.jsx';
-import CommunityWritePage from './pages/CommunityPage/CommunityWritePage.jsx';
 import CustomPage from './pages/order/CustomPage.jsx';
 import { api, ResponseInterceptor } from './apis/config/axiosConfig.js';
 
@@ -141,11 +140,10 @@ function App() {
         <Route path="/auth/oauth2/login/success" element={<LoginSuccess setIsLoggedIn={setIsLoggedIn} />} />
 
         {/* 메뉴 관련은 누구나 접근 가능 */}
-        <Route path="/menu/sandwich" element={<MenuPage />} />
+        <Route path="/menu" element={<MenuPage />} />
 
         {/* 커뮤니티 */}
         <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community/write" element={<CommunityWritePage />} />
         
       </Routes>
     </>

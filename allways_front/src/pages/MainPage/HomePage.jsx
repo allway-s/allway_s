@@ -31,7 +31,7 @@ export function HomePage({
 
     // 2. '확인'을 눌렀을 때만 페이지 이동
     if (isMove) {
-      navigate('/menu/sandwich');
+      navigate('/menu');
     }
     // '취소'를 누르면 아무 일도 일어나지 않고 현재 페이지에 남습니다.
   };
@@ -83,13 +83,4 @@ export function HomePage({
   );
 }
 
-
-const textButtonStyle = {
-  background: 'none',
-  border: 'none',
-  padding: '5px',
-  fontSize: '0.9rem',
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  color: '#333'
-};
+} 

@@ -142,12 +142,12 @@ const CartPage = () => {
                                 <div key={index} css={cartItemStyle}>
                                     <div css={itemDetailsStyle}>
                                         <h3 css={itemNameStyle}>
-                                            상품 ID: {item.itemId}
+                                            상품 ID: {item.itemName}
                                         </h3>
                                         
                                         {item.ingredientIds && item.ingredientIds.length > 0 && (
                                             <div css={ingredientsListStyle}>
-                                                <strong>재료 ID:</strong>
+                                                <strong>재료:</strong>
                                                 <div css={ingredientTagsStyle}>
                                                     {item.ingredientIds.map((ingId, i) => (
                                                         <span key={i} css={ingredientTagStyle}>
