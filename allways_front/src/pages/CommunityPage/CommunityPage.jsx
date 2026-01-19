@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { s } from './CommunityPage.styles';
 import { Heart } from 'lucide-react';
+import { s } from './CommunityPage.styles';
 
 const TEST_CASES = [
   {
     id: 1,
     title: '새우를 극상으로',
     author: '새우돌이',
+    base: '쉬림프',
     bread: '위트',
     cheese: '아메리칸 치즈',
     veggies: ['양상추', '토마토', '오이', '피망'],
@@ -21,28 +22,55 @@ const TEST_CASES = [
     id: 2,
     title: '야채 존나 처먹어',
     author: '비건이지만 고기 먹음',
+    base: '에그마요',
     bread: '허니오트',
     cheese: '슈레드 치즈',
-    veggies: ['양상추', '토마토', '오이', '양파', '피망', '올리브', '할라피뇨', '피클'],
+    veggies: [],
     sauce: ['후추', '소금'],
     likeCount: 87,
     imgUrl: 'https://www.subway.co.kr/upload/menu/1763392140518_G1a9dG.png',
     createdAt: '2026-01-13',
   },
+  {
+    id: 3,
+    title: '야채whRk',
+    author: '고기가온나',
+    base: '스테이크&치즈',
+    bread: '허니오트',
+    cheese: '슈레드 치즈',
+    veggies: ['양상추'],
+    sauce: ['후추', '소금'],
+    likeCount: 40,
+    imgUrl: 'https://www.subway.co.kr/upload/menu/1763392140518_G1a9dG.png',
+    createdAt: '2026-01-09',
+  },
 ];
 
+const toTime = (dateStr) => {
+  const [y, m, d] = String(dateStr).split('-').map((v) => v.padStart(2, '0'));
+  return new Date(`${y}-${m}-${d}`).getTime();
+};
+
+const formatPick = (label, value) => {
+  if (value == null) return `${label}: 선택 안함`;
+  if (Array.isArray(value)) return `${label}: ${value.length ? value.join(', ') : '선택 안함'}`;
+  const s = String(value).trim();
+  return `${label}: ${s ? s : '선택 안함'}`;
+};
+
 function CommunityPage() {
-  const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
-  const [sort, setSort] = useState('latest');
   const navigate = useNavigate();
 
-  // likes[id] = { liked: boolean, count: number }
+  const [sort, setSort] = useState('liked');
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
+  // likes[id] = { liked, count }
   const [likes, setLikes] = useState(() => {
     const init = {};
-    TEST_CASES.forEach((item) => {
+    for (const item of TEST_CASES) {
       init[item.id] = { liked: false, count: item.likeCount };
-    });
+    }
     return init;
   });
 
@@ -51,42 +79,24 @@ function CommunityPage() {
     [selectedId]
   );
 
-  const openModal = (id) => {
-    setSelectedId(id);
-    setOpen(true);
-  };
-
-  const closeModal = () => {
-    setOpen(false);
-    setSelectedId(null);
-  };
-
-  // ✅ 하트 토글(리스트/모달 공통)
   const toggleLike = (id) => {
     setLikes((prev) => {
       const cur = prev[id];
       if (!cur) return prev;
-
-      const nextLiked = !cur.liked;
-      const nextCount = nextLiked ? cur.count + 1 : Math.max(0, cur.count - 1);
-
-      return {
-        ...prev,
-        [id]: { liked: nextLiked, count: nextCount },
-      };
+      const liked = !cur.liked;
+      const count = liked ? cur.count + 1 : Math.max(0, cur.count - 1);
+      return { ...prev, [id]: { liked, count } };
     });
   };
 
-  // ✅ 정렬된 리스트 만들기 (핵심)
   const sortedItems = useMemo(() => {
     const copied = [...TEST_CASES];
 
     if (sort === 'latest') {
-      copied.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      copied.sort((a, b) => toTime(b.createdAt) - toTime(a.createdAt));
       return copied;
     }
 
-    // 좋아요순: 현재 likes 상태(count) 기준으로 정렬
     copied.sort((a, b) => {
       const aCount = likes[a.id]?.count ?? a.likeCount;
       const bCount = likes[b.id]?.count ?? b.likeCount;
@@ -96,12 +106,9 @@ function CommunityPage() {
     return copied;
   }, [sort, likes]);
 
-  // ESC로 닫기
   useEffect(() => {
     if (!open) return;
-    const onKeyDown = (e) => {
-      if (e.key === 'Escape') closeModal();
-    };
+    const onKeyDown = (e) => e.key === 'Escape' && setOpen(false);
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [open]);
@@ -109,80 +116,54 @@ function CommunityPage() {
   return (
     <div css={s.page}>
       <div css={s.container}>
-        <div css={s.topBar}>
-          <div css={s.sortWrap} onClick={(e) => e.stopPropagation()}>
-            <select
-              css={s.sortSelect}
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <option value='latest'>최신순</option>
-              <option value='like'>좋아요순</option>
-            </select>
-          </div>
+        {/* 상단 컨트롤: 리스트 카드와 같은 폭 규칙 */}
+        <div css={s.controlsRow}>
+          <select css={s.sortSelect} value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value="like">좋아요순</option>
+            <option value="latest">최신순</option>
+          </select>
 
-          <button
-            type='button'
-            css={s.addBtn}
-            onClick={() => navigate('/community/write')}
-          >
+          <button type="button" css={s.addBtn} onClick={() => navigate('/community/write')}>
             나의 recipe 추가하기
           </button>
         </div>
 
-        {/* ✅ feedList는 container 안에 두는 게 가운데 정렬 유지에 유리 */}
+        {/* 리스트 */}
         <div css={s.feedList}>
           {sortedItems.map((item) => {
-            const likeState = likes[item.id] || {
-              liked: false,
-              count: item.likeCount,
-            };
+            const likeState = likes[item.id] ?? { liked: false, count: item.likeCount };
 
             return (
               <div
                 key={item.id}
                 css={s.feedItem}
-                onClick={() => openModal(item.id)}
+                onClick={() => {
+                  setSelectedId(item.id);
+                  setOpen(true);
+                }}
               >
                 <img css={s.thumb} src={item.imgUrl} alt={item.title} />
 
                 <div css={s.textArea}>
                   <div css={s.topRow}>
                     <h3 css={s.feedTitle}>{item.title}</h3>
+                    <p css={s.feedBase}>{item.base}</p>
                   </div>
 
-                  <span css={s.date}>
+                  <div css={s.subRow}>
                     {item.author} {item.createdAt}
-                  </span>
+                  </div>
 
                   <div css={s.desc}>
-                    빵: {item.bread} · 치즈: {item.cheese} · 야채:{' '}
-                    {item.veggies.join(', ')} · 소스: {item.sauce.join(', ')}
+                    {formatPick('빵', item.bread)} · {formatPick('치즈', item.cheese)} ·{' '}
+                    {formatPick('야채', item.veggies)} · {formatPick('소스', item.sauce)}
                   </div>
                 </div>
 
-                {/* ✅ 리스트 하트 (클릭해도 모달 안 열리게 stopPropagation) */}
-                <div css={s.likeMini}>
-                  <button
-                    type='button'
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLike(item.id);
-                    }}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      padding: 0,
-                      cursor: 'pointer',
-                    }}
-                    aria-label='좋아요'
-                  >
-                    <Heart
-                      css={s.heartMini}
-                      aria-hidden='true'
-                      fill={likeState.liked ? 'currentColor' : 'none'}
-                    />
+                {/* 하트는 카드 내부 고정 칸 */}
+                <div css={s.likeBox} onClick={(e) => e.stopPropagation()}>
+                  <button type="button" css={s.likeBtn} onClick={() => toggleLike(item.id)} aria-label="좋아요">
+                    <Heart css={s.heartMini} fill={likeState.liked ? 'currentColor' : 'none'} />
                   </button>
                   <span css={s.countMini}>{likeState.count}</span>
                 </div>
@@ -192,58 +173,63 @@ function CommunityPage() {
         </div>
       </div>
 
-      {/* ===== Modal ===== */}
+      {/* 모달 */}
       {open && selected && (
-        <div css={s.modalOverlay} onClick={closeModal}>
+        <div
+          css={s.modalOverlay}
+          onClick={() => {
+            setOpen(false);
+            setSelectedId(null);
+          }}
+        >
           <div css={s.modalBody} onClick={(e) => e.stopPropagation()}>
-            <button css={s.modalClose} onClick={closeModal} aria-label='닫기'>
+            <button
+              css={s.modalClose}
+              onClick={() => {
+                setOpen(false);
+                setSelectedId(null);
+              }}
+              aria-label="닫기"
+            >
               ×
             </button>
 
             <div css={s.menuCard}>
-              <div css={s.inner}>
-                <img css={s.img} src={selected.imgUrl} alt={selected.title} />
+              <img css={s.img} src={selected.imgUrl} alt={selected.title} />
+              <h2 css={s.modalTitle}>{selected.title}</h2>
 
-                <h2 css={s.modalTitle}>{selected.title}</h2>
-
-                <div css={s.meta}>
-                  <div>
-                    <span>작성자 :</span> {selected.author}
-                  </div>
-                  <div>
-                    <span>빵 :</span> {selected.bread}
-                  </div>
-                  <div>
-                    <span>치즈 :</span> {selected.cheese}
-                  </div>
-                  <div>
-                    <span>야채 :</span> {selected.veggies.join(', ')}
-                  </div>
+              <div css={s.meta}>
+                <div>
+                  <span>작성자 :</span> {selected.author}
                 </div>
-
-                {/* ✅ 모달 하트 (리스트와 동일 state 사용) */}
-                <div css={s.like}>
-                  <button
-                    type='button'
-                    onClick={() => toggleLike(selected.id)}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      padding: 0,
-                      cursor: 'pointer',
-                    }}
-                    aria-label='좋아요'
-                  >
-                    <Heart
-                      css={s.heart}
-                      aria-hidden='true'
-                      fill={likes[selected.id]?.liked ? 'currentColor' : 'none'}
-                    />
-                  </button>
-                  <span css={s.count}>
-                    {likes[selected.id]?.count ?? selected.likeCount}
-                  </span>
+                <div>
+                  <span>베이스 :</span> {selected.base ?? '선택 안함'}
                 </div>
+                <div>
+                  <span>빵 :</span> {selected.bread ?? '선택 안함'}
+                </div>
+                <div>
+                  <span>치즈 :</span> {selected.cheese ?? '선택 안함'}
+                </div>
+                <div>
+                  <span>야채 :</span>{' '}
+                  {Array.isArray(selected.veggies) && selected.veggies.length
+                    ? selected.veggies.join(', ')
+                    : '선택 안함'}
+                </div>
+                <div>
+                  <span>소스 :</span>{' '}
+                  {Array.isArray(selected.sauce) && selected.sauce.length
+                    ? selected.sauce.join(', ')
+                    : '선택 안함'}
+                </div>
+              </div>
+
+              <div css={s.modalLike}>
+                <button type="button" css={s.likeBtn} onClick={() => toggleLike(selected.id)} aria-label="좋아요">
+                  <Heart css={s.heart} fill={likes[selected.id]?.liked ? 'currentColor' : 'none'} />
+                </button>
+                <span css={s.count}>{likes[selected.id]?.count ?? selected.likeCount}</span>
               </div>
             </div>
           </div>
