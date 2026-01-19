@@ -35,12 +35,10 @@ function LittleCommunity() {
     },
   ]);
 
-
-
   const [user] = useState({ name: '진현', id: 'jinhyeon123' });
 
-    // 2. 좋아요 클릭 시 데이터가 실제로 바뀌도록 로직 수정
-    const handleLike = (id) => {
+  // ✅ [수정] 좋아요 클릭 시 해당 카드의 likes 숫자와 isLiked 상태를 동시에 토글
+  const handleLike = (id) => {
     setPresets((prevPresets) => 
       prevPresets.map((preset) => {
         if (preset.id === id) {
@@ -56,10 +54,34 @@ function LittleCommunity() {
     );
   };
 
+  const handleStartOrder = () => console.log('주문 시작!');
+  const handleNavigateCommunity = () => console.log('커뮤니티 이동!');
+  const handleCopy = (preset) => console.log(preset.title + ' 복사됨!');
 
-    const handleStartOrder = () => console.log('주문 시작!');
-    const handleNavigateCommunity = () => console.log('커뮤니티 이동!');
-    const handleCopy = (preset) => console.log(preset.title + ' 복사됨!');
+
+    // 2. 좋아요 클릭 시 데이터가 실제로 바뀌도록 로직 수정
+    // <div css={S.like}>
+    //           <button
+    //             type='button'
+    //               onClick={() => toggleLike(selected.id)}
+    //               style={{
+    //                 background: 'transparent',
+    //                 border: 'none',
+    //                 padding: 0,
+    //                 cursor: 'pointer',
+    //               }}
+    //               aria-label='좋아요'
+    //             >
+    //               <Heart
+    //                   css={S.heart}
+    //                   aria-hidden='true'
+    //                   fill={likes[selected.id]?.liked ? 'currentColor' : 'none'}
+    //                 />
+    //               </button>
+    //               <span css={S.count}>
+    //                 {likes[selected.id]?.count ?? selected.likeCount}
+    //               </span>
+    //             </div>
 
     return (
       <div css={S.pageWrapper}>
@@ -74,4 +96,5 @@ function LittleCommunity() {
       </div>
     );
   }
+
 export default LittleCommunity;

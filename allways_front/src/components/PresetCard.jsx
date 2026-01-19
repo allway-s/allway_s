@@ -36,8 +36,8 @@ export function PresetCard({ preset, onLike, onCopy }) {
           <Heart 
             size={28} 
             /* ✅ 3. 하트 아이콘의 색상과 채우기 상태 제어 */
-            color={isLiked ? likedColor : defaultColor} 
-            fill={isLiked ? likedColor : "none"} 
+            // color={isLiked ? likedColor : defaultColor} 
+            // fill={isLiked ? likedColor : "none"} 
           />
           {/* ✅ 4. likeCount 스타일에 isLiked 전달하여 숫자 색상 변경 */}
           <span css={S.likeCount(isLiked)}>{preset.likes || 0}</span>
