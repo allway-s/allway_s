@@ -20,7 +20,6 @@ import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
 import Header from './components/header.jsx';
 import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
 import CommunityPage from './pages/CommunityPage/CommunityPage.jsx';
-import CommunityWritePage from './pages/CommunityPage/CommunityWritePage.jsx';
 import CustomPage from './pages/order/CustomPage.jsx';
 import { api, ResponseInterceptor } from './apis/config/axiosConfig.js';
 
