@@ -27,7 +27,6 @@ function CustomPage() {
     const [ingredients, setIngredients] = useState([]); 
     const [selectedIngredients, setSelectedIngredients] = useState({});
     const [quantity, setQuantity] = useState(1);
-    
     const currentCategory = categories[step - 1];
 
     useEffect(() => {
@@ -165,6 +164,7 @@ function CustomPage() {
                         );
                     })}
                 </div>
+
             </div>
 
             <div css={footerStyle}>
