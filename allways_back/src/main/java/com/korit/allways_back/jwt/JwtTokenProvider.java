@@ -19,9 +19,9 @@ public class JwtTokenProvider {
     private final SecretKey key;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
-        // 1. Base64로 된 88글자를 진짜 64바이트 데이터로 해독(Decode)
+        // Base64로 된 88글자를 진짜 64바이트 데이터로 해독
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        // 2. 해독된 데이터를 바탕으로 HMAC-SHA 키 생성
+        // 해독된 데이터를 바탕으로 HMAC-SHA 키 생성
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -32,7 +32,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .subject(user.getEmail())             // 이메일
-                .claim("userId", user.getUserId())    // DB 식별자 (int)
+                .claim("userId", user.getUserId())    // DB 식별자
                 .claim("auth", "ROLE_USER")
                 .issuedAt(now)
                 .expiration(expiredTime)
@@ -40,6 +40,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    // 유효성 검사(필터에서 쓸 거)
     public boolean validateToken(String token) {
         try {
             Jwts.parser()

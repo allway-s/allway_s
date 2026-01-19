@@ -14,6 +14,14 @@ public class UserService {
     private final UserMapper userMapper;
 
     public User registerNewUser(SignupRequestDto dto) {
+
+        // 중복 검사
+        User existingUser = userMapper.findByOauth2Id(dto.getOauth2Id());
+        if (existingUser != null) {
+            return existingUser;
+        }
+
+        // dto -> user
         User user = User.builder()
                 .oauth2Id(dto.getOauth2Id())
                 .email(dto.getEmail())
