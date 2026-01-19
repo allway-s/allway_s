@@ -1,194 +1,475 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import { css } from "@emotion/react";
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { S } from './CartPage.styles.js';
-import MainLogo from '../../assets/images/MainUpperImages/MainLogo2.png';
-import OrderImg1 from '../../assets/images/PresetImages/PresetImage1.png';
-import OrderImg2 from '../../assets/images/PresetImages/PresetImage2.png';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { 
+    getCart, 
+    updateCartItemQuantity, 
+    removeFromCart, 
+    clearCart
+} from '../../utils/cartStore';
+import { createOrder } from '../../apis/items/orderApi';
 
 const CartPage = () => {
-  const navigate = useNavigate();
-  
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "안창 비프&머쉬룸", ingredientIds: [10, 22, 35], price: 19700, quantity: 1, image: OrderImg1, selectedOption: "쿠키 음료 세트" },
-    { id: 2, name: "에그마요", ingredientIds: [5, 12, 40], price: 15500, quantity: 1, image: OrderImg2, selectedOption: "단품" }
-  ]);
+    const [cart, setCart] = useState({ orders: [] });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
+    const navigate = useNavigate();
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [orderType, setOrderType] = useState('배달');
-  const [deliveryFee, setDeliveryFee] = useState(3000);
-  const [openOptionId, setOpenOptionId] = useState(null);
+    useEffect(() => {
+        loadCart();
+    }, []);
 
-  const orderOptions = [
-    { label: '배달', fee: 3000 },
-    { label: '픽업', fee: 0 },
-    { label: '매장에서 취식', fee: 0 }
-  ];
+    const loadCart = () => {
+        setCart(getCart());
+    };
 
-  const productOptions = ["단품", "쿠키 음료 세트", "웨지 감자 세트"];
+    const handleQuantityChange = (index, newQuantity) => {
+        if (newQuantity < 1 || newQuantity > 100) return;
+        updateCartItemQuantity(index, newQuantity);
+        loadCart();
+    };
 
+    const handleRemoveItem = (index) => {
+        if (window.confirm('이 상품을 삭제하시겠습니까?')) {
+            removeFromCart(index);
+            loadCart();
+        }
+    };
 
-  const handleOrder = () => {
-    if (cartItems.length === 0) {
-      alert("장바구니가 비어있습니다. 상품을 담아주세요!");
-      return;
-    }
+    const handleClearCart = () => {
+        if (window.confirm('장바구니를 비우시겠습니까?')) {
+            clearCart();
+            loadCart();
+        }
+    };
 
-    const confirmMessage = `${orderType}(으)로 총 ${totalPrice.toLocaleString()}원을 주문하시겠습니까?`;
-    
-    if (window.confirm(confirmMessage)) {
-      alert("주문이 성공적으로 접수되었습니다!");
-      setCartItems([]); 
-      navigate('/'); 
-    }
-  };
+    const getTotalQuantity = () => {
+        return cart.orders.reduce((sum, item) => sum + item.quantity, 0);
+    };
 
-  const updateQuantity = (id, delta) => {
-    setCartItems(prev => prev.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-    ));
-  };
+    const handleOrder = async () => {
+        if (cart.orders.length === 0) {
+            alert('장바구니가 비어있습니다.');
+            return;
+        }
 
-  const removeItem = (id) => {
-    if (window.confirm("선택한 상품을 삭제하시겠습니까?")) {
-      setCartItems(prev => prev.filter(item => item.id !== id));
-    }
-  };
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
 
-  const handleTypeSelect = (opt) => {
-    setOrderType(opt.label);
-    setDeliveryFee(opt.fee);
-    setIsDropdownOpen(false);
-  };
+        try {
+            // 백엔드로 장바구니 데이터 그대로 전송
+            const response = await createOrder(cart);
+            
+            setSuccess({
+                message: '주문이 완료되었습니다!',
+                orderId: response.data.orderId,
+                totalPrice: response.data.totalPrice,
+                orderedAt: response.data.orderedAt
+            });
 
-  const handleOptionSelect = (itemId, option) => {
-    setCartItems(prev => prev.map(item => 
-      item.id === itemId ? { ...item, selectedOption: option } : item
-    ));
-    setOpenOptionId(null);
-  };
+            // 장바구니 비우기
+            clearCart();
+            loadCart();
 
-  const subTotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const totalPrice = cartItems.length > 0 ? subTotal + deliveryFee : 0;
+            // 3초 후 메인 페이지로 이동
+            setTimeout(() => {
+                navigate('/menu');
+            }, 3000);
 
-  return (
-    <div css={S.container}>
-      {/* [추가] 마이프리셋/마이페이지와 동일한 타이틀 영역 이식 */}
-      <section css={S.titleSection}>
-        <div css={S.titleContainer}>
-          <h1 css={S.mainTitle}>
-            Cart <span css={S.yellowText}>List</span>
-          </h1>
-        </div>
-      </section>
+        } catch (err) {
+            console.error('주문 실패:', err);
+            
+            if (err.response?.status === 401) {
+                setError('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                setTimeout(() => navigate('/login'), 2000);
+            } else {
+                setError(err.response?.data?.message || '주문 처리 중 오류가 발생했습니다.');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  {/* [수정] 메인 컨텐츠를 S.main으로 감싸 너비(1200px)와 중앙 정렬 유지 */}
-      <main css={S.main}>
-        <div css={S.contentWrapper}>
-          
-          {/* 장바구니 상품 리스트 */}
-          <div css={S.cartList}>
-            {cartItems.length > 0 ? (
-              cartItems.map(item => (
-                <div key={item.id} css={S.cartItemCard}>
-                  <div className="item-main">
-                    <div className="info-flex">
-                      <div css={S.itemImage}>
-                        <img src={item.image} alt={item.name} />
-                      </div>
-                      <div css={S.itemInfo}>
-                        <span className="item-name">{item.name}</span>
-                        <span className="item-sub">{item.selectedOption}</span>
-                        <span className="item-price">{(item.price * item.quantity).toLocaleString()}원</span>
-                        
-                        <div css={S.quantityControl}>
-                          <button onClick={() => updateQuantity(item.id, -1)}>-</button>
-                          <span>{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, 1)}>+</button>
-                        </div>
-                      </div>
-                    </div>
-                    <button className="delete-icon-btn" onClick={() => removeItem(item.id)}>삭제</button>
-                  </div>
+    return (
+        <div css={containerStyle}>
+            <header css={headerStyle}>
+                <button css={backButtonStyle} onClick={() => navigate('/menu')}>
+                    ← 메뉴로 돌아가기
+                </button>
+                <h1 css={titleStyle}>장바구니</h1>
+                <div css={spacerStyle} />
+            </header>
 
-                  {/* 옵션 변경 드롭다운 영역 */}
-                  <div css={S.itemOptionDropdown}>
-                    <div 
-                      className="dropdown-header" 
-                      onClick={() => setOpenOptionId(openOptionId === item.id ? null : item.id)}
-                    >
-                      <span>옵션변경</span>
-                      {openOptionId === item.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                    </div>
-                    
-                    {openOptionId === item.id && (
-                      <ul className="option-list">
-                        {productOptions.map(opt => (
-                          <li key={opt} onClick={() => handleOptionSelect(item.id, opt)}>
-                            {opt}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+            {error && (
+                <div css={errorBoxStyle}>
+                    ⚠️ {error}
                 </div>
-              ))
-            ) : (
-              <div style={{ textAlign: 'center', padding: '100px 0', color: '#999', fontSize: '1.2rem' }}>
-                장바구니가 비어있습니다.
-              </div>
             )}
-          </div>
 
-          {/* 우측 주문 정보 사이드바 */}
-          <aside css={S.orderSidebar}>
-            <h2>주문 정보</h2>
-            <div css={S.infoSection}>
-              {/* 배달/픽업 선택 드롭다운 */}
-              <div css={S.typeSelector}>
-                <div className="selected-item" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-                  <div>
-                    <span>{orderType}</span>
-                    {deliveryFee > 0 && <span className="fee-highlight">+{deliveryFee.toLocaleString()} 원</span>}
-                  </div>
-                  {isDropdownOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            {success && (
+                <div css={successBoxStyle}>
+                    <div css={successTitleStyle}>✅ {success.message}</div>
+                    <div css={successDetailStyle}>
+                        주문번호: {success.orderId}<br/>
+                        결제금액: {success.totalPrice?.toLocaleString()}원
+                    </div>
                 </div>
+            )}
 
-                {isDropdownOpen && (
-                  <ul className="options-list">
-                    {orderOptions.map((opt) => (
-                      <li key={opt.label} onClick={() => handleTypeSelect(opt)}>
-                        <span>{opt.label}</span>
-                        {opt.fee > 0 && <span className="fee-text">+{opt.fee.toLocaleString()} 원</span>}
-                      </li>
-                    ))}
-                  </ul>
+            <div css={contentStyle}>
+                {cart.orders.length === 0 ? (
+                    <div css={emptyCartStyle}>
+                        <div css={emptyIconStyle}>🛒</div>
+                        <h2>장바구니가 비어있습니다</h2>
+                        <button css={goMenuButtonStyle} onClick={() => navigate('/menu')}>
+                            메뉴 보러가기
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        <div css={cartHeaderStyle}>
+                            <h2>주문 내역 ({cart.orders.length}개 상품)</h2>
+                            <button css={clearButtonStyle} onClick={handleClearCart}>
+                                전체 삭제
+                            </button>
+                        </div>
+
+                        <div css={cartListStyle}>
+                            {cart.orders.map((item, index) => (
+                                <div key={index} css={cartItemStyle}>
+                                    <div css={itemDetailsStyle}>
+                                        <h3 css={itemNameStyle}>
+                                            상품 ID: {item.itemId}
+                                        </h3>
+                                        
+                                        {item.ingredientIds && item.ingredientIds.length > 0 && (
+                                            <div css={ingredientsListStyle}>
+                                                <strong>재료 ID:</strong>
+                                                <div css={ingredientTagsStyle}>
+                                                    {item.ingredientIds.map((ingId, i) => (
+                                                        <span key={i} css={ingredientTagStyle}>
+                                                            {ingId}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div css={itemInfoTextStyle}>
+                                            수량: {item.quantity}개
+                                        </div>
+                                    </div>
+
+                                    <div css={itemActionsStyle}>
+                                        <div css={quantityControlStyle}>
+                                            <button 
+                                                css={qtyButtonStyle}
+                                                onClick={() => handleQuantityChange(index, item.quantity - 1)}
+                                                disabled={loading}
+                                            >
+                                                -
+                                            </button>
+                                            <span css={qtyDisplayStyle}>{item.quantity}</span>
+                                            <button 
+                                                css={qtyButtonStyle}
+                                                onClick={() => handleQuantityChange(index, item.quantity + 1)}
+                                                disabled={loading}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                        <button 
+                                            css={removeButtonStyle}
+                                            onClick={() => handleRemoveItem(index)}
+                                            disabled={loading}
+                                        >
+                                            삭제
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div css={summaryBoxStyle}>
+                            <div css={summaryRowStyle}>
+                                <span>총 상품 개수</span>
+                                <span>{getTotalQuantity()}개</span>
+                            </div>
+                            <div css={noteStyle}>
+                                * 최종 금액은 주문 시 서버에서 계산됩니다
+                            </div>
+                        </div>
+
+                        <div css={actionButtonsStyle}>
+                            <button 
+                                css={orderButtonStyle}
+                                onClick={handleOrder}
+                                disabled={loading}
+                            >
+                                {loading ? '주문 처리 중...' : '주문하기'}
+                            </button>
+                        </div>
+                    </>
                 )}
-              </div>
-
-              <div className="label-group">
-                <label>연락처</label>
-                <input type="text" value="010-1234-5678" readOnly />
-              </div>
-              <div className="label-group">
-                <label>주소</label>
-                <input type="text" value="경남 김해시 장유3동" readOnly />
-              </div>
             </div>
-
-            <div css={S.totalPriceArea}>
-              <span>총 금액</span>
-              <strong>{totalPrice.toLocaleString()} 원</strong>
-            </div>
-            <button css={S.orderButton} onClick={handleOrder}>
-              {totalPrice.toLocaleString()}원 주문하기
-            </button>
-          </aside>
         </div>
-      </main>
-    </div>
-  );
+    );
 };
+
+// 스타일 정의
+const containerStyle = css`
+    min-height: 100vh;
+    background: #f5f5f5;
+`;
+
+const headerStyle = css`
+    background: white;
+    padding: 20px 40px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const backButtonStyle = css`
+    background: #008C45;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    &:hover { background: #006633; }
+`;
+
+const titleStyle = css`
+    margin: 0;
+    font-size: 28px;
+    color: #333;
+`;
+
+const spacerStyle = css`
+    width: 120px;
+`;
+
+const errorBoxStyle = css`
+    background: #fee;
+    color: #c00;
+    padding: 15px;
+    margin: 20px 40px;
+    border-radius: 5px;
+    border: 1px solid #fcc;
+`;
+
+const successBoxStyle = css`
+    background: #efe;
+    padding: 20px;
+    margin: 20px 40px;
+    border-radius: 5px;
+    border: 1px solid #cfc;
+`;
+
+const successTitleStyle = css`
+    font-size: 18px;
+    font-weight: bold;
+    color: #060;
+    margin-bottom: 10px;
+`;
+
+const successDetailStyle = css`
+    color: #060;
+    line-height: 1.6;
+`;
+
+const contentStyle = css`
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+`;
+
+const emptyCartStyle = css`
+    text-align: center;
+    padding: 100px 20px;
+`;
+
+const emptyIconStyle = css`
+    font-size: 80px;
+    margin-bottom: 20px;
+`;
+
+const goMenuButtonStyle = css`
+    background: #008C45;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    &:hover { background: #006633; }
+`;
+
+const cartHeaderStyle = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+`;
+
+const clearButtonStyle = css`
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover { background: #cc0000; }
+`;
+
+const cartListStyle = css`
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+`;
+
+const cartItemStyle = css`
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    &:last-child {
+        border-bottom: none;
+    }
+`;
+
+const itemDetailsStyle = css`
+    flex: 1;
+`;
+
+const itemNameStyle = css`
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+`;
+
+const ingredientsListStyle = css`
+    margin: 10px 0;
+    font-size: 14px;
+`;
+
+const ingredientTagsStyle = css`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+`;
+
+const ingredientTagStyle = css`
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+`;
+
+const itemInfoTextStyle = css`
+    color: #666;
+    font-size: 14px;
+    margin-top: 10px;
+`;
+
+const itemActionsStyle = css`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+`;
+
+const quantityControlStyle = css`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+`;
+
+const qtyButtonStyle = css`
+    background: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #008C45;
+    &:hover { background: #f0f0f0; }
+`;
+
+const qtyDisplayStyle = css`
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+`;
+
+const removeButtonStyle = css`
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    &:hover { background: #cc0000; }
+`;
+
+const summaryBoxStyle = css`
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+`;
+
+const summaryRowStyle = css`
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+`;
+
+const noteStyle = css`
+    color: #666;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+`;
+
+const actionButtonsStyle = css`
+    display: flex;
+    gap: 15px;
+`;
+
+const orderButtonStyle = css`
+    flex: 1;
+    background: #008C45;
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    &:hover { background: #006633; }
+    &:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+`;
 
 export default CartPage;

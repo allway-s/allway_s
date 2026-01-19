@@ -13,7 +13,7 @@ export const LoginSuccess = ({setIsLoggedIn}) => {
             return; // 아래 로직은 실행하지 않고 종료
         }
         const token = searchParams.get("token");
-
+        
         if (token) {
             localStorage.setItem("accessToken", token);
             // 토큰 유효성 검증
