@@ -16,19 +16,20 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-
 public class PrincipalUser extends DefaultOAuth2User {
     private final User user;
 
     public PrincipalUser(User user, Map<String, Object> attributes, String nameAttributeKey) {
         // 부모 클래스에 권한(ROLE_USER), 속성, 식별자 키를 전달
         super(List.of(new SimpleGrantedAuthority("ROLE_USER")), attributes, nameAttributeKey);
+
         this.user = user;
     }
 
     // 유저 정보를 꺼낼 수 있는 static 메서드
     public static PrincipalUser get() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication == null || !(authentication.getPrincipal() instanceof PrincipalUser)) {
             return null;
         }
