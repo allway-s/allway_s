@@ -41,9 +41,23 @@ export default function MyPreSet() {
               </ul>
 
               <div css={S.buttonGroup}>
-                <button css={S.btnAction}>공유</button>
-                <button css={S.btnAction}>수정</button>
-                <button css={S.btnOrder}>주문</button>
+                <button css={S.btnShare}>공유</button>
+                <button css={S.btnEdit}>수정</button>
+                <button 
+                  css={S.btnOrder}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 부모 카드(프리셋 관리)로 이동하는 이벤트 전파 방지
+                                    
+                    // confirm 창은 확인을 누르면 true, 취소를 누르면 false를 반환합니다.
+                    const isConfirmed = window.confirm('해당 구성으로 주문 페이지로 이동하시겠습니까?');
+                                    
+                    if (isConfirmed) {
+                      navigate('/menu'); // 확인을 눌렀을 때만 이동 (실제 주문 경로로 수정하세요)
+                      }
+                    }}
+                >
+                  주문
+                </button>
               </div>
             </div>
           ))}

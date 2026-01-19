@@ -59,18 +59,40 @@ export const S = {
     justify-content: flex-end;
     align-items: flex-end;
   `,
-  likeButton: css`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+
+  // ✅ 수정된 방식 (함수 형태로 변경)
+  likeButton: (isLiked) => css`
     background: none;
     border: none;
     cursor: pointer;
-    gap: 0.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    // ✨ 이 부분이 핵심입니다! 
+    // 내부의 Heart(svg) 아이콘 색상을 데이터 상태(isLiked)에 따라 바꿉니다.
+    svg {
+      fill: ${isLiked ? "#ff4d4f" : "none"};
+      stroke: ${isLiked ? "#ff4d4f" : "#000"};
+      transition: all 0.3s ease;
+    }
   `,
-  likeCount: css`
-    font-weight: 800;
+
+
+  likeCount: (isLiked) => css`
     font-size: 1rem;
-    color: #000;
+    font-weight: 800;
+    color: ${isLiked ? "#ff4d4f" : "#000"}; /* 좋아요 시 숫자도 빨간색으로 */
+    transition: color 0.3s ease;
   `,
 };
