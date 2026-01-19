@@ -59,18 +59,27 @@ export const S = {
     justify-content: flex-end;
     align-items: flex-end;
   `,
-  likeButton: css`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  
+  // ✅ 수정된 방식 (함수 형태로 변경)
+  likeButton: (isLiked) => css`
     background: none;
     border: none;
     cursor: pointer;
-    gap: 0.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
   `,
-  likeCount: css`
-    font-weight: 800;
+
+
+  likeCount: (isLiked) => css`
     font-size: 1rem;
-    color: #000;
+    font-weight: 800;
+    color: ${isLiked ? "#ff4d4f" : "#000"}; /* 좋아요 시 숫자도 빨간색으로 */
   `,
 };

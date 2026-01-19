@@ -19,6 +19,7 @@ export const S = {
   logoArea: css`
     cursor: pointer;
   `,
+
   logoText: css`
     font-size: 1.5rem;
     font-weight: 900;
@@ -113,26 +114,27 @@ export const S = {
       object-fit: contain;
     }
   `,
+
   infoList: css`
     list-style: none;
     padding: 0;
     width: 100%;
     margin-bottom: 25px;
     li {
-      background-color: #f1f1f1;
+      background-color: #cbe45d;
       border-radius: 12px;
       padding: 10px 15px;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 0.85rem;
-      color: #333;
+      font-size: 0.9rem;
+      color: #ffffff;
     }
   `,
   badge: css`
-    background-color: #999;
-    color: #fff;
+    background-color: #4df545;
+    color: #2db315;
     font-size: 0.7rem;
     font-weight: bold;
     padding: 3px 8px;
@@ -145,17 +147,43 @@ export const S = {
     gap: 10px;
     width: 100%;
   `,
-  btnAction: css`
+
+  // 공유 버튼 (노란색 계열)
+  btnShare: css`
     flex: 1;
-    background-color: #d9d9d9;
+    background-color: #ffc107;
     border: none;
     border-radius: 12px;
     padding: 12px 0;
     font-weight: bold;
-    color: #666;
+    color: #fff;
     cursor: pointer;
-    &:hover { background-color: #ccc; }
+    transition: all 0.3s ease-in-out;
+
+    &:hover { 
+      background-color: #fcff5a; 
+      opacity: 0.9;
+    }
   `,
+
+  // 수정 버튼 (다른 색상, 예: 주황색 혹은 연한 초록)
+  btnEdit: css`
+    flex: 1;
+    background-color: #ff8c00; /* 예시로 주황색 설정 */
+    border: none;
+    border-radius: 12px;
+    padding: 12px 0;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover { 
+      background-color: #ffb347; 
+      opacity: 0.9;
+    }
+  `,
+
   btnOrder: css`
     flex: 1;
     background-color: #009223; /* 주문 버튼 초록색으로 강조 */
@@ -165,6 +193,11 @@ export const S = {
     font-weight: bold;
     color: #fff;
     cursor: pointer;
-    &:hover { background-color: #007a1d; }
+
+    transition: all 0.3s ease-in-out;
+
+    &:hover { background-color: #23d44d; 
+     opacity: 0.9;
+    }
   `,
 };

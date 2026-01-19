@@ -59,10 +59,21 @@ export const MyPage = () => {
                 <div css={S.imgBox}>샌드위치 이미지</div>
                 <p style={{ fontWeight: 'bold', margin: '10px 0 5px' }}>새우를 극상으로</p>
                 <p style={{ fontSize: '0.8rem', color: '#888' }}>작성자 : {userName}</p>
-                <button css={S.orderBtn} onClick={(e) => {
-                  e.stopPropagation();
-                  alert('주문 페이지로 이동합니다.');
-                }}>주문하기</button>
+                <button 
+                  css={S.orderBtn} 
+                  onClick={(e) => {
+                    e.stopPropagation(); // 부모 카드(프리셋 관리)로 이동하는 이벤트 전파 방지
+                    
+                    // confirm 창은 확인을 누르면 true, 취소를 누르면 false를 반환합니다.
+                    const isConfirmed = window.confirm('해당 구성으로 주문 페이지로 이동하시겠습니까?');
+                    
+                    if (isConfirmed) {
+                      navigate('/menu'); // 확인을 눌렀을 때만 이동 (실제 주문 경로로 수정하세요)
+                    }
+                  }}
+                >
+                  주문하기
+                </button>
               </div>
             ))}
           </div>
