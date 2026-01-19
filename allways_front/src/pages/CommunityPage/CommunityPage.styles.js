@@ -2,53 +2,60 @@ import { css } from '@emotion/react';
 
 export const s = {
   page: css`
-    padding: 24px 100px;
-    margin: 0 auto;
+    padding: 24px 0;
   `,
 
+  /* 상단 버튼/리스트가 모두 이 컨테이너 폭을 공유함 */
   container: css`
-    max-width: 1100px;
+    width: min(1100px, 100%);
     margin: 0 auto;
     padding: 0 24px;
     box-sizing: border-box;
   `,
 
-  topBar: css`
+  /* ===== 상단 컨트롤 (정렬 + 작성버튼) ===== */
+  controlsRow: css`
     display: flex;
-    justify-content: space-between; /* ⭐ 오른쪽 끝 */
-    padding: 0 80px;
-
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     margin: 12px 0 16px;
+
+    /* 화면 좁으면 줄바꿈되되, 라인은 유지 */
+    flex-wrap: wrap;
   `,
+
   sortSelect: css`
-  height: 36px;
-  padding: 0 36px 0 14px;
-  border-radius: 14px;
-  border: 1.5px solid #111;
-  background: #fff;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
+    height: 36px;
+    width: 104px;
+    padding: 0 36px 0 14px;
+    border-radius: 14px;
+    border: 1.5px solid #111;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
 
-  appearance: none;        /* 기본 화살표 제거 */
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23111' stroke-width='2'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23111' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
 
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0,0,0,0.15);
-  }
-`,
-
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15);
+    }
+  `,
 
   addBtn: css`
     height: 44px;
+    width: 166px;
+    flex-shrink: 0;
     padding: 0 18px;
     border-radius: 14px;
     border: 1px solid #111;
     background: #fff;
-    font-weight: 900;
+    font-weight: 700;
     cursor: pointer;
 
     &:hover {
@@ -56,96 +63,108 @@ export const s = {
     }
   `,
 
-  /* ===== Feed list (한 줄 목록) ===== */
+  /* ===== 리스트 ===== */
   feedList: css`
     display: flex;
     flex-direction: column;
     gap: 12px;
-
-    align-items: center; /* ⭐ 가로(좌우) 가운데 */
   `,
 
+  /* 카드 내부를 3칸으로 고정: thumb / text / heart */
   feedItem: css`
-    width: 100%; /* ⭐ 화면 작아지면 같이 줄어듦 */
-    max-width: 900px; /* ⭐ 화면 크면 이 폭까지만 */
-    display: flex;
+    display: grid;
+    grid-template-columns: 56px 1fr 72px;
     align-items: center;
-    cursor: pointer;
+    gap: 16px;
 
-    padding: 18px 22px;
-    border: 2px solid #111;
+    width: 100%;
+    border: 1px solid #111;
     border-radius: 22px;
     background: #fff;
-    gap: 16px;
     box-sizing: border-box;
+    padding: 16px 18px;
+    cursor: pointer;
+
+    overflow: hidden; /* ⭐ 어떤 상황에도 하트/텍스트가 카드 밖으로 못 나감 */
   `,
 
   thumb: css`
     width: 56px;
     height: 56px;
     object-fit: contain;
-    flex-shrink: 0;
   `,
 
-  /* 텍스트 영역은 하트 공간을 절대 침범 못함 */
   textArea: css`
-    flex: 1;
-    min-width: 0; /* ⭐ 이게 ellipsis + 안밀림 핵심 */
-    padding-right: 56px; /* 하트 자리 */
+    min-width: 0; /* ⭐ ellipsis 핵심 */
   `,
 
   topRow: css`
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: baseline;
     gap: 12px;
-
-    min-width: 0; /* ⭐ 자식 title이 줄어들 수 있게 */
+    min-width: 0;
   `,
 
   feedTitle: css`
+    min-width: 0;
+    margin: 0;
     font-size: 17px;
     font-weight: 600;
-    margin: 0;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   `,
 
-  date: css`
+  feedBase: css`
+    min-width: 0;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  `,
+
+  subRow: css`
+    margin-top: 4px;
     font-size: 13px;
     font-weight: 700;
     color: #666;
+
     white-space: nowrap;
-    flex-shrink: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   `,
 
   desc: css`
     margin-top: 6px;
-    font-size: 14px;
+    font-size: 12px;
     color: #444;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   `,
 
-  /* ⭐ 하트 고정 영역 */
-  likeFixed: css`
-    width: 48px;
-    flex-shrink: 0; /* ⭐ 절대 줄어들지 않음 */
+  likeBox: css`
+    justify-self: end;
+    width: 72px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    font-weight: 800;
+    gap: 6px;
+    flex-shrink: 0;
   `,
 
-  likeMini: css`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
+  likeBtn: css`
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
   `,
 
   heartMini: css`
@@ -155,7 +174,7 @@ export const s = {
 
   countMini: css`
     font-size: 14px;
-    font-weight: 900;
+    font-weight: 600;
     color: #111;
   `,
 
@@ -172,39 +191,31 @@ export const s = {
 
   modalBody: css`
     position: relative;
-    width: 500px;
-    height: 400px;
-    justify-content: center;
-    align-items: center;
+    width: min(520px, 100%);
   `,
 
   modalClose: css`
     position: absolute;
-    right: 3px;
-    top: 3px;
+    right: 8px;
+    top: 8px;
     width: 42px;
     height: 42px;
     border-radius: 15px;
     background: #fff;
+    border: 1px solid #111;
     font-size: 20px;
     font-weight: 900;
     cursor: pointer;
     z-index: 9999;
   `,
 
-  /* ===== Card (모달 카드) ===== */
   menuCard: css`
     position: relative;
-    width: 100%;
     background: #fff;
     border: 2px solid #111;
-    border-radius: 15px;
+    border-radius: 18px;
     padding: 26px;
     box-sizing: border-box;
-  `,
-
-  inner: css`
-    position: relative;
   `,
 
   img: css`
@@ -226,7 +237,7 @@ export const s = {
   meta: css`
     display: grid;
     gap: 10px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: #444;
 
@@ -236,10 +247,10 @@ export const s = {
     }
   `,
 
-  like: css`
+  modalLike: css`
     position: absolute;
     right: 16px;
-    bottom: 24px;
+    bottom: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
