@@ -121,7 +121,7 @@ export const S = {
     width: 100%;
     margin-bottom: 25px;
     li {
-      background-color: #cbe45d;
+      background-color: hsla(223, 23%, 94%, 0.44);
       border-radius: 12px;
       padding: 10px 15px;
       margin-bottom: 8px;
@@ -129,12 +129,12 @@ export const S = {
       align-items: center;
       gap: 12px;
       font-size: 0.9rem;
-      color: #ffffff;
+      color: #c6c3c3;
     }
   `,
   badge: css`
-    background-color: #4df545;
-    color: #2db315;
+    background-color: #d1d6d1;
+    color: #ffffff;
     font-size: 0.7rem;
     font-weight: bold;
     padding: 3px 8px;
@@ -151,7 +151,7 @@ export const S = {
   // 공유 버튼 (노란색 계열)
   btnShare: css`
     flex: 1;
-    background-color: #ffc107;
+    background-color: #fcd971;
     border: none;
     border-radius: 12px;
     padding: 12px 0;
@@ -161,15 +161,15 @@ export const S = {
     transition: all 0.3s ease-in-out;
 
     &:hover { 
-      background-color: #fcff5a; 
+      background-color: #f3b20dff; 
       opacity: 0.9;
     }
   `,
 
-  // 수정 버튼 (다른 색상, 예: 주황색 혹은 연한 초록)
+  // 삭제 버튼 (다른 색상, 예: 주황색 혹은 연한 초록)
   btnDelete: css`
     flex: 1;
-    background-color: #ff8c00; /* 예시로 주황색 설정 */
+    background-color: #f6d5f8; /* 예시로 주황색 설정 */
     border: none;
     border-radius: 12px;
     padding: 12px 0;
@@ -179,14 +179,14 @@ export const S = {
     transition: all 0.3s ease-in-out;
 
     &:hover { 
-      background-color: #ffb347; 
+      background-color: #fa7de6; 
       opacity: 0.9;
     }
   `,
 
   btnOrder: css`
     flex: 1;
-    background-color: #009223; /* 주문 버튼 초록색으로 강조 */
+    background-color: #b7dff8; /* 주문 버튼 초록색으로 강조 */
     border: none;
     border-radius: 12px;
     padding: 12px 0;
@@ -196,7 +196,7 @@ export const S = {
 
     transition: all 0.3s ease-in-out;
 
-    &:hover { background-color: #23d44d; 
+    &:hover { background-color: #34d4dc; 
      opacity: 0.9;
     }
   `,
