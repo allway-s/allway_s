@@ -64,12 +64,6 @@ export const Signup = ({setIsLoggedIn}) => {
 
   return (
     <div css={S.container}>
-      {/* <header css={S.header}>
-        <div css={S.logo} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          ALLWAY-<span>S</span>
-        </div>
-      </header> */}
-
       <main css={S.card}>
         <h2 css={S.title}>추가 정보 입력</h2>
         
