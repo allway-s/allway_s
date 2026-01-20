@@ -7,11 +7,6 @@ export const LoginSuccess = ({setIsLoggedIn}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // 이미 토큰이 있는 유저가 들어온 경우 차단
-        if (!!localStorage.getItem("accessToken")) {
-            navigate("/", { replace: true });
-            return; // 아래 로직은 실행하지 않고 종료
-        }
         const token = searchParams.get("token");
         
         if (token) {
