@@ -15,5 +15,5 @@ public class Preset {
     private int userId;
     private int productId;
     private String presetName;
-
+    private String imgUrl;
 }

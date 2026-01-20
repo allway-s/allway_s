@@ -28,7 +28,10 @@
     </select>
 
     <delete id="deleteLikeLog">
-        delete from like_tb where user_id = #{userId} and post_id = #{postId}
+        delete
+            from like_tb
+        where
+            user_id = #{userId} and post_id = #{postId}
     </delete>
 
     <update id="decrementLikeCount">
