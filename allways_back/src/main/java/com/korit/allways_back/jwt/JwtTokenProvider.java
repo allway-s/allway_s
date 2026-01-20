@@ -28,7 +28,7 @@ public class JwtTokenProvider {
     // User 엔티티를 받아서 토큰 생성
     public String createToken(User user) {
         Date now = new Date();
-        Date expiredTime = new Date(now.getTime() + (5 * 60 * 1000)); // 24시간
+        Date expiredTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
 
         return Jwts.builder()
                 .subject(user.getEmail())             // 이메일

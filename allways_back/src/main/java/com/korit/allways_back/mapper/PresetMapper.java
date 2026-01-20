@@ -14,7 +14,7 @@ public interface PresetMapper {
 
     List<Preset> findByUserId(int userId);
 
-    List<PresetRespDto> orderToPreset(int productId);
+    List<PresetRespDto> orderToPreset(@Param("productId") int productId);
 
     void deleteById(
             @Param("userId") int userId,

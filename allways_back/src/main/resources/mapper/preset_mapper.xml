@@ -4,8 +4,9 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.allways_back.mapper.PresetMapper">
     <insert id="createPreset" useGeneratedKeys="true" keyProperty="presetId">
-        insert into preset_tb
-            values
+        insert into
+            preset_tb (preset_id, user_id, product_id, preset_name)
+        values
             (default, #{userId}, #{productId}, #{presetName})
     </insert>
     <select id="findByUserId" resultType="com.korit.allways_back.entity.Preset">
@@ -36,7 +37,7 @@
             preset_tb
         where
             user_id = #{userId}
-            and preset_id = #{presetId}
+                and preset_id = #{presetId}
     </delete>
 
 </mapper>

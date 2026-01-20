@@ -26,6 +26,7 @@ public class PresetService {
                         Collectors.mapping(PresetRespDto::getIngredientId, Collectors.toList())
                 ));
     }
+
     @Transactional
     public void scrapPreset(int userId, int productId, String presetName) {
 
@@ -36,6 +37,11 @@ public class PresetService {
                 .build();
 
         presetMapper.createPreset(newPreset);
+    }
+
+    public List<Preset> getUserPresets(int userId) {
+        // Mapper를 통해 DB의 preset_tb에서 해당 유저의 데이터를 전부 가져옵니다.
+        return presetMapper.findByUserId(userId);
     }
 
 }
