@@ -64,10 +64,9 @@ function App() {
 
   // 이미 로그인한 사람 접근 차단
   const PublicRoute = ({ children }) => {
-    const token = localStorage.getItem('accessToken');
+    const token = !!localStorage.getItem('accessToken');
 
     if (token) {
-      alert("이미 로그인된 상태입니다. 메인 페이지로 이동합니다.");
       return <Navigate to="/" replace />; 
     }
     return children;
