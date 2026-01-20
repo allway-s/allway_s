@@ -121,7 +121,7 @@ export const S = {
     width: 100%;
     margin-bottom: 25px;
     li {
-      background-color: hsla(223, 23%, 94%, 0.44);
+      background-color: hsla(223, 12%, 89%, 0.44);
       border-radius: 12px;
       padding: 10px 15px;
       margin-bottom: 8px;
@@ -179,7 +179,7 @@ export const S = {
     transition: all 0.3s ease-in-out;
 
     &:hover { 
-      background-color: #fa7de6; 
+      background-color: #f51cd1; 
       opacity: 0.9;
     }
   `,
