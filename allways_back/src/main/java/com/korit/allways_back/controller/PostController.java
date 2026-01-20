@@ -39,15 +39,15 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/scrap")
-    public ResponseEntity<?> scrapPreset(@RequestBody PresetScrapReqDto dto) {
-        int userId = dto.getUserId();
-        int productId = dto.getProductId();
-        String presetName = dto.getPresetName();
-
-        presetService.scrapPreset(userId, productId, presetName);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/scrap")
+//    public ResponseEntity<?> scrapPreset(@RequestBody PresetScrapReqDto dto) {
+//        int userId = dto.getUserId();
+//        int productId = dto.getProductId();
+//        String presetName = dto.getPresetName();
+//
+//        presetService.scrapPreset(userId, productId, presetName);
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/getAllPost")
     public ResponseEntity<List<Post>> getAllPosts() {

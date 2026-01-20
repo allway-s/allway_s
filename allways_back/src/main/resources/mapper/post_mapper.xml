@@ -20,7 +20,17 @@
         values (#{userId}, #{postId})
     </insert>
     <select id="getAllPosts" resultType="com.korit.allways_back.entity.Post">
-        select * from post_tb order by posted_at desc
+        SELECT
+            p.post_id,
+            p.preset_id,
+            p.posted_at,
+            p.like_cnt,
+            i.img_url  FROM
+        post_tb p
+            JOIN preset_tb pr ON p.preset_id = pr.preset_id
+            JOIN item_tb i ON pr.product_id = i.item_id
+        ORDER BY
+            p.posted_at DESC
     </select>
 
     <select id="checkLikeExists" resultType="int">
