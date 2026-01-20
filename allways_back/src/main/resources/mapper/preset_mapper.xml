@@ -10,15 +10,16 @@
             (default, #{userId}, #{productId}, #{presetName})
     </insert>
     <select id="findByUserId" resultType="com.korit.allways_back.entity.Preset">
-        select
-            preset_id,
-            user_id,
-            product_id,
-            preset_name
-        from
-            preset_tb
-        where
-            user_id = #{userId}
+        SELECT
+            p.preset_id,
+            p.user_id,
+            p.product_id,
+            p.preset_name,
+            i.img_url
+        FROM
+            preset_tb p
+            LEFT JOIN item_tb i ON p.product_id = i.item_id WHERE
+            p.user_id = #{userId}
     </select>
 
     <select id="orderToPreset" resultType="com.korit.allways_back.dto.response.PresetRespDto">
@@ -39,5 +40,13 @@
             user_id = #{userId}
                 and preset_id = #{presetId}
     </delete>
+    <select id="countByUserId" resultType="_int">
+        SELECT COUNT(*) FROM preset_tb WHERE user_id = #{userId}
+    </select>
 
+    <select id="existsByUserIdAndProductId" resultType="boolean">
+        SELECT COUNT(*)
+        FROM preset_tb
+        WHERE user_id = #{userId} AND product_id = #{productId}
+    </select>
 </mapper>
