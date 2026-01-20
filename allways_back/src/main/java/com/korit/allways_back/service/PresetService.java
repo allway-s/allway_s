@@ -30,6 +30,16 @@ public class PresetService {
     @Transactional
     public void scrapPreset(int userId, int productId, String presetName) {
 
+        //
+        int currentCount = presetMapper.countByUserId(userId);
+        if (currentCount >= 10) {
+            throw new RuntimeException("프리셋은 최대 10개까지만 저장할 수 있습니다. 기존 프리셋을 삭제해주세요.");
+        }
+
+        if (presetMapper.existsByUserIdAndProductId(userId, productId)) {
+            throw new RuntimeException("이미 동일한 상품 구성의 프리셋이 저장되어 있습니다.");
+        }
+
         Preset newPreset = Preset.builder()
                 .userId(userId)
                 .productId(productId)
@@ -40,7 +50,6 @@ public class PresetService {
     }
 
     public List<Preset> getUserPresets(int userId) {
-        // Mapper를 통해 DB의 preset_tb에서 해당 유저의 데이터를 전부 가져옵니다.
         return presetMapper.findByUserId(userId);
     }
 
