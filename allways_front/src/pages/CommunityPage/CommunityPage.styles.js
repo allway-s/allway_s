@@ -209,6 +209,20 @@ export const s = {
     z-index: 9999;
   `,
 
+  saveBtn: css`
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    height: 42px;
+    border-radius: 15px;
+    border: 1px solid #111;
+    background-color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    z-index: 9999;
+  `,
+
   menuCard: css`
     position: relative;
     background: #fff;
@@ -260,11 +274,12 @@ export const s = {
   heart: css`
     width: 44px;
     height: 44px;
+    font-weight: 700;
   `,
 
   count: css`
     font-size: 24px;
-    font-weight: 900;
+    font-weight: 700;
     color: #111;
   `,
 };
