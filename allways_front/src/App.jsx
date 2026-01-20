@@ -136,7 +136,7 @@ function App() {
         */}
         <Route path="/login" element={<PublicRoute><Login setIsLoggedIn={setIsLoggedIn} /></PublicRoute>} />
         <Route path="/auth/signup" element={<PublicRoute><Signup setIsLoggedIn={setIsLoggedIn}/></PublicRoute>} />
-        <Route path="/auth/oauth2/login/success" element={<LoginSuccess setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/auth/oauth2/login/success" element={<PublicRoute><LoginSuccess setIsLoggedIn={setIsLoggedIn}/></PublicRoute>} />
 
         {/* 메뉴 관련은 누구나 접근 가능 */}
         <Route path="/menu" element={<MenuPage />} />
