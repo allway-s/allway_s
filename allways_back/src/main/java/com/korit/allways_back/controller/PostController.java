@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -46,6 +47,11 @@ public class PostController {
 
         presetService.scrapPreset(userId, productId, presetName);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getAllPost")
+    public ResponseEntity<List<Post>> getAllPosts() {
+        return ResponseEntity.ok(postService.getPosts());
     }
 
 }
