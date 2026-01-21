@@ -24,11 +24,14 @@ export const ResponseInterceptor = (navigate, setIsLoggedIn) => {
                 const message = data.message;
 
                 switch(status) {
+                    case 400:
+                        console.log("입력 양식이 올바르지 않습니다.");
+                        break;
                     case 401:
                         localStorage.removeItem("accessToken");
                         setIsLoggedIn(false);
                         alert(message || "세션이 만료되었습니다.");
-                        navigate("/login", { replace: true });
+                        navigate("/login", { replace: true });  
                         break;
                     case 403: 
                         alert(message || "접근 권한이 없습니다.");
