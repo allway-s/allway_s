@@ -16,7 +16,7 @@ function CustomPage() {
     const categories = [
         { id: '빵', name: '빵', limit: 1, required: true }, 
         { id: '치즈', name: '치즈', limit: 1, required: false },
-        { id: '야채', name: '야채', limit: 9, required: false }, 
+        { id: '야채', name: '야채', limit: 8, required: false }, 
         { id: '소스', name: '소스', limit: 3, required: false }, 
         { id: '추가', name: '추가', limit: 3, required: false },
     ];
