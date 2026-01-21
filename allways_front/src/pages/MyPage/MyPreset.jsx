@@ -58,11 +58,17 @@ export default function MyPreSet() {
               const ingredients = item.product?.ingredients || [];
               const getIng = (catId) => ingredients.find(i => i.ingredientCategoryId === catId)?.ingredientName || "선택안함";
 
+              console.log(`${item.presetName}의 전체 데이터:`, item);
+
               return (
                 <div key={item.presetId} css={S.card}>
                   <div css={S.imageArea}>
-                    <img src={ingredients[0]?.imgUrl || "/default-subway.png"} alt={item.presetName} />
+                  {/* item 안에 바로 imgUrl이 들어있으므로 복잡한 배열 참조가 필요 없습니다. */}
+                    <img src={item.imgUrl || "/default-subway.png"} alt={item.presetName} />
                   </div>
+                  {/* <div css={S.imageArea}>
+                    <img src={ingredients[0]?.img_url || "/default-subway.png"} alt={item.presetName} />
+                  </div> */}
                   <h3 css={S.presetName}>{item.presetName}</h3>
                   <ul css={S.infoList}>
                     <li><span css={S.badge}>빵</span> {getIng(1)}</li>
