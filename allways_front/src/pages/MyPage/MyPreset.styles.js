@@ -129,11 +129,11 @@ export const S = {
       align-items: center;
       gap: 12px;
       font-size: 0.9rem;
-      color: #c6c3c3;
+      color: #848484;
     }
   `,
   badge: css`
-    background-color: #d1d6d1;
+    background-color:  #00c52e;
     color: #ffffff;
     font-size: 0.7rem;
     font-weight: bold;
@@ -156,7 +156,7 @@ export const S = {
     border-radius: 12px;
     padding: 12px 0;
     font-weight: bold;
-    color: #fff;
+    color: white;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
 
@@ -173,11 +173,10 @@ export const S = {
     border-radius: 12px;
     padding: 12px 0;
     font-weight: bold;
-    color: #fff;
     cursor: pointer;
 
     transition: all 0.3s ease-in-out;
-
+    color: white;
     &:hover { 
       background-color: #1e9138; 
      opacity: 0.9;

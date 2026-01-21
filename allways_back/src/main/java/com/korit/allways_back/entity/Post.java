@@ -16,6 +16,7 @@ public class Post {
 
     private int postId;
     private int presetId;
+    private String presetName;
     private LocalDateTime postedAt;
     private int likeCnt;
     private String imgUrl;

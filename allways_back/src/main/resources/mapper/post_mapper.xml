@@ -23,6 +23,7 @@
     <resultMap id="postWithIngredientsMap" type="com.korit.allways_back.entity.Post">
         <id property="postId" column="post_id" />
         <result property="presetId" column="preset_id" />
+        <result property="presetName" column="preset_name" />
         <result property="postedAt" column="posted_at" />
         <result property="likeCnt" column="like_cnt" />
         <result property="imgUrl" column="img_url" />
@@ -36,6 +37,7 @@
         SELECT
             p.post_id,
             p.preset_id,
+            pr.preset_name,
             p.posted_at,
             p.like_cnt,
             i.img_url,
