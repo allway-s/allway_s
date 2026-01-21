@@ -41,5 +41,4 @@ public class AuthController {
     public ResponseEntity<Boolean> checkNickname(@RequestParam String nickname) {
         return ResponseEntity.ok(userService.isNicknameDuplicate(nickname));
     }
-
 }
