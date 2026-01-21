@@ -48,6 +48,10 @@ export const S = {
     margin-bottom: 40px;
   `,
 
+  yellowText: css`
+    color: #ffc107;
+  `,
+
   titleContainer: css`
     max-width: 1200px;
     margin: 0 auto;

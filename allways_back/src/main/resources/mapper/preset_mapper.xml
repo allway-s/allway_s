@@ -15,7 +15,8 @@
             p.user_id,
             p.product_id,
             p.preset_name,
-            i.img_url
+            i.img_url AS imgUrl
+            <!--   AS 추가하고 시도      -->
         FROM
             preset_tb p
             LEFT JOIN item_tb i ON p.product_id = i.item_id WHERE
