@@ -25,7 +25,6 @@ export const ResponseInterceptor = (navigate, setIsLoggedIn) => {
 
                 switch(status) {
                     case 400:
-                        console.log("입력 양식이 올바르지 않습니다.");
                         break;
                     case 401:
                         localStorage.removeItem("accessToken");
