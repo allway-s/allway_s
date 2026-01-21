@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 public class OrderHistoryRespDto {
 
+    private int productId;
     private LocalDateTime orderedAt;
     private String productName;
     private String ingredients;

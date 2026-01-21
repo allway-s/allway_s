@@ -18,6 +18,7 @@
 
     <select id="getOrderHistory" resultType="com.korit.allways_back.dto.response.OrderHistoryRespDto">
         SELECT
+            pd.product_id as productId,
             o.ordered_at as orderedAt,
             i.item_name as productName,
             GROUP_CONCAT(ing.ingredient_name SEPARATOR ', ') as ingredients,
@@ -34,6 +35,7 @@
                 ingredient_tb ing ON pd.ingredient_id = ing.ingredient_id
         WHERE o.user_id = #{userId}
         GROUP BY
+            pd.product_id,
             o.order_id,
             i.item_name,
             od.unit_price,
