@@ -61,7 +61,7 @@ export default function MyPreSet() {
               return (
                 <div key={item.presetId} css={S.card}>
                   <div css={S.imageArea}>
-                    <img src={ingredients[0]?.imgUrl || "/default-subway.png"} alt={item.presetName} />
+                    <img src={item.imgUrl} />
                   </div>
                   <h3 css={S.presetName}>{item.presetName}</h3>
                   <ul css={S.infoList}>

@@ -6,11 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { getCartItemCount } from '../../utils/cartStore';
 
 const MenuPage = () => {
-    const [items, setItems] = useState([]);
+
+    const [items, setItems] = useState([]); 
     const [selectedCategory, setSelectedCategory] = useState('샌드위치');
     const [cartCount, setCartCount] = useState(0);
     const [showModal, setShowModal] = useState(false);
     const [activeItem, setActiveItem] = useState(null);
+    
+    // 화면에 뿌려줄 때는 15cm이거나 사이즈 정보가 없는 것만 필터링해서 보여줌 원래 백엔드에서 했는데 수정
+    const displayItems = items.filter(item => item.size === 15 || !item.size);
     
     const navigate = useNavigate();
 
@@ -55,40 +59,28 @@ const MenuPage = () => {
         return () => clearInterval(interval);
     }, []);
 
+    const get30cmVariant = (baseItem) => {
+        return items.find(i => i.itemName === baseItem.itemName && i.size === 30);
+    };
+
     return (
         <div css={s.containerStyle}>
-            <header css={s.headerStyle}>
-                <h1 css={s.logoStyle}>MENU</h1>
-                <button css={s.cartButtonStyle} onClick={() => navigate('/cart')}>
-                    🛒 장바구니 ({cartCount})
-                </button>
-            </header>
-
             <nav css={s.navStyle}>
-                <button 
-                    css={[s.categoryButtonStyle, selectedCategory === '샌드위치' && s.activeButtonStyle]}
-                    onClick={() => setSelectedCategory('샌드위치')}
-                >
-                    샌드위치
-                </button>
-                <button 
-                    css={[s.categoryButtonStyle, selectedCategory === '샐러드' && s.activeButtonStyle]}
-                    onClick={() => setSelectedCategory('샐러드')}
-                >
-                    샐러드
-                </button>
-                <button 
-                    css={[s.categoryButtonStyle, selectedCategory === '랩' && s.activeButtonStyle]}
-                    onClick={() => setSelectedCategory('랩')}
-                >
-                    랩
-                </button>
+                {['샌드위치', '샐러드', '랩'].map(category => (
+                    <button 
+                        key={category}
+                        css={[s.categoryButtonStyle, selectedCategory === category && s.activeButtonStyle]}
+                        onClick={() => setSelectedCategory(category)}
+                    >
+                        {category}
+                    </button>
+                ))}
             </nav>
 
             <div css={s.contentStyle}>
-                <h2 css={s.categoryTitleStyle}>{selectedCategory} 메뉴</h2>
+                <h2 css={s.categoryTitleStyle}>{selectedCategory}</h2>
                 <div css={s.menuGridStyle}>
-                    {items.map((item) => (
+                    {displayItems.map((item) => (
                         <div key={item.itemId} css={s.menuCardStyle}>
                             <div css={s.imageWrapperStyle}>
                                 <img 
@@ -142,10 +134,10 @@ const MenuPage = () => {
                             </button>
                             <button 
                                 css={s.sizeButtonStyle}
-                                onClick={() => handleCustomClick({
-                                    ...activeItem, 
-                                    itemId: activeItem.itemId + 1 
-                                })}
+                                onClick={() => {
+                                    const size30Item = get30cmVariant(activeItem);
+                                        handleCustomClick(size30Item);
+                                }}
                             >
                                 30cm
                             </button>
@@ -163,6 +155,4 @@ const MenuPage = () => {
     );
 };
 
-
-
-export default MenuPage;    
+export default MenuPage;
