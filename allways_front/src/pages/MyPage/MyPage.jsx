@@ -96,7 +96,6 @@ export const MyPage = () => {
                 <span style={{ fontWeight: 'bold' }}>스테이크 & 치즈</span>
                 <span css={S.orderText}>위트 / 아메리칸 치즈 / 양파, 피망, 양상추 / 랜치, 마요 ...</span>
                 <span style={{ fontWeight: 'bold' }}>183,000원</span>
-                <button css={S.detailBtn}>상세 주문 내역 ＞</button>
               </div>
             ))}
           </div>
