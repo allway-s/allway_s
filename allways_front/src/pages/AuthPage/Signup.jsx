@@ -9,10 +9,11 @@ export const Signup = ({setIsLoggedIn}) => {
   const [searchParams] = useSearchParams();
   const oauth2Id = searchParams.get("oauth2Id");
   const email = searchParams.get("email");
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [chkNickMessage, setChkNickMessage] = useState('');
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(null);
-  const [formErrorMessage, setFormErrorMessage] = useState("오류");
+  const [formErrorMessage, setFormErrorMessage] = useState('');
 
   // 주소창에 oauth2ID 없으면 차단
   useEffect(() => {
@@ -49,10 +50,7 @@ export const Signup = ({setIsLoggedIn}) => {
       if (!formData.phoneNumber.trim()) return setFormErrorMessage("전화번호를 입력해주세요.");
       if (!formData.address.trim()) return setFormErrorMessage("주소를 입력해주세요.");
 
-
-      if (isNicknameAvailable !== true) {
-        console.log("닉네임 중복 확인이 필요합니다.");
-      }
+      if (isNicknameAvailable !== true) return setFormErrorMessage("닉네임 중복 확인이 필요합니다.");
 
       setIsSubmitting(true)
 
@@ -72,10 +70,10 @@ export const Signup = ({setIsLoggedIn}) => {
         }
       } catch(error) {
         if (error.response?.status === 400) {
-            // 화면 하단에 띄울 구체적인 문구 설정
-            setFormErrorMessage("양식이 올바르지 않습니다.");
+          const { errors, message } = error.response.data;
+          setFormErrorMessage(errors ? Object.values(errors)[0] : message);
         }
-        console.log("가입 실패: " + (error.response?.data?.message || "오류 발생"));
+        
       } finally {
         setIsSubmitting(false);
       }
