@@ -23,3 +23,7 @@ export const createOrder = (orderData) => {
 export const getOrderHistory = () => {
     return api.get(`/api/v1/orders/history`)
 }
+
+export const getMyPresets = () => {
+    return api.get(`/api/v1//list/{userId}`)
+}

@@ -1,17 +1,5 @@
-// 장바구니 관리 - 백엔드 DTO 형식 그대로 저장
 
 const CART_STORAGE_KEY = 'subwayCart';
-
-// 장바구니 데이터 구조 (백엔드 요청 형식과 동일)
-// {
-//   orders: [
-//     {
-//       itemId: number,
-//       ingredientIds: number[],
-//       quantity: number
-//     }
-//   ]
-// }
 
 export const getCart = () => {
     try {
@@ -33,25 +21,25 @@ export const saveCart = (cart) => {
     }
 };
 
-// 장바구니에 추가
 export const addToCart = (orderItem) => {
     const cart = getCart();
     
-    // 동일한 상품이 있는지 확인 (itemId와 ingredientIds가 모두 같은 경우)
     const existingIndex = cart.orders.findIndex(item => 
         item.itemId === orderItem.itemId &&
         JSON.stringify([...item.ingredientIds].sort()) === JSON.stringify([...orderItem.ingredientIds].sort())
     );
 
     if (existingIndex !== -1) {
-        // 이미 있으면 수량 증가
         cart.orders[existingIndex].quantity += orderItem.quantity || 1;
     } else {
-        // 없으면 새로 추가
         cart.orders.push({
             itemId: orderItem.itemId,
             ingredientIds: orderItem.ingredientIds || [],
-            quantity: orderItem.quantity || 1
+            ingredientNames: orderItem.ingredientNames || [],
+            quantity: orderItem.quantity || 1,
+            itemName: orderItem.itemName,
+            imgUrl: orderItem.imgUrl,
+            price: orderItem.price, 
         });
     }
 

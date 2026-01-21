@@ -151,7 +151,7 @@ export const S = {
   // 공유 버튼 (노란색 계열)
   btnShare: css`
     flex: 1;
-    background-color: #00a627;
+    background-color: #ffc107;
     border: none;
     border-radius: 12px;
     padding: 12px 0;
@@ -161,40 +161,45 @@ export const S = {
     transition: all 0.3s ease-in-out;
 
     &:hover { 
-      opacity: 0.9;
-    }
-  `,
-
-  // 삭제 버튼 (다른 색상, 예: 주황색 혹은 연한 초록)
-  btnDelete: css`
-    flex: 1;
-    background-color: #00a627;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 0;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    color: white;
-    &:hover { 
-      background-color: #f51cd1; 
+      background-color: #f8c83a; 
       opacity: 0.9;
     }
   `,
 
   btnOrder: css`
     flex: 1;
-    background-color: #00a627;
+    background-color: #009223; /* 주문 버튼 초록색으로 강조 */
     border: none;
     border-radius: 12px;
     padding: 12px 0;
     font-weight: bold;
-    color: white;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
 
-    &:hover { background-color: #eaeaea; 
+    transition: all 0.3s ease-in-out;
+    color: white;
+    &:hover { 
+      background-color: #1e9138; 
      opacity: 0.9;
     }
   `,
+
+  // 삭제 버튼 (다른 색상, 예: 주황색 혹은 연한 초록)
+  btnDelete: css`
+    flex: 1;
+    background-color: #fff;
+    color: red;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 0;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background-color: #1b16164b;
+      opacity: 0.9;
+    }
+  `,
+
 };
+
