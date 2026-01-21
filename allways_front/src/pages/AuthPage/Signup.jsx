@@ -10,6 +10,9 @@ export const Signup = ({setIsLoggedIn}) => {
   const oauth2Id = searchParams.get("oauth2Id");
   const email = searchParams.get("email");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [chkNickMessage, setChkNickMessage] = useState('');
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(null);
+  const [formErrorMessage, setFormErrorMessage] = useState("오류");
 
   // 주소창에 oauth2ID 없으면 차단
   useEffect(() => {
@@ -37,7 +40,19 @@ export const Signup = ({setIsLoggedIn}) => {
   };
 
   const handleSubmit = async () => {
+      setFormErrorMessage('');
+
       if (isSubmitting) return;
+
+      if (!formData.name.trim()) return setFormErrorMessage("이름을 입력해주세요.");
+      if (!formData.nickname.trim()) return setFormErrorMessage("닉네임을 입력해주세요.");
+      if (!formData.phoneNumber.trim()) return setFormErrorMessage("전화번호를 입력해주세요.");
+      if (!formData.address.trim()) return setFormErrorMessage("주소를 입력해주세요.");
+
+
+      if (isNicknameAvailable !== true) {
+        console.log("닉네임 중복 확인이 필요합니다.");
+      }
 
       setIsSubmitting(true)
 
@@ -56,12 +71,34 @@ export const Signup = ({setIsLoggedIn}) => {
           navigate("/", { replace: true });
         }
       } catch(error) {
-        alert("가입 실패: " + (error.response?.data?.message || "오류 발생"));
+        if (error.response?.status === 400) {
+            // 화면 하단에 띄울 구체적인 문구 설정
+            setFormErrorMessage("양식이 올바르지 않습니다.");
+        }
+        console.log("가입 실패: " + (error.response?.data?.message || "오류 발생"));
       } finally {
         setIsSubmitting(false);
       }
     };
 
+  const handleCheckNickname = async () => {
+
+    try {
+      const response = await api.get(`/api/auth/check-nickname?nickname=${formData.nickname}`);
+      const isDuplicate = response.data;
+
+      if (isDuplicate) {
+        setChkNickMessage("이미 사용 중인 닉네임입니다-프론트.");
+        setIsNicknameAvailable(false);
+      } else {
+        setChkNickMessage("사용 가능한 닉네임입니다.-프론트");
+        setIsNicknameAvailable(true);
+      }
+    } catch (error) {
+      console.log("에러 발생-프론트 메세지");
+    }
+  };
+  
   return (
     <div css={S.container}>
       <main css={S.card}>
@@ -75,13 +112,21 @@ export const Signup = ({setIsLoggedIn}) => {
             value={formData.name}
             onChange={handleChange}
           />
-          <input 
+
+          <div style={{display:'flex', gap:'5px'}}>
+            <input 
             css={S.input} 
             name="nickname"
             placeholder="닉네임" 
             value={formData.nickname}
             onChange={handleChange}
-          />
+            />
+            <button onClick={handleCheckNickname}>중복 확인</button>
+              
+          </div>
+          
+          <span style={{fontSize: '15px', lineHeight: '15px', height:'15px'}}>{chkNickMessage}</span>
+
           <input 
             css={S.input} 
             name="phoneNumber"
@@ -97,6 +142,8 @@ export const Signup = ({setIsLoggedIn}) => {
             onChange={handleChange}
           />
         </div>
+
+        <span>{formErrorMessage}</span>
 
         <button css={S.submitButton} onClick={handleSubmit} disabled={isSubmitting}>완료</button>
       </main>
