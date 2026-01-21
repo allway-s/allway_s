@@ -46,9 +46,9 @@ const TEST_CASES = [
   },
 ];
 
-const toTime = (dateStr) => {
-  const [y, m, d] = String(dateStr).split('-').map((v) => v.padStart(2, '0'));
-  return new Date(`${y}-${m}-${d}`).getTime();
+const toTime = (v) => {
+  if (!v) return 0;
+  return new Date(String(v).replace(" ", "T")).getTime();
 };
 
 const formatPick = (label, value) => {
@@ -59,9 +59,11 @@ const formatPick = (label, value) => {
 };
 
 function CommunityPage() {
+  const [posts, setPosts] = useState([]);
+
   const navigate = useNavigate();
 
-  const [sort, setSort] = useState('liked');
+  const [sort, setSort] = useState('like');
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -195,6 +197,7 @@ function CommunityPage() {
             </button>
 
             <div css={s.menuCard}>
+              <button css={s.saveBtn}>내 프리셋에 저장하기</button>
               <img css={s.img} src={selected.imgUrl} alt={selected.title} />
               <h2 css={s.modalTitle}>{selected.title}</h2>
 

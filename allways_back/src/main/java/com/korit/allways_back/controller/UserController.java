@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    PrincipalUser principalUser = PrincipalUser.get();
 
     @GetMapping("/me")
     public ResponseEntity<Void> tokenCheckValid() {
@@ -22,4 +21,6 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+
 }

@@ -63,8 +63,7 @@ export default function MyPreSet() {
               return (
                 <div key={item.presetId} css={S.card}>
                   <div css={S.imageArea}>
-                  {/* item 안에 바로 imgUrl이 들어있으므로 복잡한 배열 참조가 필요 없습니다. */}
-                    <img src={item.imgUrl || "/default-subway.png"} alt={item.presetName} />
+                    <img src={item.imgUrl} />
                   </div>
                   {/* <div css={S.imageArea}>
                     <img src={ingredients[0]?.img_url || "/default-subway.png"} alt={item.presetName} />

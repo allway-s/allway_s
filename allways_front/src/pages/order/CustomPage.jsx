@@ -9,7 +9,7 @@ function CustomPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const { itemId } = useParams();
-    
+
     const categoryName = location.state?.category;
     const selectedItem = location.state?.item;
 
@@ -18,7 +18,7 @@ function CustomPage() {
         { id: '치즈', name: '치즈', limit: 1, required: false },
         { id: '야채', name: '야채', limit: 9, required: false }, 
         { id: '소스', name: '소스', limit: 3, required: false }, 
-        { id: '추가', name: '추가', limit: 9, required: false },
+        { id: '추가', name: '추가', limit: 3, required: false },
     ];
     
     const initialStep = categoryName === '샐러드' ? 2 : 1;
@@ -43,24 +43,35 @@ function CustomPage() {
 
     const handleIngredientClick = (ingredient) => {
         const categoryId = currentCategory.id;
-        const currentSelected = selectedIngredients[categoryId] || [];
-        const isSelected = currentSelected.includes(ingredient.ingredientId);
-        
-        if (isSelected) {
-            setSelectedIngredients({
-                ...selectedIngredients,
-                [categoryId]: currentSelected.filter(id => id !== ingredient.ingredientId)
-            });
-        } else {
-            if (currentSelected.length >= currentCategory.limit) {
-                alert(`${currentCategory.name}은(는) 최대 ${currentCategory.limit}개까지 선택 가능합니다.`);
-                return;
+        const ingredientId = ingredient.ingredientId;
+
+        setSelectedIngredients(prev => {
+            const currentSelected = prev[categoryId] || [];
+            
+            // 이미 선택된 재료라면 제거 (토글)
+            if (currentSelected.includes(ingredientId)) {
+                return {
+                    ...prev,
+                    [categoryId]: currentSelected.filter(id => id !== ingredientId)
+                };
             }
-            setSelectedIngredients({
-                ...selectedIngredients,
-                [categoryId]: [...currentSelected, ingredient.ingredientId]
-            });
-        }
+
+            // 새로운 선택 배열 생성
+            let newSelection = [...currentSelected];
+
+            // [핵심] 한도 체크: limit에 도달했다면 맨 앞(가장 예전 것) 제거
+            if (newSelection.length >= currentCategory.limit) {
+                newSelection.shift(); 
+            }
+            
+            // 새 재료 추가
+            newSelection.push(ingredientId);
+
+            return {
+                ...prev,
+                [categoryId]: newSelection
+            };
+        });
     };
 
     const handleSelectAllVegetables = () => {
@@ -91,15 +102,20 @@ function CustomPage() {
     };
 
     const handleAddToCart = () => {
-        const allIngredientIds = Object.values(selectedIngredients).flat();
+        
         const orderItem = {
             itemId: parseInt(itemId),
-            ingredientIds: allIngredientIds,
-            quantity: quantity
+            itemName: selectedItem?.itemName,
+            imgUrl: selectedItem?.imgUrl,
+            quantity: quantity,
+            ingredientIds: selectedIngredients?.ingredientId,
+            ingredientName: selectedIngredients?.ingredientName,
+            itemPrice: selectedItem?.price,
         };
+
         addToCart(orderItem);
         alert('장바구니에 추가되었습니다!');
-        navigate('/menu');
+        navigate('/cart');
     };
 
     const getSelectedCount = () => selectedIngredients[currentCategory?.id]?.length || 0;
@@ -164,7 +180,6 @@ function CustomPage() {
                         );
                     })}
                 </div>
-
             </div>
 
             <div css={footerStyle}>

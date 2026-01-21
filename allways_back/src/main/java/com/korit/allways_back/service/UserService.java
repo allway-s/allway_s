@@ -13,7 +13,16 @@ import java.time.LocalDateTime;
 public class UserService {
     private final UserMapper userMapper;
 
+    // 닉네임 중복 확인 전용 메서드
+    public boolean isNicknameDuplicate(String nickname) {
+        return userMapper.countByNickname(nickname) > 0;
+    }
+
     public User registerNewUser(SignupRequestDto dto) {
+
+        if (isNicknameDuplicate(dto.getNickname())) {
+            throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+        }
 
         // 중복 검사
         User existingUser = userMapper.findByOauth2Id(dto.getOauth2Id());
@@ -34,4 +43,5 @@ public class UserService {
             userMapper.insert(user);
         return user;
     }
+
 }

@@ -7,21 +7,6 @@ export const containerStyle = css`
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
-// 헤더
-export const headerStyle = css`
-    background: #009223;
-    color: white;
-    padding: 15px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    /* 고정 설정 */
-    position: sticky;
-    top: 60px; /* [중요] 전역 헤더의 실제 높이만큼 적어주세요 */
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-`;
 
 export const logoStyle = css`
     margin: 0;
@@ -57,11 +42,9 @@ export const navStyle = css`
     background: white;
     padding: 15px 40px;
     display: flex;
-    gap: 15px;
+    justify-content: center;
+    gap: 30px;
     
-    /* 고정 설정 */
-    position: sticky;
-    top: 135px; /* [중요] 전역 헤더 높이 + 메뉴 헤더 높이(약 75px) */
     z-index: 90;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 `;
@@ -138,7 +121,7 @@ export const imageWrapperStyle = css`
 `;
 
 export const menuImageStyle = css`
-    width: 100%;
+    width: 300px;
     height: 100%;
     object-fit: cover;
 `;
