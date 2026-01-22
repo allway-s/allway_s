@@ -1,253 +1,178 @@
-import { css } from '@emotion/react';
+import { css } from "@emotion/react";
 
-export const containerStyle = css`
-    min-height: 100vh;
-    background: #f5f5f5;
+export const containerStyle = css` 
+    max-width: 600px; 
+    margin: 0 auto; 
+    padding: 40px 20px; 
+    font-family: 'Pretendard', sans-serif; 
 `;
 
-export const headerStyle = css`
-    background: white;
-    padding: 20px 40px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+export const titleStyle = css` 
+    border-bottom: 2px solid #333; 
+    padding-bottom: 15px; 
+    margin-bottom: 25px; 
+`;
+
+export const cartListStyle = css` 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+`;
+
+export const cartItemStyle = css` 
+    display: flex; 
+    padding: 20px; 
+    border: 1px solid #f0f0f0; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+    gap: 15px; 
+`;
+
+export const itemImgStyle = css` 
+    width: 90px; 
+    height: 60px; 
+    object-fit: contain;
+    background: #f9f9f9; 
+    border-radius: 8px; 
+`;
+
+export const itemInfoStyle = css` 
+    flex: 1; 
+        h3 { 
+            font-size: 18px; 
+            margin: 0 0 8px 0; 
+        span { 
+            font-size: 14px; 
+            color: #888; 
+            font-weight: normal; }} 
+`;
+
+export const ingredientListStyle = css` 
+    font-size: 13px; 
+    color: #777; 
+    margin-bottom: 10px; 
+    line-height: 1.4; 
+`;
+
+export const priceStyle = css` 
+    font-weight: bold; 
+    color: #008c45; 
+    font-size: 16px; 
+`;
+
+export const sideControlStyle = css` 
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-end; 
+    justify-content: space-between; 
+`;
+
+export const qtyControlStyle = css` 
+    display: flex; 
+    align-items: center; 
+    background: #f1f1f1; 
+    border-radius: 20px; 
+    padding: 2px;
+        button { 
+            width: 28px; 
+            height: 28px; 
+            border: none; 
+            background: white; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            font-weight: bold; 
+        } 
+        span { 
+            margin: 0 12px; 
+            font-weight: bold; 
+            font-size: 14px;
+        } 
+`;
+
+export const removeButtonStyle = css` 
+    background: none; 
+    border: none; 
+    color: #bbb; 
+    text-decoration: underline; 
+    font-size: 12px; 
+    cursor: pointer; 
+    &:hover { color: #ff4444; } 
+`;
+
+export const totalSectionStyle = css` 
+    margin-top: 40px; 
+    padding: 25px; 
+    background: #f8f9fa; 
+    border-radius: 15px;
+`;
+
+export const totalInfoStyle = css` 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px; 
+        span { 
+            font-size: 16px; 
+            color: #555; 
+        } 
+        strong { 
+            font-size: 24px; 
+            color: #333; 
+        } 
+`;
+
+export const buttonGroupStyle = css` 
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 10px; 
 `;
 
-export const backButtonStyle = css`
-    background: #008C45;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    &:hover { background: #006633; }
+export const orderButtonStyle = css` 
+    flex: 2; 
+    padding: 18px; 
+    background: #008c45; 
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    font-size: 18px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    &:disabled { background: #ccc; } 
 `;
 
-export const titleStyle = css`
-    margin: 0;
-    font-size: 28px;
-    color: #333;
+export const clearButtonStyle = css` 
+    flex: 1; 
+    background: #eee; 
+    border: none; 
+    border-radius: 10px; 
+    color: #666; 
+    cursor: pointer; 
 `;
 
-export const spacerStyle = css`
-    width: 120px;
+export const backButtonStyle = css` 
+    width: 100%; 
+    margin-top: 15px; 
+    padding: 15px; 
+    background: none; 
+    border: 1px dashed #ccc; 
+    border-radius: 10px; 
+    color: #888; 
+    cursor: pointer; 
+    &:hover { background: #fcfcfc; } 
 `;
 
-export const errorBoxStyle = css`
-    background: #fee;
-    color: #c00;
-    padding: 15px;
-    margin: 20px 40px;
-    border-radius: 5px;
-    border: 1px solid #fcc;
-`;
-
-export const successBoxStyle = css`
-    background: #efe;
-    padding: 20px;
-    margin: 20px 40px;
-    border-radius: 5px;
-    border: 1px solid #cfc;
-`;
-
-export const successTitleStyle = css`
-    font-size: 18px;
-    font-weight: bold;
-    color: #060;
-    margin-bottom: 10px;
-`;
-
-export const successDetailStyle = css`
-    color: #060;
-    line-height: 1.6;
-`;
-
-export const contentStyle = css`
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-`;
-
-export const emptyCartStyle = css`
-    text-align: center;
-    padding: 100px 20px;
-`;
-
-export const emptyIconStyle = css`
-    font-size: 80px;
-    margin-bottom: 20px;
-`;
-
-export const goMenuButtonStyle = css`
-    background: #008C45;
-    color: white;
-    border: none;
-    padding: 15px 40px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 20px;
-    &:hover { background: #006633; }
-`;
-
-export const cartHeaderStyle = css`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-`;
-
-export const clearButtonStyle = css`
-    background: #ff4444;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    &:hover { background: #cc0000; }
-`;
-
-export const cartListStyle = css`
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 20px;
-`;
-
-export const cartItemStyle = css`
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-    &:last-child {
-        border-bottom: none;
-    }
-`;
-
-export const itemDetailsStyle = css`
-    flex: 1;
-`;
-
-export const itemNameStyle = css`
-    margin: 0 0 10px 0;
-    font-size: 18px;
-    color: #333;
-`;
-
-export const ingredientsListStyle = css`
-    margin: 10px 0;
-    font-size: 14px;
-`;
-
-export const ingredientTagsStyle = css`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 5px;
-`;
-
-export const ingredientTagStyle = css`
-    background: #e8f5e9;
-    color: #2e7d32;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-`;
-
-export const itemInfoTextStyle = css`
-    color: #666;
-    font-size: 14px;
-    margin-top: 10px;
-`;
-
-export const itemActionsStyle = css`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-`;
-
-export const quantityControlStyle = css`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 5px;
-`;
-
-export const qtyButtonStyle = css`
-    background: white;
-    border: none;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 18px;
-    color: #008C45;
-    &:hover { background: #f0f0f0; }
-`;
-
-export const qtyDisplayStyle = css`
-    min-width: 30px;
-    text-align: center;
-    font-weight: bold;
-`;
-
-export const removeButtonStyle = css`
-    background: #ff4444;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    &:hover { background: #cc0000; }
-`;
-
-export const summaryBoxStyle = css`
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-`;
-
-export const summaryRowStyle = css`
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-`;
-
-export const noteStyle = css`
-    color: #666;
-    font-size: 14px;
-    margin-top: 10px;
-    text-align: center;
-`;
-
-export const actionButtonsStyle = css`
-    display: flex;
-    gap: 15px;
-`;
-
-export const orderButtonStyle = css`
-    flex: 1;
-    background: #008C45;
-    color: white;
-    border: none;
-    padding: 18px;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    &:hover { background: #006633; }
-    &:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-    }
+export const emptyContainerStyle = css` 
+    text-align: center; 
+    padding: 80px 0; 
+        p { 
+            color: #999; 
+            margin-bottom: 20px; 
+        } 
+        button { 
+            padding: 10px 25px; 
+            background: #008c45; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        } 
 `;
