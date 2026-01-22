@@ -25,7 +25,7 @@ export const S = {
 
   title: css`
     text-align: center;
-    color: #8ed06c; /* 시안의 연두색 텍스트 */
+    color: #009223;
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 2rem;
@@ -56,7 +56,7 @@ export const S = {
   submitButton: css`
     width: 140px;
     height: 44px;
-    background-color: #8ed06c;
+    background-color: #ffc107;
     color: white;
     border: none;
     border-radius: 10px;
@@ -65,6 +65,38 @@ export const S = {
     align-self: center;
     cursor: pointer;
     transition: all 0.2s;
-    &:hover { background-color: #009223; transform: translateY(-1px); }
+    &:hover { background-color: #e6ad02; }
+    &:active {
+    background-color: #c49303;
+    }
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+  `,
+
+  checkMessage: (isValid) => css`
+    display: block;
+    width: 100%;
+    height: 20px;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    color: ${isValid ? '#1890ff' : '#ff4d4f'};
+  `,
+
+  checkNickname: css`
+    white-space: nowrap;
+    border-radius: 10px;
+    border: solid 0.5px #e7e5e5;
+    background-color: #fff;
+    padding: 0 8px;
+
+    &:hover {
+    background-color: #f9f9f9;
+    }
+    &:active {
+    background-color: #f0f0f0;
+    }
   `
 };
