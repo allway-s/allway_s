@@ -27,6 +27,9 @@ function CommunityPage() {
   const [open, setOpen] = useState(false); 
   const [selectedId, setSelectedId] = useState(null); 
   const [likes, setLikes] = useState({}); 
+  
+  // 프리셋 중복 확인절차
+  const [myPresets, setMyPresets] = useState([]);
 
   // ⭐ [수정] 모달이 열렸을 때 뒷배경 스크롤을 방지하여 "가만히 있게" 만듭니다.
   useEffect(() => {
@@ -37,6 +40,18 @@ function CommunityPage() {
     }
     return () => { document.body.style.overflow = 'auto'; };
   }, [open]);
+
+
+  // ⭐ [추가] 내 프리셋 목록을 서버에서 가져오는 함수입니다.
+  const fetchMyPresets = async () => {
+    try {
+      // 진현님의 user_id가 2번이므로 해당 사용자의 프리셋 목록을 가져옵니다.
+      const response = await axios.get('http://localhost:8080/api/preset/list/2');
+      setMyPresets(response.data || []);
+    } catch (error) {
+      console.error("내 프리셋 로드 실패:", error);
+    }
+  };
 
   // 1. 서버 데이터 호출
   const fetchPosts = async () => {
@@ -56,7 +71,11 @@ function CommunityPage() {
     }
   };
 
-  useEffect(() => { fetchPosts(); }, []);
+  // ⭐ [수정] 페이지 로드 시 포스트와 내 프리셋 목록을 모두 가져옵니다.
+  useEffect(() => { 
+    fetchPosts(); 
+    fetchMyPresets();
+  }, []);
 
   // 2. 가공 로직
   const displayItems = useMemo(() => {
@@ -85,11 +104,22 @@ function CommunityPage() {
     });
   }, [posts]);
 
-    // ⭐ [수정] 프리셋 저장 함수: 이벤트 객체(e)를 받아 전파를 막고, 실제 API를 호출합니다.
+
+  // ⭐ [수정] 프리셋 저장 함수: 이벤트 객체(e)를 받아 전파를 막고, 실제 API를 호출합니다.
     const handleSavePreset = async (e, item) => {
       e.stopPropagation();
 
-      try {
+    // ⭐ [수정] productId가 아닌 presetId를 기준으로 중복을 체크합니다.
+  const isDuplicate = myPresets.some(preset => preset.presetId === item.presetId);
+
+    if (isDuplicate) {
+      alert("이미 내 프리셋에 저장된 레시피입니다.");
+      return; // 중복이면 여기서 함수를 종료하여 요청을 보내지 않습니다.
+    }
+
+    
+
+    try {
       // 스웨거(image_9b99f8.png)에 정의된 Request Body 구조
       const requestData = {
         productId: item.productId || 1, // 스웨거 예시의 productId (기존 item에 productId가 있어야 함)
@@ -102,10 +132,12 @@ function CommunityPage() {
         requestData
       );
       
-      // 서버 응답 메시지: "프리셋이 저장되었습니다." (image_9b9996.png)
-      if (response.status === 200 || response.status === 201) {
+    // 서버 응답 메시지: "프리셋이 저장되었습니다." (image_9b9996.png)
+    if (response.status === 200 || response.status === 201) {
         alert(response.data || '성공적으로 내 프리셋에 저장되었습니다!');
-        setOpen(false); 
+        setOpen(false);
+        // ⭐ [갱신] 저장 성공 후 목록을 다시 불러와서 즉시 중복 체크에 반영합니다.
+        fetchMyPresets();
       }
     } catch (error) {
       console.error("프리셋 저장 실패:", error);
@@ -124,13 +156,14 @@ function CommunityPage() {
     return copied; // reverse()는 정렬 로직에 따라 선택
   }, [displayItems, sort, likes]);
 
-  // 6. 모달 표시 상세 데이터
+
+  // 4. 모달 표시 상세 데이터
   const selected = useMemo(
     () => displayItems.find((x) => x.id === selectedId) || null,
     [selectedId, displayItems]
   );
 
-  // 7. 좋아요 토글
+  // 5. 좋아요 토글
   const toggleLike = (id) => {
     setLikes((prev) => {
       const cur = prev[id];
