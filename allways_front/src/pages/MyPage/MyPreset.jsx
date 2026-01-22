@@ -54,8 +54,6 @@ export default function MyPreSet() {
         `http://localhost:8080/api/post/create`, 
         {
           presetId: preset.presetId,
-          // userId: userId,
-          // title: preset.presetName, // 제목은 일단 프리셋 이름으로 설정
         },
         {
           // ★ 이 부분이 핵심입니다! 서버 보안 통과를 위한 헤더 설정
@@ -85,6 +83,39 @@ export default function MyPreSet() {
       }
     }
   };
+
+
+
+  // 프리셋 저장 내역 삭제하기
+const handleDelete = async (presetId) => {
+  if (!window.confirm("정말 이 프리셋을 삭제하시겠습니까?")) return;
+
+  const token = localStorage.getItem("accessToken");
+  console.log(token);
+
+  try {
+    // API 주소는 서버 설계에 맞춰 확인이 필요합니다 (보통 /api/preset/{id} 형태)
+    const response = await axios.delete(`http://localhost:8080/api/preset/list/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 200 || response.status === 204) {
+          alert("삭제되었습니다.");
+          
+          // 화면 갱신: 현재 프리셋 목록에서 삭제된 아이디만 제외하고 상태 업데이트
+          setPresets(prev => prev.filter(p => p.presetId !== presetId));
+        }
+      } catch (error) {
+        // 401 에러가 나면 토큰 문제임을 알림
+    if (error.response?.status === 401) {
+        alert("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+        } else {
+          alert(`삭제 오류: ${error.response?.status}`);
+        }
+      }
+    };
 
   return (
     <div css={S.wrapper}>

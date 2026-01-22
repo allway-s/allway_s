@@ -30,6 +30,11 @@ function CommunityPage() {
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
       const decoded = JSON.parse(jsonPayload);
+
+      // ⭐ 여기서 찍어보는 로그가 가장 중요합니다!
+      console.log("토큰 내부 실제 데이터:", decoded);
+
+
       return decoded.userId || decoded.id || decoded.sub;
     } catch (e) { return null; }
   };
@@ -121,61 +126,83 @@ function CommunityPage() {
   }, [posts]);
 
 
-  // ⭐ [수정] 프리셋 저장 함수: 이벤트 객체(e)를 받아 전파를 막고, 실제 API를 호출합니다.
-    const handleSavePreset = async (e, item) => {
-      e.stopPropagation();
 
-    // 1. 토큰 체크
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      alert("로그인이 만료되었습니다. 다시 로그인해 주세요.");
-      return;
-    }
+  // ⭐ [수정] 프리셋 저장 함수
+  const handleSavePreset = async (e, item) => {
+    e.stopPropagation();
 
-    // ⭐ [수정] productId가 아닌 presetId를 기준으로 중복을 체크합니다.
-    const isDuplicate = myPresets.some(preset => preset.presetId === item.presetId);
+  // ⭐ 확인용: 함수 진입 직후에 바로 찍어보기
+  console.log("함수 진입 성공! 클릭한 아이템:", item);
 
-    if (isDuplicate) {
-      alert("이미 내 프리셋에 저장된 레시피입니다.");
-      return; // 중복이면 여기서 함수를 종료하여 요청을 보내지 않습니다.
-    }
+  // 1. 토큰 가져오기 (비어있어도 일단 진행하여 백엔드 판단에 맡김)
+  const token = localStorage.getItem("accessToken")?.replace(/['"]+/g, '').trim();
+  
+  // ⭐ [여기서 정의!] 서버 DTO(PresetScrapReqDto) 규격에 맞게 객체를 생성합니다.
+    const requestData = {
+      userId: Number(userId),                      // 토큰에서 추출한 진현님의 ID
+      productId: Number(item.productId) || 1,      // 게시글의 상품 ID
+      presetName: `${item.title} (by ${item.author})` // 원본 정보를 포함한 이름
+    };
 
-    // 데이터 확인용 로그
-    console.log("저장 시도 아이템 상세:", item);
+    // 3. ⭐ 이제 주석을 풀어도 에러가 나지 않습니다!
+    console.log("추출된 userId:", userId); 
+    console.log("전송될 데이터(requestData):", requestData);
+  
+    // 2. 중복 체크 (이미 저장된 경우 차단)
+  const isDuplicate = myPresets.some(preset => 
+  Number(preset.productId) === Number(item.productId));
+
+  if (isDuplicate) {
+    alert(`이미 보관함에 동일한 구성(상품 ID: ${item.productId})의 레시피가 존재합니다.`);
+    return; // 서버로 전송하지 않고 여기서 종료
+  }
+
 
     try {
-      // 스웨거(image_9b99f8.png)에 정의된 Request Body 구조
-      const requestData = {
-        productId: Number(item.productId) || 1, // 스웨거 예시의 productId (기존 item에 productId가 있어야 함)
-        userId: Number(userId),                      // 진현님의 user_id (image_9c95b7.png 확인)
-        presetName: item.title          // 저장될 프리셋 이름
-      };
+    const requestData = {
+      productId: Number(item.productId) || 1, 
+      userId: Number(userId), // 현재 로그인한 '진현님'의 ID
+      // ⭐ 원본 작성자의 이름을 포함하여 저장 (원본 데이터 보존)
+      presetName: `${item.title} (by ${item.author})` 
+    };
 
-      const response = await axios.post(
-        'http://localhost:8080/api/preset/scrap', // ⭐ 주소 수정
-        requestData,
-        {
-          headers: { 
-            'Authorization': `Bearer ${token.trim()}`,
-            'Content-Type': 'application/json'
-          } // ⭐ 헤더에 토큰 추가
-        }
-      );
-      
-    // 서버 응답 메시지: "프리셋이 저장되었습니다." (image_9b9996.png)
-    if (response.status === 200 || response.status === 201) {
-        alert(response.data || '성공적으로 내 프리셋에 저장되었습니다!');
-        setOpen(false);
-        // ⭐ [갱신] 저장 성공 후 목록을 다시 불러와서 즉시 중복 체크에 반영합니다.
-        fetchMyPresets();
+    const response = await axios.post(
+      'http://localhost:8080/api/preset/scrap',
+      requestData,
+      {
+        // ⭐ 토큰이 있을 때만 헤더를 넣고, 없으면 빈 객체로 보냄 (의존도 감소)
+        headers: token ? { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        } : { 'Content-Type': 'application/json' }
       }
-    } catch (error) {
-      // 서버가 보내주는 에러 메시지를 직접 확인합니다.
-      console.error("서버 응답 에러:", error.response);
-      const serverMessage = error.response?.data?.message || error.response?.data || "저장 중 오류가 발생했습니다.";
-      alert(`실패: ${serverMessage}`);
+    );
+      
+    if (response.status === 200 || response.status === 201) {
+      alert('내 프리셋에 성공적으로 저장되었습니다!');
+      setOpen(false);
+      fetchMyPresets(); 
     }
-  };
+      } catch (error) {
+        console.error("저장 실패:", error.response);
+        
+        // ⭐ [수정] 백엔드에서 보내준 상세 에러 메시지(message)가 있는지 먼저 확인합니다.
+        const serverErrorMessage = error.response?.data?.message || error.response?.data;
+        
+        let userFriendlyMessage = "";
+
+        if (error.response?.status === 401) {
+          userFriendlyMessage = "인증 세션이 만료되었습니다. 다시 로그인해주세요.";
+        } else if (serverErrorMessage) {
+          // 백엔드에서 보낸 "이미 동일한 상품 구성의..." 메시지를 여기서 출력!
+          userFriendlyMessage = serverErrorMessage; 
+        } else {
+          userFriendlyMessage = "저장 중 오류가 발생했습니다.";
+        }
+
+        alert(userFriendlyMessage);
+      }
+    };
 
   // 3. 정렬 로직
   const sortedItems = useMemo(() => {
