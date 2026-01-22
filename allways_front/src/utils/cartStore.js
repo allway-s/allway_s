@@ -35,14 +35,14 @@ export const addToCart = (orderItem) => {
         cart.orders.push({
             itemId: orderItem.itemId,
             ingredientIds: orderItem.ingredientIds || [],
-            ingredientNames: orderItem.ingredientNames || [],
+            ingredientName: orderItem.ingredientName || [], 
             quantity: orderItem.quantity || 1,
             itemName: orderItem.itemName,
             imgUrl: orderItem.imgUrl,
             price: orderItem.price, 
+            size: orderItem.size,
         });
     }
-
     saveCart(cart);
     return cart;
 };

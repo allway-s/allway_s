@@ -13,7 +13,6 @@ const MenuPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [activeItem, setActiveItem] = useState(null);
     
-    // 화면에 뿌려줄 때는 15cm이거나 사이즈 정보가 없는 것만 필터링해서 보여줌 원래 백엔드에서 했는데 수정
     const displayItems = items.filter(item => item.size === 15 || !item.size);
     
     const navigate = useNavigate();
