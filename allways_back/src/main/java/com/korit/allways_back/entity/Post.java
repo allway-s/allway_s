@@ -16,10 +16,14 @@ public class Post {
 
     private int postId;
     private int presetId;
+    private int productId;
     private String presetName;
     private LocalDateTime postedAt;
     private int likeCnt;
     private String imgUrl;
     private List<String> ingredientNames;
+
+    // [추가] 닉네임을 담을 필드
+    private String nickname;
 
 }
