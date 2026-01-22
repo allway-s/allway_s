@@ -20,6 +20,22 @@ const formatPick = (label, value) => {
 
 function CommunityPage() {
   const navigate = useNavigate();
+
+  // ⭐ [추가] 토큰에서 userId를 추출하는 함수 (MyPreset과 동일하게 유지)
+  const getUserIdFromToken = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return null;
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      const decoded = JSON.parse(jsonPayload);
+      return decoded.userId || decoded.id || decoded.sub;
+    } catch (e) { return null; }
+  };
+
+  // ⭐ [추가] 추출한 userId를 변수에 담습니다.
+  const userId = getUserIdFromToken();
   
   // --- [State 관리] ---
   const [posts, setPosts] = useState([]); 
@@ -44,9 +60,9 @@ function CommunityPage() {
 
   // ⭐ [추가] 내 프리셋 목록을 서버에서 가져오는 함수입니다.
   const fetchMyPresets = async () => {
+    if (!userId) return;
     try {
-      // 진현님의 user_id가 2번이므로 해당 사용자의 프리셋 목록을 가져옵니다.
-      const response = await axios.get('http://localhost:8080/api/preset/list/2');
+      const response = await axios.get(`http://localhost:8080/api/preset/list/${userId}`);
       setMyPresets(response.data || []);
     } catch (error) {
       console.error("내 프리셋 로드 실패:", error);
@@ -109,27 +125,41 @@ function CommunityPage() {
     const handleSavePreset = async (e, item) => {
       e.stopPropagation();
 
+    // 1. 토큰 체크
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("로그인이 만료되었습니다. 다시 로그인해 주세요.");
+      return;
+    }
+
     // ⭐ [수정] productId가 아닌 presetId를 기준으로 중복을 체크합니다.
-  const isDuplicate = myPresets.some(preset => preset.presetId === item.presetId);
+    const isDuplicate = myPresets.some(preset => preset.presetId === item.presetId);
 
     if (isDuplicate) {
       alert("이미 내 프리셋에 저장된 레시피입니다.");
       return; // 중복이면 여기서 함수를 종료하여 요청을 보내지 않습니다.
     }
 
-    
+    // 데이터 확인용 로그
+    console.log("저장 시도 아이템 상세:", item);
 
     try {
       // 스웨거(image_9b99f8.png)에 정의된 Request Body 구조
       const requestData = {
-        productId: item.productId || 1, // 스웨거 예시의 productId (기존 item에 productId가 있어야 함)
-        userId: 2,                      // 진현님의 user_id (image_9c95b7.png 확인)
+        productId: Number(item.productId) || 1, // 스웨거 예시의 productId (기존 item에 productId가 있어야 함)
+        userId: Number(userId),                      // 진현님의 user_id (image_9c95b7.png 확인)
         presetName: item.title          // 저장될 프리셋 이름
       };
 
       const response = await axios.post(
         'http://localhost:8080/api/preset/scrap', // ⭐ 주소 수정
-        requestData
+        requestData,
+        {
+          headers: { 
+            'Authorization': `Bearer ${token.trim()}`,
+            'Content-Type': 'application/json'
+          } // ⭐ 헤더에 토큰 추가
+        }
       );
       
     // 서버 응답 메시지: "프리셋이 저장되었습니다." (image_9b9996.png)
@@ -140,8 +170,10 @@ function CommunityPage() {
         fetchMyPresets();
       }
     } catch (error) {
-      console.error("프리셋 저장 실패:", error);
-      alert('저장 중 오류가 발생했습니다. 서버 로그를 확인해주세요.');
+      // 서버가 보내주는 에러 메시지를 직접 확인합니다.
+      console.error("서버 응답 에러:", error.response);
+      const serverMessage = error.response?.data?.message || error.response?.data || "저장 중 오류가 발생했습니다.";
+      alert(`실패: ${serverMessage}`);
     }
   };
 

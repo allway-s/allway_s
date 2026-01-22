@@ -8,7 +8,7 @@ export default function MyPreSet() {
   const navigate = useNavigate();
   const [presets, setPresets] = useState([]);
 
-  // 1. 토큰에서 userId(2) 추출 - 이 부분은 데이터 조회를 위해 꼭 필요합니다.
+  // 1. 토큰에서 userId 추출 - 이 부분은 데이터 조회를 위해 꼭 필요합니다.
   const getUserIdFromToken = () => {
     const token = localStorage.getItem("accessToken");
     if (!token) return null;
