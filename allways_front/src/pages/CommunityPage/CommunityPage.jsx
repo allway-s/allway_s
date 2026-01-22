@@ -5,15 +5,13 @@ import { Heart } from 'lucide-react';
 import { s } from './CommunityPage.styles';
 import axios from 'axios';
 
-
-// 1. [수정] 날짜 변환 헬퍼 함수: 서버의 다양한 날짜 형식을 대응합니다.
+// 1. 날짜 변환 헬퍼 함수
 const toTime = (v) => {
   if (!v) return 0;
   return new Date(v).getTime();
 };
 
-
-// 2. [수정] 재료 표시 헬퍼 함수: 데이터가 없을 경우 '선택 안함'으로 깔끔하게 처리합니다.
+// 2. 재료 표시 헬퍼 함수
 const formatPick = (label, value) => {
   if (!value || (Array.isArray(value) && value.length === 0)) return `${label}: 선택 안함`;
   const text = Array.isArray(value) ? value.join(', ') : value;
@@ -21,28 +19,35 @@ const formatPick = (label, value) => {
 };
 
 function CommunityPage() {
-  
   const navigate = useNavigate();
+  
   // --- [State 관리] ---
-  const [posts, setPosts] = useState([]); // 서버에서 받아온 원본 포스트 목록
-  const [sort, setSort] = useState('latest'); // [수정] 9번 확인을 위해 기본값을 '최신순'으로 변경
-  const [open, setOpen] = useState(false); // 모달 오픈 여부
-  const [selectedId, setSelectedId] = useState(null); // 선택된 포스트 ID
-  const [likes, setLikes] = useState({}); // 좋아요 상태 로컬 관리 { postId: { liked: false, count: 0 } }
+  const [posts, setPosts] = useState([]); 
+  const [sort, setSort] = useState('latest'); 
+  const [open, setOpen] = useState(false); 
+  const [selectedId, setSelectedId] = useState(null); 
+  const [likes, setLikes] = useState({}); 
 
+  // ⭐ [수정] 모달이 열렸을 때 뒷배경 스크롤을 방지하여 "가만히 있게" 만듭니다.
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [open]);
 
-
-// 1. 서버 데이터 호출
+  // 1. 서버 데이터 호출
   const fetchPosts = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/post/getAllPost');
       const data = response.data || [];
-      console.log("서버 원본 데이터:", data); // 브라우저 콘솔에서 9번이 있는지 꼭 확인하세요!
+      console.log("서버 원본 데이터:", data);
       setPosts(data);
 
       const initLikes = {};
       data.forEach(item => {
-        // [주의] 서버 필드명인 postId를 정확히 매핑해야 합니다.
         initLikes[item.postId] = { liked: false, count: item.likeCnt || 0 };
       });
       setLikes(initLikes);
@@ -53,19 +58,26 @@ function CommunityPage() {
 
   useEffect(() => { fetchPosts(); }, []);
 
-  // 2. 가공 로직 (데이터가 불완전해도 9번까지 띄우는 핵심)
+  // 2. 가공 로직
   const displayItems = useMemo(() => {
     return posts.map(item => {
-      // 서버 JSON 응답(image_9d0a2f.png) 구조에 맞춤
       const ingredients = item.ingredientNames || []; 
       
       return {
         id: item.postId,
+        presetId: item.presetId,
+        productId: item.productId, // ⭐ 이 필드가 서버 응답에 있는지 확인 후 추가하세요!
         title: item.presetName || '맛있는 레시피',
         author: item.nickname || '익명님',
         base: item.presetName || '서브웨이 샌드위치',
-        // 핵심: 개별 재료가 아닌 전체 재료 리스트를 하나의 문자열로 만듭니다.
         allIngredients: ingredients.length > 0 ? ingredients.join(', ') : '선택 안함',
+        
+        // ⭐ [수정] 모달 상세 정보 출력을 위해 재료 데이터들을 분리하여 매핑합니다.
+        veggies: ingredients.filter(name => !name.includes('브레드') && !name.includes('치즈')),
+        bread: ingredients.find(name => name.includes('브레드')) || '선택 안함',
+        cheese: ingredients.find(name => name.includes('치즈')) || '선택 안함',
+        sauce: [], // 필요 시 필터링 로직 추가
+        
         imgUrl: item.imgUrl || 'https://www.subway.co.kr/upload/menu/1763392140518_G1a9dG.png',
         createdAt: item.postedAt || '',
         likeCount: item.likeCnt || 0
@@ -73,25 +85,52 @@ function CommunityPage() {
     });
   }, [posts]);
 
-  // 3. 정렬 로직 (displayItems 기반)
+    // ⭐ [수정] 프리셋 저장 함수: 이벤트 객체(e)를 받아 전파를 막고, 실제 API를 호출합니다.
+    const handleSavePreset = async (e, item) => {
+      e.stopPropagation();
+
+      try {
+      // 스웨거(image_9b99f8.png)에 정의된 Request Body 구조
+      const requestData = {
+        productId: item.productId || 1, // 스웨거 예시의 productId (기존 item에 productId가 있어야 함)
+        userId: 2,                      // 진현님의 user_id (image_9c95b7.png 확인)
+        presetName: item.title          // 저장될 프리셋 이름
+      };
+
+      const response = await axios.post(
+        'http://localhost:8080/api/preset/scrap', // ⭐ 주소 수정
+        requestData
+      );
+      
+      // 서버 응답 메시지: "프리셋이 저장되었습니다." (image_9b9996.png)
+      if (response.status === 200 || response.status === 201) {
+        alert(response.data || '성공적으로 내 프리셋에 저장되었습니다!');
+        setOpen(false); 
+      }
+    } catch (error) {
+      console.error("프리셋 저장 실패:", error);
+      alert('저장 중 오류가 발생했습니다. 서버 로그를 확인해주세요.');
+    }
+  };
+
+  // 3. 정렬 로직
   const sortedItems = useMemo(() => {
     const copied = [...displayItems];
     if (sort === 'latest') {
-      // 최신 날짜순 정렬 (9번이 맨 위로 오게 함)
       copied.sort((a, b) => new Date(b.createdAt.replace(' ', 'T')) - new Date(a.createdAt.replace(' ', 'T')));
     } else {
       copied.sort((a, b) => (likes[b.id]?.count || 0) - (likes[a.id]?.count || 0));
     }
-    return copied.reverse(); // 최신순 정렬을 위해 reverse() 추가
+    return copied; // reverse()는 정렬 로직에 따라 선택
   }, [displayItems, sort, likes]);
 
-  // 6. [선택] 모달에 표시할 상세 데이터
+  // 6. 모달 표시 상세 데이터
   const selected = useMemo(
     () => displayItems.find((x) => x.id === selectedId) || null,
     [selectedId, displayItems]
   );
 
-  // 7. [좋아요] 로컬 하트 토글 로직 (나중에 API 연결 필요)
+  // 7. 좋아요 토글
   const toggleLike = (id) => {
     setLikes((prev) => {
       const cur = prev[id];
@@ -109,8 +148,7 @@ function CommunityPage() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [open]);
 
-
-return (
+  return (
     <div css={s.page}>
       <div css={s.container}>
         <div css={s.controlsRow}>
@@ -136,6 +174,7 @@ return (
                   key={item.id}
                   css={s.feedItem}
                   onClick={() => {
+                    // ⭐ [중요] 페이지 이동 없이 상태만 변경하여 모달을 띄웁니다.
                     setSelectedId(item.id);
                     setOpen(true);
                   }}
@@ -170,24 +209,32 @@ return (
         </div>
       </div>
 
-      {/* 모달 영역 - 데이터 바인딩 */}
+      {/* 모달 영역 */}
       {open && selected && (
         <div css={s.modalOverlay} onClick={() => setOpen(false)}>
           <div css={s.modalBody} onClick={(e) => e.stopPropagation()}>
             <button css={s.modalClose} onClick={() => setOpen(false)}>×</button>
 
             <div css={s.menuCard}>
-              <button css={s.saveBtn}>내 프리셋에 저장하기</button>
+              {/* ⭐ [수정] '내 프리셋에 저장하기' 버튼에 클릭 이벤트 핸들러를 연결했습니다. */}
+              <button 
+                css={s.saveBtn} 
+                onClick={(e) => handleSavePreset(e, selected)}
+              >
+                내 프리셋에 저장하기
+              </button>
+              
               <img css={s.img} src={selected.imgUrl} alt={selected.title} />
               <h2 css={s.modalTitle}>{selected.title}</h2>
 
               <div css={s.meta}>
                 <div><span>작성자 :</span> {selected.author}</div>
                 <div><span>베이스 :</span> {selected.base}</div>
-                <div><span>빵 :</span> {selected.bread || '선택 안함'}</div>
-                <div><span>치즈 :</span> {selected.cheese || '선택 안함'}</div>
-                <div><span>야채 :</span> {selected.veggies.length ? selected.veggies.join(', ') : '선택 안함'}</div>
-                <div><span>소스 :</span> {selected.sauce.length ? selected.sauce.join(', ') : '선택 안함'}</div>
+                {/* ⭐ [수정] 분리된 데이터를 출력하도록 보강되었습니다. */}
+                <div><span>빵 :</span> {selected.bread}</div>
+                <div><span>치즈 :</span> {selected.cheese}</div>
+                <div><span>야채 :</span> {Array.isArray(selected.veggies) ? selected.veggies.join(', ') : '선택 안함'}</div>
+                <div><span>소스 :</span> {selected.sauce && selected.sauce.length ? selected.sauce.join(', ') : '선택 안함'}</div>
               </div>
 
               <div css={s.modalLike}>
