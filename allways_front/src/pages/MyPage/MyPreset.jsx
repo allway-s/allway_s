@@ -38,6 +38,54 @@ export default function MyPreSet() {
     fetchMyPresets();
   }, [userId]);
 
+
+  // 3. 공유 버튼 클릭시 커뮤니티로 이동되게끔 하는 핸들러 생성
+  // [추가] 공유 버튼 클릭 핸들러
+  const handleShare = async (preset) => {
+    if (!window.confirm(`'${preset.presetName}' 레시피를 커뮤니티에 공유하시겠습니까?`)) return;
+
+    // 1번 로직에서 사용하는 토큰을 다시 가져옵니다.
+    const token = localStorage.getItem("accessToken");
+
+    try {
+      // API 설계: 커뮤니티 포스트를 생성하는 엔드포인트
+      // 보통 프리셋 ID와 유저 ID를 보내면 서버에서 해당 프리셋 정보를 복사해 게시글을 생성합니다.
+      const response = await axios.post(
+        `http://localhost:8080/api/post/create`, 
+        {
+          presetId: preset.presetId,
+          // userId: userId,
+          // title: preset.presetName, // 제목은 일단 프리셋 이름으로 설정
+        },
+        {
+          // ★ 이 부분이 핵심입니다! 서버 보안 통과를 위한 헤더 설정
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        alert("커뮤니티에 성공적으로 공유되었습니다!");
+        navigate('/community'); // 공유 후 커뮤니티 페이지로 이동
+      }
+    } catch (error) {
+      console.error("공유 실패:", error);
+      // 이제 401 대신 404가 뜬다면, 서버에 해당 API 주소가 아직 없다는 뜻입니다.
+      alert(`공유 중 오류가 발생했습니다. (에러 코드: ${error.response?.status})`);
+
+      // 에러 상황별 메시지 처리
+      const status = error.response?.status;
+      if (status === 401) {
+        alert("인증 세션이 만료되었습니다. 다시 로그인해주세요.");
+      } else if (status === 404) {
+        alert("API 경로를 찾을 수 없습니다. (서버 주소 확인 필요)");
+      } else {
+        alert(`공유 중 오류가 발생했습니다. (상태 코드: ${status || 'Network Error'})`);
+      }
+    }
+  };
+
   return (
     <div css={S.wrapper}>
       <section css={S.titleSection}>
@@ -75,7 +123,7 @@ export default function MyPreSet() {
                     <li><span css={S.badge}>소스</span> {getIng(4)}</li>
                   </ul>
                   <div css={S.buttonGroup}>
-                    <button css={S.btnShare}>공유</button>
+                    <button css={S.btnShare} onClick={() => handleShare(item)}>공유</button>
                     <button css={S.btnOrder} onClick={() => { if (window.confirm('주문 페이지로 이동하시겠습니까?')) navigate('/menu'); }}>주문</button>
                     {/* 삭제 기능은 presetId를 사용하여 정상 작동합니다. */}
                     <button css={S.btnDelete} onClick={() => handleDelete(item.presetId)}>삭제</button>
