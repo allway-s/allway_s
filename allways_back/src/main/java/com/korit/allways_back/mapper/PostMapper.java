@@ -1,6 +1,7 @@
 package com.korit.allways_back.mapper;
 
 import com.korit.allways_back.entity.Post;
+import com.korit.allways_back.entity.Preset;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,4 +31,9 @@ public interface PostMapper {
 
     // 🔥 추가: 프리셋 ID로 게시글 삭제하기
     int deleteByPresetId(int presetId);
+
+    // 🔥 추가: 특정 유저가 특정 상품(productId)을 이미 공유했는지 확인 (1이면 있음, 0이면 없음)
+    int checkAlreadyPosted(@Param("userId") int userId, @Param("productId") int productId);
+
+
 }

@@ -75,7 +75,7 @@ export const MyPage = () => {
             <div css={S.profileInner}>
               <div css={S.avatarCircle}>S</div>
               <div css={S.infoList}>
-                <p><strong>닉네임</strong> {userName}123</p>
+                <p><strong>닉네임</strong> {userName}</p>
                 <p><strong>이름</strong> {userName}</p>
                 <p><strong>이메일</strong> {userName}@example.com</p>
                 <p><strong>주소</strong> 부산광역시 수영구 ...</p>

@@ -123,4 +123,26 @@
         WHERE preset_id = #{presetId}
     </delete>
 
+
+    <select id="checkAlreadyPosted" resultType="int">
+        SELECT COUNT(*)
+        FROM post_tb p
+        JOIN preset_tb pr ON p.preset_id = pr.preset_id
+        WHERE pr.user_id = #{userId}
+        AND pr.product_id = #{productId}
+    </select>
+
+    <select id="findById" resultType="com.korit.allways_back.entity.Preset">
+        SELECT
+        preset_id AS presetId,
+        user_id AS userId,
+        product_id AS productId,
+        preset_name AS presetName
+        FROM
+        preset_tb
+        WHERE
+        preset_id = #{presetId}
+    </select>
+
+
 </mapper>

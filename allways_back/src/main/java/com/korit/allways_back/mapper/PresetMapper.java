@@ -26,4 +26,6 @@ public interface PresetMapper {
             @Param("userId") int userId,
             @Param("productId") int productId);
 
+    // 🔥 여기에 이 한 줄을 추가해 주세요!
+    Preset findById(int presetId);
 }
