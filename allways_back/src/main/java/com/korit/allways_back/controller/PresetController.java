@@ -24,24 +24,30 @@ public class PresetController {
         return ResponseEntity.ok(details);
     }
 
-    // 프리셋 저장 API 추가
     @PostMapping("/scrap")
     public ResponseEntity<?> scrapPreset(@RequestBody PresetReqDto presetReqDto) {
-        // 서비스의 scrapPreset을 호출하여 DB에 insert를 수행합니다.
         presetService.scrapPreset(
                 presetReqDto.getUserId(),
                 presetReqDto.getProductId(),
                 presetReqDto.getPresetName()
         );
 
-        // 성공적으로 생성되었다는 201 Created 응답을 보냅니다.
         return ResponseEntity.status(201).body("프리셋이 저장되었습니다.");
     }
 
     @GetMapping("/list/{userId}")
     public ResponseEntity<List<Preset>> getMyPresets(@PathVariable int userId) {
-        // 사용자가 저장했던 프리셋(이름, 날짜, 연결된 상품ID 등) 목록을 반환합니다.
         return ResponseEntity.ok(presetService.getUserPresets(userId));
+    }
+
+    @DeleteMapping("/delete/{presetId}")
+    public ResponseEntity<?> deletePreset(
+            @PathVariable int presetId,
+            @RequestParam int userId
+    ) {
+        presetService.deletePreset(userId, presetId);
+
+        return ResponseEntity.ok().body("프리셋이 성공적으로 삭제되었습니다.");
     }
 
 

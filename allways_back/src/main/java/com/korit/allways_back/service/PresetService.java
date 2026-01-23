@@ -30,7 +30,6 @@ public class PresetService {
     @Transactional
     public void scrapPreset(int userId, int productId, String presetName) {
 
-        //
         int currentCount = presetMapper.countByUserId(userId);
         if (currentCount >= 10) {
             throw new RuntimeException("프리셋은 최대 10개까지만 저장할 수 있습니다. 기존 프리셋을 삭제해주세요.");
@@ -51,6 +50,15 @@ public class PresetService {
 
     public List<Preset> getUserPresets(int userId) {
         return presetMapper.findByUserId(userId);
+    }
+
+    @Transactional
+    public void deletePreset(int userId, int presetId) {
+        int deletedCount = presetMapper.deleteById(userId, presetId);
+
+        if (deletedCount == 0) {
+            throw new RuntimeException("삭제할 프리셋이 없거나 삭제 권한이 없습니다.");
+        }
     }
 
 }
