@@ -167,7 +167,7 @@ export const Signup = ({setIsLoggedIn}) => {
           navigate("/", { replace: true });
         }
       } catch(error) {
-        if (error.response?.status === 400) {
+        if (error.response.status === 400) {
           const { errors, message } = error.response.data;
           setFormErrorMessage(errors ? Object.values(errors)[0] : message);
         }
