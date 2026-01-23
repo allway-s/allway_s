@@ -67,11 +67,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     // JWT 검사를 하지 않고 통과할 주소
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getRequestURI();
-        return path.startsWith("/api/auth/");
-    }
+//    @Override
+//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//        String path = request.getRequestURI();
+//        return path.startsWith("/api/auth/");
+//    }
 
     // 토큰 뜯어보는 메서드
     private String resolveToken(HttpServletRequest request) {
