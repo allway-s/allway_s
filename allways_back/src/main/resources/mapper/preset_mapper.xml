@@ -59,4 +59,16 @@
         WHERE
             user_id = #{userId} AND product_id = #{productId}
     </select>
+
+    <select id="findById" resultType="com.korit.allways_back.entity.Preset">
+        SELECT
+        preset_id AS presetId,
+        user_id AS userId,
+        product_id AS productId,
+        preset_name AS presetName
+        FROM
+        preset_tb
+        WHERE
+        preset_id = #{presetId}
+    </select>
 </mapper>
