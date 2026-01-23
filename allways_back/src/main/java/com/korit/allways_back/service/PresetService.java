@@ -2,6 +2,7 @@ package com.korit.allways_back.service;
 
 import com.korit.allways_back.dto.response.PresetRespDto;
 import com.korit.allways_back.entity.Preset;
+import com.korit.allways_back.mapper.PostMapper;
 import com.korit.allways_back.mapper.PresetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class PresetService {
 
     private final PresetMapper presetMapper;
+    private final PostMapper postMapper; // 🔥 PostMapper 주입 추가
 
     public Map<Integer, List<Integer>> getPresetMap(int productId) {
         List<PresetRespDto> rows = presetMapper.orderToPreset(productId);
@@ -54,6 +56,13 @@ public class PresetService {
 
     @Transactional
     public void deletePreset(int userId, int presetId) {
+
+        // 1. 🔥 커뮤니티 게시글(post_tb)부터 먼저 삭제 (순서 중요!)
+        // 외래키 관계 때문에 자식(post_tb)을 먼저 지워야 부모(preset_tb)를 지울 수 있습니다.
+        postMapper.deleteByPresetId(presetId);
+
+        // 2. 실제 프리셋 삭제
+
         int deletedCount = presetMapper.deleteById(userId, presetId);
 
         if (deletedCount == 0) {

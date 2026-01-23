@@ -116,4 +116,11 @@
     <update id="decrementLikeCount">
         update post_tb set like_cnt = like_cnt - 1 where post_id = #{postId}
     </update>
+
+
+    <delete id="deleteByPresetId">
+        DELETE FROM post_tb
+        WHERE preset_id = #{presetId}
+    </delete>
+
 </mapper>
