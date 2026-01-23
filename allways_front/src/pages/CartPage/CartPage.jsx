@@ -86,7 +86,6 @@ const CartPage = () => {
                                     </div>
 
                                     <p css={s.priceStyle}>
-                                        {/* [해결] 단가와 수량을 곱한 금액을 가독성 좋게 출력합니다. */}
                                         {(item.price * item.quantity).toLocaleString()}원
                                     </p>
                                 </div>

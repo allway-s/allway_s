@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 
 export const containerStyle = css` 
-    max-width: 600px; 
+    max-width: 800px; 
     margin: 0 auto; 
     padding: 40px 20px; 
     font-family: 'Pretendard', sans-serif; 
