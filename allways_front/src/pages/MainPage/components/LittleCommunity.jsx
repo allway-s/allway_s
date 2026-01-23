@@ -113,27 +113,3 @@ function LittleCommunity() {
 
 export default LittleCommunity;   
  
-
-// 2. 좋아요 클릭 시 데이터가 실제로 바뀌도록 로직 수정
-    // <div css={S.like}>
-    //           <button
-    //             type='button'
-    //               onClick={() => toggleLike(selected.id)}
-    //               style={{
-    //                 background: 'transparent',
-    //                 border: 'none',
-    //                 padding: 0,
-    //                 cursor: 'pointer',
-    //               }}
-    //               aria-label='좋아요'
-    //             >
-    //               <Heart
-    //                   css={S.heart}
-    //                   aria-hidden='true'
-    //                   fill={likes[selected.id]?.liked ? 'currentColor' : 'none'}
-    //                 />
-    //               </button>
-    //               <span css={S.count}>
-    //                 {likes[selected.id]?.count ?? selected.likeCount}
-    //               </span>
-    //             </div>

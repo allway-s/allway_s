@@ -108,8 +108,8 @@ function CommunityPage() {
         presetId: item.presetId,
         productId: item.productId, // ⭐ 이 필드가 서버 응답에 있는지 확인 후 추가하세요!
         title: item.presetName || '맛있는 레시피',
-        author: item.nickname || '익명님',
-        base: item.presetName || '서브웨이 샌드위치',
+        author: item.nickname || '익명님',  
+        base: item.itemName || '서브웨이 샌드위치',
         allIngredients: ingredients.length > 0 ? ingredients.join(', ') : '선택 안함',
         
         // ⭐ [수정] 모달 상세 정보 출력을 위해 재료 데이터들을 분리하여 매핑합니다.
