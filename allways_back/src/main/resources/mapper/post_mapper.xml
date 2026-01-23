@@ -24,12 +24,15 @@
         <id property="postId" column="post_id" />
         <result property="presetId" column="preset_id" />
         <result property="presetName" column="preset_name" />
+        <result property="nickname" column="nickname" />
+        <result property="itemName" column="item_name" />
         <result property="postedAt" column="posted_at" />
         <result property="likeCnt" column="like_cnt" />
         <result property="imgUrl" column="img_url" />
 
-        <collection property="ingredientNames" ofType="string">
-            <result column="ingredient_name" />
+        <collection property="ingredients" ofType="com.korit.allways_back.entity.Ingredients">
+            <result property="ingredientName" column="ingredient_name"/>
+            <result property="ingredientCategoryId" column="ingredient_category_id"/>
         </collection>
     </resultMap>
 
@@ -38,16 +41,20 @@
             p.post_id,
             p.preset_id,
             pr.preset_name,
+            us.nickname,
+            i.item_name,
             p.posted_at,
             p.like_cnt,
             i.img_url,
-            ig.ingredient_name
+            ig.ingredient_name,
+            ig.ingredient_category_id
         FROM
             post_tb p
             JOIN preset_tb pr ON p.preset_id = pr.preset_id
             JOIN item_tb i ON pr.product_id = i.item_id
             JOIN product_detail_tb pd ON pr.product_id = pd.product_id
             JOIN ingredient_tb ig ON pd.ingredient_id = ig.ingredient_id
+            JOIN user_tb us ON us.user_id = pr.user_id
         ORDER BY
             p.posted_at DESC, p.post_id ASC
     </select>

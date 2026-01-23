@@ -17,9 +17,11 @@ public class Post {
     private int postId;
     private int presetId;
     private String presetName;
+    private String nickname;
+    private String itemName;
     private LocalDateTime postedAt;
     private int likeCnt;
     private String imgUrl;
-    private List<String> ingredientNames;
+    private List<Ingredients> ingredients;
 
 }
