@@ -57,16 +57,39 @@ export default function MyPreSet() {
     return presets.filter(p => p.presetName.includes("(by ")); 
   }, [presets]);
 
+  
+  // 4. 공유 핸들러 (수정 완료)
+const handleShare = async (preset) => {
+  // 1. 현재 공유하려는 프리셋의 productId 추출
+  // 데이터 구조에 따라 preset.productId 혹은 preset.product.productId일 수 있습니다.
+  const currentProductId = preset.productId || preset.product?.productId;
 
-  const handleShare = async (preset) => {
-  if (!window.confirm(`'${preset.presetName}' 레시피를 공유하시겠습니까?`)) return;
-
-  // 1. token 변수를 try 밖에서 선언하여 catch에서도 쓸 수 있게 합니다.
-  const token = localStorage.getItem("accessToken");
+  if (!currentProductId) {
+    alert("상품 정보를 찾을 수 없어 공유할 수 없습니다.");
+    return;
+  }
 
   try {
+    // 2. [사전 검사] 커뮤니티에 이미 동일한 productId를 가진 게시글이 있는지 확인
+    const communityRes = await axios.get('http://localhost:8080/api/post/getAllPost');
+    const communityPosts = communityRes.data || [];
+
+    // DB의 product_id와 현재 프리셋의 productId를 비교
+    const isAlreadyShared = communityPosts.some(post => 
+      Number(post.productId) === Number(currentProductId)
+    );
+
+    if (isAlreadyShared) {
+      alert("이미 동일한 상품 구성의 레시피가 커뮤니티에 공유되어 있습니다.\n(다른 조합으로 나만의 레시피를 만들어보세요!)");
+      return;
+    }
+
+    // 3. 중복이 아니라면 공유 진행
+    if (!window.confirm(`'${preset.presetName}' 레시피를 커뮤니티에 공유하시겠습니까?`)) return;
+
+    const token = localStorage.getItem("accessToken");
     const response = await axios.post(`http://localhost:8080/api/preset/create`,
-      { presetId: preset.presetId },
+      { presetId: preset.presetId }, // 서버 규격에 맞게 ID 전달
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
@@ -75,22 +98,12 @@ export default function MyPreSet() {
       navigate('/community');
     }
   } catch (error) {
-    console.log("--- 에러 진단 ---");
-    const status = error.response?.status;
-    
-    // 이제 여기서 token에 접근이 가능합니다!
-    if (status === 401) {
-      if (token) {
-        // 토큰은 있는데 401이 왔다면 중복 에러일 확률이 매우 높음 (현재 백엔드 상황)
-        alert("이미 동일한 상품 구성의 레시피를 공유하셨습니다.");
-      } else {
-        // 토큰 자체가 없다면 진짜 로그인 세션 만료
-        alert("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-      }
-      return;
+    console.error("공유 처리 중 에러:", error);
+    if (error.response?.status === 401) {
+      alert("세션이 만료되었거나 공유 권한이 없습니다.");
+    } else {
+      alert("공유 중 오류가 발생했습니다.");
     }
-    
-    alert("공유 중 오류가 발생했습니다.");
   }
 };
 
