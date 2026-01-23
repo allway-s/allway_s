@@ -203,6 +203,7 @@ export const quantityDisplayStyle = css`
 `;
 
 export const footerStyle = css`
+    position: sticky;
     display: flex;
     justify-content: space-between;
     align-items: center;
