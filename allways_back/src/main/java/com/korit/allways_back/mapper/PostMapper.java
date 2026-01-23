@@ -26,4 +26,8 @@ public interface PostMapper {
 
     // 전체 게시글 목록 조회
     List<Post> getAllPosts();
+
+
+    // 🔥 추가: 프리셋 ID로 게시글 삭제하기
+    int deleteByPresetId(int presetId);
 }

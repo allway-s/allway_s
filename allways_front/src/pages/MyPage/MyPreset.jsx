@@ -77,30 +77,36 @@ export default function MyPreSet() {
     }
   };
 
-  // 5. 삭제 핸들러 (이름에 따른 메시지 분기 로직 포함)
+// 5. 삭제 핸들러 수정
   const handleDelete = async (presetId, presetName) => {
+    // (by 가 포함되어 있으면 타인의 것을 가져온 '저장된' 레시피임
     const isScrapped = presetName.includes("(by ");
     
+    // 진현님의 기획대로 메시지 분기
     let confirmMsg = isScrapped 
-      ? `커뮤니티에서 저장한 프리셋입니다. 내 목록에서만 삭제하시겠습니까?` 
-      : `회원님이 직접 만든 프리셋입니다.\n삭제 시 커뮤니티에 공유된 게시글도 '동시 삭제' 됩니다. 진행하시겠습니까?`;
+      ? `[저장된 레시피 삭제]\n내 목록에서만 삭제되며, 원본 게시글에는 영향을 주지 않습니다.` 
+      : `[오리지널 레시피 삭제]\n회원님이 만드신 레시피입니다.\n삭제 시 커뮤니티에 공유된 게시글도 '함께 삭제' 됩니다. 정말 삭제하시겠습니까?`;
 
     if (!window.confirm(confirmMsg)) return;
 
     const token = localStorage.getItem("accessToken");
 
     try {
-      const response = await axios.delete(`http://localhost:8080/api/preset/${presetId}`, {
+      // DELETE 요청 시, 백엔드의 @DeleteMapping("/api/preset/{presetId}")가 실행됨
+      const response = await axios.delete(`http://localhost:8080/api/preset/delete/${presetId}`, {
+        params: { userId: userId }, // @RequestParam int userId를 만족시키기 위해 추가
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.status === 200 || response.status === 204) {
-        alert("삭제되었습니다.");
+        alert("성공적으로 삭제되었습니다.");
+        // 화면에서 즉시 제거
         setPresets(prev => prev.filter(p => p.presetId !== presetId));
       }
     } catch (error) {
       const status = error.response?.status;
       if (status === 403) alert("삭제 권한이 없습니다.");
+      else if (status === 404) alert("이미 삭제된 데이터입니다.");
       else alert("삭제 처리 중 오류가 발생했습니다.");
     }
   };
