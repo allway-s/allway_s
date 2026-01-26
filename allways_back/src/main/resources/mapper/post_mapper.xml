@@ -3,117 +3,78 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.allways_back.mapper.PostMapper">
-    <insert id="createPost" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO
-            post_tb
-        VALUES
-            (default, #{presetId}, now(), #{likeCnt})
+    <!-- 게시글 생성 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO post_tb (preset_id, posted_at, like_count, view_count)
+        VALUES (#{presetId}, NOW(), 0, 0)
     </insert>
-    <update id="incrementLikeCount">
-        update post_tb
-        set like_cnt = like_cnt + 1
-        where post_id = #{postId}
+    <!-- 전체 게시글 조회 (최신순/좋아요순) -->
+    <select id="findAll" resultType="Post">
+        SELECT
+        p.post_id,
+        p.preset_id,
+        p.posted_at,
+        p.like_count,
+        p.view_count,
+        pr.preset_name,
+        pr.product_id,
+        u.nickname AS userNickname,
+        i.item_name,
+        img.file_path AS itemImageUrl,
+        <if test="currentUserId != null">
+            (SELECT COUNT(*) > 0 FROM like_tb WHERE user_id = #{currentUserId} AND post_id = p.post_id) AS isLikedByMe,
+        </if>
+        <if test="currentUserId == null">
+            FALSE AS isLikedByMe,
+        </if>
+        GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ',') AS ingredientNamesText
+        FROM post_tb p
+        INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
+        INNER JOIN user_tb u ON pr.user_id = u.user_id
+        INNER JOIN product_item_tb pi ON pr.product_id = pi.product_id
+        INNER JOIN item_tb i ON pi.item_id = i.item_id
+        LEFT JOIN image_tb img ON i.image_id = img.image_id
+        LEFT JOIN product_ingredient_tb ping ON pr.product_id = ping.product_id
+        LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+        LEFT JOIN category_tb c ON ing.category_id = c.category_id
+        WHERE p.is_hidden = FALSE
+        GROUP BY p.post_id
+        ORDER BY
+        <choose>
+            <when test="sortBy == 'like'">p.like_count DESC, p.posted_at DESC</when>
+            <otherwise>p.posted_at DESC</otherwise>
+        </choose>
+    </select>
+    <!-- 좋아요 토글 -->
+    <insert id="insertLike">
+        INSERT IGNORE INTO like_tb (user_id, post_id, liked_at)
+        VALUES (#{userId}, #{postId}, NOW())
+    </insert>
+    <delete id="deleteLike">
+        DELETE FROM like_tb
+        WHERE user_id = #{userId} AND post_id = #{postId}
+    </delete>
+    <!-- 좋아요 수 업데이트 -->
+    <update id="updateLikeCount">
+        UPDATE post_tb
+        SET like_count = (
+        SELECT COUNT(*) FROM like_tb WHERE post_id = #{postId}
+        )
+        WHERE post_id = #{postId}
     </update>
 
-    <insert id="insertLikeLog">
-        insert into like_tb
-        values (#{userId}, #{postId})
-    </insert>
-
-    <resultMap id="postWithIngredientsMap" type="com.korit.allways_back.entity.Post">
-        <id property="postId" column="post_id" />
-        <result property="presetId" column="preset_id" />
-        <result property="productId" column="product_id" />
-        <result property="presetName" column="preset_name" />
-        <result property="postedAt" column="posted_at" />
-        <result property="likeCnt" column="like_cnt" />
-        <result property="imgUrl" column="img_url" />
-
-        <result property="nickname" column="nickname" />
-
-        <collection property="ingredientNames" ofType="string">
-            <result column="ingredient_name" />
-        </collection>
-    </resultMap>
-
-
-    <!--
-     <select id="getAllPosts" resultMap="postWithIngredientsMap">
-
-        SELECT
-
-        p.post_id,
-
-        p.preset_id,
-
-        pr.preset_name,
-
-        p.posted_at,
-
-        p.like_cnt,
-
-        i.img_url,
-
-        ig.ingredient_name
-
-        FROM
-
-        post_tb p
-
-        JOIN preset_tb pr ON p.preset_id = pr.preset_id
-
-        JOIN item_tb i ON pr.product_id = i.item_id
-
-        JOIN product_detail_tb pd ON pr.product_id = pd.product_id
-
-        JOIN ingredient_tb ig ON pd.ingredient_id = ig.ingredient_id
-
-        ORDER BY
-
-        p.posted_at DESC, p.post_id ASC
-
-       </select>
-
-    원본 코드 아래처럼 수정하였음
-     -->
-
-    <select id="getAllPosts" resultMap="postWithIngredientsMap">
-        SELECT
-            p.post_id,
-            p.preset_id,
-            pr.product_id,
-            pr.preset_name,
-            p.posted_at,
-            p.like_cnt,
-            i.img_url,
-            ig.ingredient_name,
-            u.nickname
-
-        FROM
-            post_tb p
-
-        LEFT JOIN preset_tb pr ON p.preset_id = pr.preset_id
-        LEFT JOIN user_tb u ON pr.user_id = u.user_id
-        LEFT JOIN item_tb i ON pr.product_id = i.item_id
-        LEFT JOIN product_detail_tb pd ON pr.product_id = pd.product_id
-        LEFT JOIN ingredient_tb ig ON pd.ingredient_id = ig.ingredient_id
-
-        ORDER BY
-            p.posted_at DESC, p.post_id DESC
-    </select>
-
-    <select id="checkLikeExists" resultType="int">
-        select count(*) from like_tb where user_id = #{userId} and post_id = #{postId}
-    </select>
-
-    <delete id="deleteLikeLog">
-        delete
-            from like_tb
-        where
-            user_id = #{userId} and post_id = #{postId}
+    <!-- 프리셋 ID로 게시글 삭제 (프리셋 삭제 시 연쇄) -->
+    <delete id="deleteByPresetId">
+        DELETE FROM post_tb
+        WHERE preset_id = #{presetId}
     </delete>
 
-    <update id="decrementLikeCount">
-        update post_tb set like_cnt = like_cnt - 1 where post_id = #{postId}
-    </update>
+    <!-- 중복 게시글 체크 -->
+    <select id="existsByUserIdAndProductId" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM post_tb p
+        INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
+        WHERE pr.user_id = #{userId}
+        AND pr.product_id = #{productId}
+    </select>
 </mapper>

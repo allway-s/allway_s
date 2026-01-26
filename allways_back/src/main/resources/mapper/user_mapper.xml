@@ -4,6 +4,7 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.korit.allways_back.mapper.UserMapper">
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user_tb
         VALUES (
@@ -13,7 +14,6 @@
             #{name},
             #{email},
             #{phoneNumber},
-            #{address},
             now()
         )
     </insert>
@@ -25,7 +25,6 @@
             nickname,
             name,
             email,
-            address,
             created_at
         from
             user_tb
@@ -40,7 +39,6 @@
             nickname,
             name,
             email,
-            address,
             created_at
         from
             user_tb

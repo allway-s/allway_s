@@ -83,14 +83,14 @@ const MenuPage = () => {
                         <div key={item.itemId} css={s.menuCardStyle}>
                             <div css={s.imageWrapperStyle}>
                                 <img 
-                                    src={item.imgUrl} 
+                                    src={item.imageUrl} 
                                     alt={item.itemName}
                                     css={s.menuImageStyle}
                                 />
                             </div>
                             <h3 css={s.itemNameStyle}>{item.itemName}</h3>
-                            <p css={s.itemDescStyle}>{item.content}</p>
-                            <p css={s.priceStyle}>{item.price?.toLocaleString()}원</p>
+                            <p css={s.itemDescStyle}>{item.description}</p>
+                            <p css={s.priceStyle}>{item.basePrice?.toLocaleString()}원</p>
                             <div css={s.buttonGroupStyle}>
                                 <button 
                                     css={s.subwayPickButtonStyle}

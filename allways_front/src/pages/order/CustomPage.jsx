@@ -45,37 +45,6 @@ function CustomPage() {
     const isRequiredStep = currentCategory?.required && 
         !(currentCategory.id === '빵' && categoryName === '샐러드');
 
-    const setOptions = [
-        { 
-            id: 'single', 
-            name: '단품', 
-            description: '샌드위치만 주문',
-        },
-        { 
-            id: 'setA', 
-            name: '웨지감자 세트', 
-            description: '음료 + 웨지감자',
-            sideType: 'wedge'
-        },
-        { 
-            id: 'setB', 
-            name: '칩 세트', 
-            description: '음료 + 칩',
-            sideType: 'chip'
-        },
-        { 
-            id: 'setC', 
-            name: '쿠키 세트', 
-            description: '음료 + 쿠키',
-            sideType: 'cookie'
-        },
-        { 
-            id: 'setD', 
-            name: '수프 세트', 
-            description: '음료 + 수프',
-            sideType: 'soup'
-        }
-    ];
 
     useEffect(() => {
         if (currentCategory?.id === '세트') {

@@ -3,19 +3,25 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.allways_back.mapper.IngredientMapper">
-
-    <select id="getIngredientsByCategoryName" resultType="com.korit.allways_back.entity.Ingredient">
+    <select id="findByCategoryName" resultType="Ingredient">
         SELECT
-            i.ingredient_id AS ingredientId,
-            i.ingredient_name AS ingredientName,
-            i.ingredient_category_id AS ingredientCategoryId,
-            c.ingredient_category_name AS ingredientCategoryName,
-            i.img_url AS imgUrl,
-            i.price AS price
-        FROM ingredient_tb i
-            INNER JOIN ingredient_category_tb c
-            ON i.ingredient_category_id = c.ingredient_category_id
-        WHERE c.ingredient_category_name = #{categoryName};
+            ing.ingredient_id,
+            ing.category_id,
+            ing.ingredient_name,
+            ing.price,
+            c.category_name,
+            ing.image_id,
+            ing.display_order,
+            img.img_url AS imgURL
+        FROM
+            ingredient_tb ing
+            INNER JOIN category_tb c ON ing.category_id = c.category_id
+            LEFT JOIN image_tb img ON ing.image_id = img.image_id
+        WHERE
+            c.category_name = #{categoryName}
+            AND c.category_type = 'ingredient'
+        ORDER BY
+            ing.display_order, ing.ingredient_id
     </select>
 
 </mapper>

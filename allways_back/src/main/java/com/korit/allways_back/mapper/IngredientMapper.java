@@ -8,7 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface IngredientMapper {
-
-    List<Ingredient> getIngredientsByCategoryName(@Param("categoryName") String categoryName);
-
+    List<Ingredient> findByCategoryName(@Param("categoryName") String categoryName);
 }

@@ -8,7 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface ItemMapper {
-
-    List<Item> getItemsByCategoryName(@Param("categoryName") String categoryName);
-
+    List<Item> findByCategoryName(@Param("categoryName") String categoryName);
 }

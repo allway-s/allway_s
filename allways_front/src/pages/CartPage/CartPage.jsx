@@ -11,40 +11,26 @@ import {
 import { createOrder } from "../../apis/items/orderApi";
 
 const CartPage = () => {
+    // 1. 상태 관리: 로컬 스토리지(cartStore)에서 장바구니 데이터를 가져와 저장합니다.
     const [cart, setCart] = useState({ orders: [] });
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        loadCart();
-    }, []);
-
-    const loadCart = () => {
-        setCart(getCart());
-    };
-
+    // 2. 총액 계산: Reduce 함수를 사용하여 각 항목의 (가격 * 수량)을 합산합니다.
     const calculateTotalPrice = () => {
-        return cart.orders.reduce((total, item) => {
-            const unitPrice = item.price || 0;
-            return total + (unitPrice * item.quantity);
-        }, 0);
+        return cart.orders.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
 
-    const handleQuantityChange = (index, newQuantity) => {
-        if (newQuantity < 1) return; 
-        updateCartItemQuantity(index, newQuantity);
-        loadCart();
-    };
-
+    // 3. 주문 처리 (핵심 로직):
     const handleOrder = async () => {
         if (cart.orders.length === 0) return alert('장바구니가 비어있습니다.');
         if (!window.confirm('주문을 진행하시겠습니까?')) return;
 
-        setLoading(true);
+        setLoading(true); // 버튼 비활성화 및 로딩 표시
         try {
-            await createOrder(cart);
+            // [작동방식] 수정된 orderApi의 createOrder를 호출하여 백엔드에 JSON 데이터를 전송합니다.
+            await createOrder(cart); 
             alert('주문이 완료되었습니다!');
-            clearCart();
+            clearCart(); // 스토리지 비우기
             navigate('/menu'); 
         } catch (err) {
             console.error('주문 실패:', err);

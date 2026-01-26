@@ -1,29 +1,27 @@
-import { api } from "../config/axiosConfig"
+import { api } from "../config/axiosConfig";
 
-export const getIngredients = (categoryValue) => {
-    return api.get(`/api/ingredients`, {params: {
-            categoryName: categoryValue
-        }})
-}   
+// [GET] 특정 카테고리의 식재료 조회
+export const getIngredients = (category) => {
+    return api.get(`/api/menu/ingredients/${category}`); 
+};
 
-export const getItems = (categoryValue) => {
-    return api.get(`/api/items`, {params: {
-            categoryName: categoryValue
-        }})
-}   
+// [GET] 특정 카테고리의 아이템 조회
+export const getItems = (category) => {
+    return api.get(`/api/menu/items/${category}`);
+};
 
-export const validateOrder = (orderData) => {
-    return api.post(`/api/v1/orders/validate`, orderData)
-}
+// [POST] 커스텀 조합 생성 또는 조회
+export const getOrCreateProduct = (productReqDto) => {
+    return api.post(`/api/menu/product`, productReqDto);
+};
 
+// [POST] 실제 주문 생성 (CartPage에서 사용)
 export const createOrder = (orderData) => {
-    return api.post(`/api/v1/orders`, orderData)
-}
+    // 백엔드에 해당 엔드포인트가 구성되어 있어야 합니다.
+    return api.post(`/api/v1/orders`, orderData);
+};
 
-export const getOrderHistory = () => {
-    return api.get(`/api/v1/orders/history`)
-}
-
-export const getMyPresets = () => {
-    return api.get(`/api/v1//list/{userId}`)
-}
+// [GET] 프리셋 조회
+export const getMyPresets = (userId) => {
+    return api.get(`/api/v1/list/${userId}`);
+};

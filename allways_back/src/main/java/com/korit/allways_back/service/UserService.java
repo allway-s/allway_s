@@ -37,7 +37,6 @@ public class UserService {
                 .name(dto.getName())
                 .nickname(dto.getNickname())
                 .phoneNumber(dto.getPhoneNumber())
-                .address(dto.getAddress())
                 .build();
 
             userMapper.insert(user);
