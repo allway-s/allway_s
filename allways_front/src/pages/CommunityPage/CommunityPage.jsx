@@ -77,7 +77,7 @@ function CommunityPage() {
   // 1. 서버 데이터 호출
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/post/getAllPost');
+      const response = await axios.get('http://localhost:8080/api/community/posts');
       const data = response.data || [];
       console.log("서버 원본 데이터:", data);
       setPosts(data);

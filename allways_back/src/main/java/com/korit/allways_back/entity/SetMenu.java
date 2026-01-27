@@ -1,5 +1,6 @@
 package com.korit.allways_back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,14 +16,9 @@ import java.util.List;
 public class SetMenu {
 
     private Integer setId;
-    private String setCode; 
     private String setName;
-    private String description;
-    private Integer additionalPrice;
-    private Boolean isActive;
-    private Integer displayOrder;
-    private LocalDateTime createdAt;
 
-    // 조인용
+    // 조인용 필드 (필요시)
+    @JsonIgnore
     private List<SetComponent> components;
 }

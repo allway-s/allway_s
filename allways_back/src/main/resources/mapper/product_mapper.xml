@@ -18,24 +18,24 @@
                 product_ingredient_tb
             WHERE
                 ingredient_id IN
-            <foreach collection="ingredientIds" item="id" open="(" separator="," close=")">
-                #{id}
-            </foreach>
+                <foreach collection="ingredientIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
             GROUP BY
                 product_id
             HAVING COUNT(DISTINCT ingredient_id) = #{ingredientCount}
             )
             AND
-                pi.product_id IN (
-                    SELECT
-                        product_id
-                    FROM
-                        product_ingredient_tb
-                    GROUP BY
-                        product_id
-                    HAVING COUNT(*) = #{ingredientCount}
+            pi.product_id IN (
+                SELECT
+                    product_id
+                FROM
+                    product_ingredient_tb
+                GROUP BY
+                    product_id
+                HAVING COUNT(*) = #{ingredientCount}
                 )
-        LIMIT 1
+            LIMIT 1
     </select>
 
     <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId">
@@ -56,9 +56,9 @@
         INSERT INTO
             product_ingredient_tb (product_id, ingredient_id)
         VALUES
-        <foreach collection="ingredientIds" item="id" separator=",">
-            (#{productId}, #{id})
-        </foreach>
+            <foreach collection="ingredientIds" item="id" separator=",">
+                (#{productId}, #{id})
+            </foreach>
     </insert>
 
     <select id="findById" resultType="Product">
@@ -68,7 +68,7 @@
             pi.item_id,
             i.item_name,
             i.size AS itemSize,
-            img.file_path AS itemImageUrl
+            img.img_url AS itemImageUrl
         FROM
             product_tb p
             INNER JOIN product_item_tb pi ON p.product_id = pi.product_id
@@ -83,8 +83,10 @@
             ing.ingredient_id,
             ing.ingredient_name,
             ing.price,
+            ing.category_id,
+            ing.image_id,
             c.category_name,
-            img.file_path AS imageUrl
+            img.img_url AS imgURL
         FROM
             product_ingredient_tb ping
             INNER JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
@@ -92,8 +94,6 @@
             LEFT JOIN image_tb img ON ing.image_id = img.image_id
         WHERE
             ping.product_id = #{productId}
-        ORDER BY
-            c.display_order, ing.display_order
     </select>
 
     <select id="calculatePrice" resultType="int">

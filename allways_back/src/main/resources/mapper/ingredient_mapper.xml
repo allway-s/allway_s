@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.allways_back.mapper.IngredientMapper">
     <select id="findByCategoryName" resultType="Ingredient">
         SELECT
@@ -9,10 +9,9 @@
             ing.category_id,
             ing.ingredient_name,
             ing.price,
-            c.category_name,
             ing.image_id,
-            ing.display_order,
-            img.img_url AS imageUrl
+            c.category_name,
+            img.img_url AS imgURL
         FROM
             ingredient_tb ing
             INNER JOIN category_tb c ON ing.category_id = c.category_id
@@ -21,7 +20,7 @@
             c.category_name = #{categoryName}
             AND c.category_type = 'ingredient'
         ORDER BY
-            ing.display_order, ing.ingredient_id
+            ing.ingredient_id
     </select>
 
 </mapper>

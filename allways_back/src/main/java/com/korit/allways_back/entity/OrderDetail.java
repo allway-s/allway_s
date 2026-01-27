@@ -14,17 +14,14 @@ public class OrderDetail {
     private Integer orderDetailId;
     private Integer orderId;
     private Integer productId;
-    private Integer unitPrice;
+    private Integer unitPrice; // 주문 시점 가격 (히스토리 보존)
     private Integer quantity;
-    private Integer setId;
+    private Integer setId; // 선택한 세트
     private Integer selectedDrinkId;
     private Integer selectedSideId;
 
-    // 조인용
-    private String itemName;
-    private Integer itemSize;
-    private String ingredientsText;
-    private String setName;
-    private String drinkName;
-    private String sideName;
+    // 조인용 필드 (필요시)
+    private Order order;
+    private Product product;
+    private SetMenu setMenu;
 }

@@ -1,8 +1,6 @@
 package com.korit.allways_back.service;
 
-import com.korit.allways_back.dto.request.PresetReqDto;
 import com.korit.allways_back.entity.Preset;
-import com.korit.allways_back.mapper.PostMapper;
 import com.korit.allways_back.mapper.PresetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,45 +12,64 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PresetService {
 
-    private final PresetMapper presetMapper; // 프리셋 DB 접근을 위한 매퍼
-    private final PostMapper postMapper; // 프리셋 삭제 시 관련 게시글 처리를 위한 매퍼
+    private final PresetMapper presetMapper;
+    private final ProductService productService;
 
+    private static final int MAX_PRESETS_PER_USER = 10; // 사용자당 최대 프리셋 수
+
+    /**
+     * 프리셋 저장
+     */
     @Transactional
-    public void savePreset(int userId, PresetReqDto presetReqDto) {
-        // 1. 사용자의 현재 프리셋 개수를 조회하여 10개가 넘는지 확인합니다.
-        int currentCount = presetMapper.countByUserId(userId);
-        if (currentCount >= 10) {
-            throw new RuntimeException("프리셋은 최대 10개까지만 저장할 수 있습니다.");
+    public Preset savePreset(Preset preset) {
+        // 최대 개수 체크
+        int currentCount = presetMapper.countByUserId(preset.getUserId());
+        if (currentCount >= MAX_PRESETS_PER_USER) {
+            throw new IllegalStateException("프리셋은 최대 " + MAX_PRESETS_PER_USER + "개까지 저장할 수 있습니다.");
         }
 
-        // 2. 이미 같은 상품(Product)이 프리셋으로 등록되어 있는지 체크합니다.
-        if (presetMapper.existsByUserIdAndProductId(userId, presetReqDto.getProductId())) {
-            throw new RuntimeException("이미 저장된 조합입니다.");
+        // 중복 체크 (같은 상품 프리셋 존재 여부)
+        if (presetMapper.existsByUserIdAndProductId(preset.getUserId(), preset.getProductId())) {
+            throw new IllegalArgumentException("이미 동일한 상품의 프리셋이 존재합니다.");
         }
 
-        // 3. DTO 데이터를 바탕으로 Preset 엔티티 객체를 생성합니다.
-        Preset preset = Preset.builder()
-                .userId(userId) // 저장하는 사용자 ID
-                .productId(presetReqDto.getProductId()) // 연결된 커스텀 상품 ID
-                .presetName(presetReqDto.getPresetName()) // 사용자가 설정한 이름
-                .setId(presetReqDto.getSetId()) // 선택한 세트 메뉴 정보
-                .selectedDrinkId(presetReqDto.getSelectedDrinkId()) // 선택한 음료
-                .selectedSideId(presetReqDto.getSelectedSideId()) // 선택한 사이드
-                .isOriginal(true) // 직접 만든 것이므로 true
-                .build();
-
-        // 4. DB에 프리셋 정보를 저장합니다.
         presetMapper.insert(preset);
+        return preset;
     }
 
-    @Transactional
-    public void deletePreset(int userId, int presetId) {
-        // 1. 해당 프리셋을 삭제합니다. (본인 것만 삭제 가능하도록 userId 체크 포함)
-        int deletedRows = presetMapper.deleteById(userId, presetId);
+    /**
+     * 사용자 ID로 프리셋 목록 조회
+     */
+    public List<Preset> getUserPresets(Integer userId) {
+        return presetMapper.findByUserId(userId);
+    }
 
-        // 2. 삭제된 행이 있다면, 해당 프리셋으로 작성된 게시글도 함께 숨기거나 삭제합니다.
-        if (deletedRows > 0) {
-            postMapper.deleteByPresetId(presetId);
+    /**
+     * 프리셋 ID로 조회
+     */
+    public Preset getPresetById(Integer presetId) {
+        Preset preset = presetMapper.findById(presetId);
+        if (preset == null) {
+            throw new IllegalArgumentException("존재하지 않는 프리셋입니다.");
         }
+        return preset;
+    }
+
+    /**
+     * 프리셋 삭제
+     */
+    @Transactional
+    public void deletePreset(Integer presetId, Integer userId) {
+        int deleted = presetMapper.deleteById(presetId, userId);
+        if (deleted == 0) {
+            throw new IllegalArgumentException("삭제할 수 없습니다. 프리셋이 존재하지 않거나 권한이 없습니다.");
+        }
+    }
+
+    /**
+     * 사용자의 프리셋 개수 조회
+     */
+    public int getUserPresetCount(Integer userId) {
+        return presetMapper.countByUserId(userId);
     }
 }

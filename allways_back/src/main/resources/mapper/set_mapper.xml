@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.korit.allways_back.mapper.SetMapper">
+
+    <select id="findAllSets" resultType="SetMenu">
+        SELECT
+            set_id,
+            set_name
+        FROM
+            set_menu_tb
+        ORDER BY
+            set_id
+    </select>
+
+    <select id="findById" resultType="SetMenu">
+        SELECT
+            set_id,
+            set_name
+        FROM
+            set_menu_tb
+        WHERE
+            set_id = #{setId}
+    </select>
+
+    <select id="findComponentsBySetId" resultType="SetComponent">
+        SELECT
+            sc.component_id,
+            sc.set_id,
+            sc.component_type,
+            sc.category_id,
+            c.category_name
+        FROM
+            set_component_tb sc
+            LEFT JOIN category_tb c ON sc.category_id = c.category_id
+        WHERE
+            sc.set_id = #{setId}
+        ORDER BY
+            sc.component_type
+    </select>
+
+    <select id="findSelectableIngredients" resultType="Ingredient">
+        SELECT
+            ing.ingredient_id,
+            ing.category_id,
+            ing.ingredient_name,
+            ing.price,
+            ing.image_id,
+            c.category_name,
+            img.img_url AS imgURL
+        FROM
+            ingredient_tb ing
+            INNER JOIN category_tb c ON ing.category_id = c.category_id
+            LEFT JOIN image_tb img ON ing.image_id = img.image_id
+        WHERE
+            ing.category_id = #{categoryId}
+            AND c.category_type = 'ingredient'
+            AND c.is_active = TRUE
+        ORDER BY
+            ing.ingredient_id
+    </select>
+
+</mapper>

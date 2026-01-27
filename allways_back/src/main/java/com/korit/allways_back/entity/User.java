@@ -1,25 +1,19 @@
 package com.korit.allways_back.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
-    private int userId;
+    private Integer userId;
     private String oauth2Id;
-    private String oauth2Provider;
     private String nickname;
     private String name;
     private String email;
     private String phoneNumber;
     private LocalDateTime createdAt;
-
 }

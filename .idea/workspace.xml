@@ -4,53 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/IngredientController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/ItemController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/PostController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/PresetController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/ProductController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/OrderItemReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/OrderItemReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/OrderReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/OrderReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/PostReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/PostReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/PresetReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/PresetReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/PresetScrapReqDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/ProductReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/ProductReqDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Ingredient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Item.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/OrderDetail.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/OrderDetail.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Preset.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Preset.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/entity/package-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/IngredientMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/IngredientMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/ItemMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/ItemMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/OrderMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PostMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PostMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PresetMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PresetMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/ProductMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/IngredientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/IngredientService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/ItemService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/PostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/PresetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/PresetService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/ingredient_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/ingredient_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/item_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/item_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/order_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/order_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/post_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/post_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/preset_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/preset_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/product_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/product_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/user_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/user_mapper.xml" afterDir="false" />
-    </list>
+    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,21 +34,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;187-db-날아가서-백엔드-다시하기&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "190-백엔드-계속-수정",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -118,6 +72,7 @@
       <workItem from="1769472515245" duration="289000" />
       <workItem from="1769472897504" duration="74000" />
       <workItem from="1769473074069" duration="5000" />
+      <workItem from="1769477618629" duration="135000" />
     </task>
     <servers />
   </component>
