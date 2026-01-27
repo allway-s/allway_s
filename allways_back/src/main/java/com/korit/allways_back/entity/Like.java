@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Preset {
+public class Like {
 
-    private Integer presetId;
+    private Integer likeId;
     private Integer userId;
-    private Integer productId;
-    private String presetName;
+    private Integer postId;
+    private LocalDateTime likedAt;
 
     // 조인용 필드 (필요시)
     private User user;
-    private Product product;
+    private Post post;
 }

@@ -1,5 +1,6 @@
 package com.korit.allways_back.mapper;
 
+import com.korit.allways_back.entity.Ingredient;
 import com.korit.allways_back.entity.Product;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,19 +11,26 @@ import java.util.List;
 public interface ProductMapper {
 
     Integer findExistingProduct(
-            @Param("itemId") int itemId,
+            @Param("itemId") Integer itemId,
             @Param("ingredientIds") List<Integer> ingredientIds,
-            @Param("ingredientCount") int ingredientCount
+            @Param("ingredientCount") Integer ingredientCount
     );
 
-    void insertProduct(Product product);
+    int insertProduct(Product product);
 
-    int insertProductItem(@Param("productId") int productId, @Param("itemId") int itemId);
+    int insertProductItem(
+            @Param("productId") Integer productId,
+            @Param("itemId") Integer itemId
+    );
 
     int insertProductIngredients(
-            @Param("productId") int productId,
+            @Param("productId") Integer productId,
             @Param("ingredientIds") List<Integer> ingredientIds
     );
 
-    int calculatePrice(int productId);
+    Product findById(@Param("productId") Integer productId);
+
+    List<Ingredient> findIngredientsByProductId(@Param("productId") Integer productId);
+
+    int calculatePrice(@Param("productId") Integer productId);
 }

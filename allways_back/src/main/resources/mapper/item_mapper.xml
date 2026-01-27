@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.allways_back.mapper.ItemMapper">
 
     <select id="findByCategoryName" resultType="Item">
@@ -12,9 +12,9 @@
             i.description,
             i.base_price,
             i.size,
-            img.img_url AS imageUrl,
-            i.display_order,
-            c.category_name
+            i.image_id,
+            c.category_name,
+            img.img_url AS imageUrl
         FROM
             item_tb i
             INNER JOIN category_tb c ON i.category_id = c.category_id
@@ -23,7 +23,7 @@
             c.category_name = #{categoryName}
             AND c.category_type = 'item'
         ORDER BY
-            i.display_order, i.item_id
+            i.item_id
     </select>
 
 </mapper>

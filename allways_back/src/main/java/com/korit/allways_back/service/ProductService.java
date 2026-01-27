@@ -1,6 +1,6 @@
 package com.korit.allways_back.service;
 
-import com.korit.allways_back.dto.request.ProductReqDto;
+import com.korit.allways_back.entity.Ingredient;
 import com.korit.allways_back.entity.Product;
 import com.korit.allways_back.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,37 +16,63 @@ public class ProductService {
 
     private final ProductMapper productMapper;
 
+    /**
+     * 상품 생성 또는 기존 상품 찾기
+     * 동일한 조합(아이템 + 재료)이 있으면 기존 상품 ID 반환
+     * 없으면 새로 생성
+     */
     @Transactional
-    public int getOrCreateProduct(ProductReqDto productReqDto) {
-        // 1. 기존에 동일한 구성(아이템 + 식재료들)의 Product가 있는지 조회
-        Integer existingProductId = productMapper.findExistingProduct(
-                productReqDto.getItemId(),
-                productReqDto.getIngredientIds(),
-                productReqDto.getIngredientCount()
-        );
+    public Integer createOrFindProduct(Integer itemId, List<Integer> ingredientIds, Boolean isSystem) {
+        // 기존 상품 찾기
+        if (ingredientIds != null && !ingredientIds.isEmpty()) {
+            Integer existingProductId = productMapper.findExistingProduct(
+                    itemId,
+                    ingredientIds,
+                    ingredientIds.size()
+            );
 
-        // 2. 이미 존재한다면 해당 ID 반환
-        if (existingProductId != null) {
-            return existingProductId;
+            if (existingProductId != null) {
+                return existingProductId;
+            }
         }
 
-        // 3. 없다면 새로운 Product 생성
-        Product newProduct = Product.builder()
-                .isSystem(false) // 사용자가 만든 커스텀 상품
+        // 새 상품 생성
+        Product product = Product.builder()
+                .isSystem(isSystem != null ? isSystem : false)
                 .build();
+        productMapper.insertProduct(product);
 
-        // insertProduct 호출 시 useGeneratedKeys에 의해 productId가 채워짐
-        productMapper.insertProduct(newProduct);
-        int productId = newProduct.getProductId();
+        // 상품-아이템 연결
+        productMapper.insertProductItem(product.getProductId(), itemId);
 
-        // 4. Product와 Item 관계 매핑
-        productMapper.insertProductItem(productId, productReqDto.getItemId());
-
-        // 5. Product와 Ingredients 관계 매핑 (재료가 있을 경우)
-        if (productReqDto.getIngredientIds() != null && !productReqDto.getIngredientIds().isEmpty()) {
-            productMapper.insertProductIngredients(productId, productReqDto.getIngredientIds());
+        // 상품-재료 연결
+        if (ingredientIds != null && !ingredientIds.isEmpty()) {
+            productMapper.insertProductIngredients(product.getProductId(), ingredientIds);
         }
 
-        return productId;
+        return product.getProductId();
+    }
+
+    /**
+     * 상품 ID로 상품 정보 조회
+     */
+    public Product getProductById(Integer productId) {
+        Product product = productMapper.findById(productId);
+        if (product == null) {
+            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+        }
+
+        // 재료 목록 조회
+        List<Ingredient> ingredients = productMapper.findIngredientsByProductId(productId);
+        product.setIngredients(ingredients);
+
+        return product;
+    }
+
+    /**
+     * 상품 가격 계산
+     */
+    public int calculateProductPrice(Integer productId) {
+        return productMapper.calculatePrice(productId);
     }
 }

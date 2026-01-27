@@ -5,20 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Preset {
+public class ProductItem {
 
-    private Integer presetId;
-    private Integer userId;
+    private Integer productItemId;
     private Integer productId;
-    private String presetName;
+    private Integer itemId;
 
     // 조인용 필드 (필요시)
-    private User user;
     private Product product;
+    private Item item;
 }

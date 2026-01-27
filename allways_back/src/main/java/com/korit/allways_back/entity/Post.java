@@ -16,16 +16,11 @@ public class Post {
 
     private Integer postId;
     private Integer presetId;
+    private Integer userId;
     private LocalDateTime postedAt;
     private Integer likeCount;
-    private Boolean isHidden;
 
-    // 조인용 필드
-    private String presetName;
-    private Integer productId;
-    private String userNickname;
-    private String itemName;
-    private String itemImageUrl;
-    private List<String> ingredientNames;
-    private Boolean isLikedByMe;
+    // 조인용 필드 (필요시)
+    private Preset preset;
+    private List<Like> likes;
 }

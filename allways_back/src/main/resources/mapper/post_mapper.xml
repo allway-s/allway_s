@@ -1,59 +1,81 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.allways_back.mapper.PostMapper">
     <!-- 게시글 생성 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO post_tb (preset_id, posted_at, like_count, view_count)
-        VALUES (#{presetId}, NOW(), 0, 0)
+        INSERT INTO post_tb (
+            preset_id,
+            user_id,
+            posted_at,
+            like_count
+        )
+        VALUES (
+            #{presetId},
+            #{userId},
+            NOW(),
+            0
+        )
     </insert>
+
     <!-- 전체 게시글 조회 (최신순/좋아요순) -->
     <select id="findAll" resultType="Post">
         SELECT
-        p.post_id,
-        p.preset_id,
-        p.posted_at,
-        p.like_count,
-        p.view_count,
-        pr.preset_name,
-        pr.product_id,
-        u.nickname AS userNickname,
-        i.item_name,
-        img.file_path AS itemImageUrl,
+            p.post_id,
+            p.preset_id,
+            p.posted_at,
+            p.like_count,
+            pr.preset_name,
+            pr.product_id,
+            u.nickname AS userNickname,
+            i.item_name,
+            img.img_url AS itemImageUrl,
         <if test="currentUserId != null">
             (SELECT COUNT(*) > 0 FROM like_tb WHERE user_id = #{currentUserId} AND post_id = p.post_id) AS isLikedByMe,
         </if>
         <if test="currentUserId == null">
             FALSE AS isLikedByMe,
         </if>
-        GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ',') AS ingredientNamesText
-        FROM post_tb p
-        INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
-        INNER JOIN user_tb u ON pr.user_id = u.user_id
-        INNER JOIN product_item_tb pi ON pr.product_id = pi.product_id
-        INNER JOIN item_tb i ON pi.item_id = i.item_id
-        LEFT JOIN image_tb img ON i.image_id = img.image_id
-        LEFT JOIN product_ingredient_tb ping ON pr.product_id = ping.product_id
-        LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
-        LEFT JOIN category_tb c ON ing.category_id = c.category_id
-        WHERE p.is_hidden = FALSE
-        GROUP BY p.post_id
+        GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ', ') AS ingredientNamesText
+        FROM
+            post_tb p
+            INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
+            INNER JOIN user_tb u ON pr.user_id = u.user_id
+            INNER JOIN product_item_tb pi ON pr.product_id = pi.product_id
+            INNER JOIN item_tb i ON pi.item_id = i.item_id
+            LEFT JOIN image_tb img ON i.image_id = img.image_id
+            LEFT JOIN product_ingredient_tb ping ON pr.product_id = ping.product_id
+            LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+            LEFT JOIN category_tb c ON ing.category_id = c.category_id
+            GROUP BY
+            p.post_id
         ORDER BY
-        <choose>
-            <when test="sortBy == 'like'">p.like_count DESC, p.posted_at DESC</when>
-            <otherwise>p.posted_at DESC</otherwise>
-        </choose>
+            <choose>
+                <when test="sortBy == 'like'">p.like_count DESC, p.posted_at DESC</when>
+                <otherwise>p.posted_at DESC</otherwise>
+            </choose>
     </select>
+
     <!-- 좋아요 토글 -->
     <insert id="insertLike">
-        INSERT IGNORE INTO like_tb (user_id, post_id, liked_at)
-        VALUES (#{userId}, #{postId}, NOW())
+        INSERT IGNORE INTO like_tb (
+        user_id,
+        post_id,
+        liked_at
+        )
+        VALUES (
+        #{userId},
+        #{postId},
+        NOW()
+        )
     </insert>
+
     <delete id="deleteLike">
         DELETE FROM like_tb
         WHERE user_id = #{userId} AND post_id = #{postId}
     </delete>
+
     <!-- 좋아요 수 업데이트 -->
     <update id="updateLikeCount">
         UPDATE post_tb

@@ -1,6 +1,6 @@
 package com.korit.allways_back.service;
 
-import com.korit.allways_back.dto.request.PostReqDto;
+import com.korit.allways_back.dto.request.PostCreateRequestDto;
 import com.korit.allways_back.entity.Post;
 import com.korit.allways_back.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,36 +13,64 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostMapper postMapper; // 게시글 및 좋아요 DB 접근
+    private final PostMapper postMapper;
 
     @Transactional
-    public void createPost(PostReqDto postReqDto) {
-        // 1. 전달받은 프리셋 ID를 기반으로 게시글 객체를 생성합니다.
+    public Post createPost(int userId, PostCreateRequestDto dto) {
+
         Post post = Post.builder()
-                .presetId(postReqDto.getPostId()) // 게시할 프리셋 ID
+                .userId(userId)
+                .presetId(dto.getPresetId())
+                .postedAt(java.time.LocalDateTime.now())
+                .likeCount(0)
                 .build();
 
-        // 2. 게시글 정보를 저장합니다. (초기 좋아요/조회수는 XML에서 0으로 설정됨)
         postMapper.insert(post);
+
+        return post;
     }
 
-    public List<Post> getAllPosts(String sortBy, Integer currentUserId) {
-        // 1. 정렬 기준(latest 또는 like)에 따라 전체 게시글 목록을 가져옵니다.
-        // 2. 로그인한 사용자가 있다면 각 게시글에 '좋아요'를 눌렀는지 여부도 함께 조회합니다.
-        return postMapper.findAll(sortBy, currentUserId);
+    public List<Post> getAllPosts(Integer currentUserId) {
+        return postMapper.findAll(currentUserId);
     }
 
+    /**
+     * 좋아요 토글 (좋아요 추가/삭제)
+     * @return true: 좋아요 추가, false: 좋아요 취소
+     */
     @Transactional
-    public void toggleLike(int userId, int postId) {
-        // 1. 먼저 좋아요를 취소(삭제)해봅니다.
-        int result = postMapper.deleteLike(userId, postId);
+    public boolean toggleLike(Integer userId, Integer postId) {
+        // 좋아요 추가 시도
+        int inserted = postMapper.insertLike(userId, postId);
 
-        // 2. 삭제된 행이 0개라면 기존에 좋아요가 없었다는 뜻이므로, 새로 추가합니다.
-        if (result == 0) {
-            postMapper.insertLike(userId, postId);
+        boolean liked;
+        if (inserted > 0) {
+            // 좋아요 추가 성공
+            liked = true;
+        } else {
+            // 이미 좋아요가 있음 → 삭제
+            postMapper.deleteLike(userId, postId);
+            liked = false;
         }
 
-        // 3. 좋아요 테이블의 변화를 post_tb의 like_count 컬럼에 동기화합니다.
+        // 좋아요 수 업데이트
         postMapper.updateLikeCount(postId);
+
+        return liked;
+    }
+
+    /**
+     * 프리셋 ID로 게시글 삭제 (프리셋 삭제 시 호출)
+     */
+    @Transactional
+    public void deleteByPresetId(Integer presetId) {
+        postMapper.deleteByPresetId(presetId);
+    }
+
+    /**
+     * 중복 게시글 확인
+     */
+    public boolean isPostDuplicate(Integer userId, Integer productId) {
+        return postMapper.existsByUserIdAndProductId(userId, productId);
     }
 }
