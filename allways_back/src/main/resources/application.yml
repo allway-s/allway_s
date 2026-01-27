@@ -31,3 +31,9 @@ logging:
   level:
     com.korit.allways_back.mapper: debug
 
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+        http-only: true
