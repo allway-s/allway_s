@@ -11,10 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Ingredient {
 
-    private int ingredientId;
-    private int ingredientCategoryId;
+    private Integer ingredientId;
+    private Integer categoryId;
     private String ingredientName;
-    private String imgUrl;
-    private int price;
+    private Integer price;
+    private Integer imageId;
+    private Integer displayOrder;
 
+    // 조인용 필드
+    private String categoryName;
 }

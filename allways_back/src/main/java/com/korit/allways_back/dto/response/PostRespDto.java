@@ -1,4 +1,4 @@
-package com.korit.allways_back.entity;
+package com.korit.allways_back.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,19 +12,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class PostRespDto {
 
     private Integer postId;
     private Integer presetId;
+    private Integer productId;
+    private String presetName;
+    private String userNickname;
     private LocalDateTime postedAt;
     private Integer likeCount;
-    private Boolean isHidden;
-
-    // 조인용 필드
-    private String presetName;
-    private Integer productId;
-    private String userNickname;
-    private String itemName;
+    private Integer viewCount;
     private String itemImageUrl;
     private List<String> ingredientNames;
     private Boolean isLikedByMe;

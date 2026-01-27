@@ -9,17 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class SetComponent {
 
-    private Integer itemId;
+    private Integer componentId;
+    private Integer setId;
+    private String componentType;
     private Integer categoryId;
-    private String itemName;
-    private String description;
-    private Integer basePrice;
-    private Integer size; // 15, 30
-    private String imageUrl;
-    private Integer displayOrder;
-
-    // 조인용 필드
     private String categoryName;
 }

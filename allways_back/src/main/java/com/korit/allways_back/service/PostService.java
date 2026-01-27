@@ -1,9 +1,8 @@
 package com.korit.allways_back.service;
 
+import com.korit.allways_back.dto.request.PostReqDto;
 import com.korit.allways_back.entity.Post;
-import com.korit.allways_back.entity.Preset;
 import com.korit.allways_back.mapper.PostMapper;
-import com.korit.allways_back.mapper.PresetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,49 +13,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostMapper postMapper;
-    private final PresetMapper presetMapper;
+    private final PostMapper postMapper; // 게시글 및 좋아요 DB 접근
 
     @Transactional
-    public Post createNewPost(int presetId) {
-        // 1. 프리셋 정보 조회 (userId와 productId를 알기 위함)
-        Preset preset = presetMapper.findById(presetId);
-
-        if (preset == null) {
-            throw new RuntimeException("존재하지 않는 프리셋입니다.");
-        }
-
-        // 2. 진현님의 기획: 동일 유저 & 동일 상품 구성 중복 체크
-        int alreadyPosted = postMapper.checkAlreadyPosted(preset.getUserId(), preset.getProductId());
-
-        if (alreadyPosted > 0) {
-            // 이미 공유된 경우 여기서 멈추고 에러를 던짐
-            throw new RuntimeException("이미 동일한 상품 구성의 레시피를 공유하셨습니다.");
-        }
-
-        // 3. 중복이 아닐 때만 게시글 생성
+    public void createPost(PostReqDto postReqDto) {
+        // 1. 전달받은 프리셋 ID를 기반으로 게시글 객체를 생성합니다.
         Post post = Post.builder()
-                .presetId(presetId)
-                .likeCnt(0)
+                .presetId(postReqDto.getPostId()) // 게시할 프리셋 ID
                 .build();
 
-        postMapper.createPost(post);
-
-        return post;
-    } // createNewPost 메소드 끝
-
-    @Transactional
-    public void likePost(int userId, int postId) {
-        if (postMapper.checkLikeExists(userId, postId) > 0) {
-            postMapper.deleteLikeLog(userId, postId);
-            postMapper.decrementLikeCount(postId);
-        } else {
-            postMapper.insertLikeLog(userId, postId);
-            postMapper.incrementLikeCount(postId);
-        }
+        // 2. 게시글 정보를 저장합니다. (초기 좋아요/조회수는 XML에서 0으로 설정됨)
+        postMapper.insert(post);
     }
 
-    public List<Post> getPosts() {
-        return postMapper.getAllPosts();
+    public List<Post> getAllPosts(String sortBy, Integer currentUserId) {
+        // 1. 정렬 기준(latest 또는 like)에 따라 전체 게시글 목록을 가져옵니다.
+        // 2. 로그인한 사용자가 있다면 각 게시글에 '좋아요'를 눌렀는지 여부도 함께 조회합니다.
+        return postMapper.findAll(sortBy, currentUserId);
+    }
+
+    @Transactional
+    public void toggleLike(int userId, int postId) {
+        // 1. 먼저 좋아요를 취소(삭제)해봅니다.
+        int result = postMapper.deleteLike(userId, postId);
+
+        // 2. 삭제된 행이 0개라면 기존에 좋아요가 없었다는 뜻이므로, 새로 추가합니다.
+        if (result == 0) {
+            postMapper.insertLike(userId, postId);
+        }
+
+        // 3. 좋아요 테이블의 변화를 post_tb의 like_count 컬럼에 동기화합니다.
+        postMapper.updateLikeCount(postId);
     }
 }
