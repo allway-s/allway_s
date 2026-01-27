@@ -16,7 +16,7 @@ public class IngredientService {
 
     public List<Ingredient> getIngredientsByCategory(String categoryName) {
 
-        return ingredientMapper.getIngredientsByCategoryName(categoryName);
+        return ingredientMapper.findByCategoryName(categoryName);
 
     }
 

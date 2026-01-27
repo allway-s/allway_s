@@ -15,11 +15,11 @@ public class User {
 
     private int userId;
     private String oauth2Id;
+    private String oauth2Provider;
     private String nickname;
     private String name;
     private String email;
     private String phoneNumber;
-    private String address;
     private LocalDateTime createdAt;
 
 }

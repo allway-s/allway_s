@@ -1,60 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.korit.allways_back.mapper.OrderMapper">
+
     <insert id="insertOrder" useGeneratedKeys="true" keyProperty="orderId">
-        INSERT INTO order_tb (user_id, total_price, ordered_at)
-        VALUES (#{userId}, #{totalPrice}, now())
+        INSERT INTO order_tb (
+            user_id,
+            order_number,
+            total_price,
+            payment_status,
+            ordered_at,
+            address,
+            detail_address
+        ) VALUES (
+            #{userId},
+            #{orderNumber},
+            #{totalPrice},
+            'pending',
+            NOW(),
+            #{address},
+            #{detailAddress}
+        )
     </insert>
 
     <insert id="insertOrderDetails">
-        INSERT INTO order_detail_tb (order_id, product_id, unit_price, quantity)
-            VALUES
-            <foreach collection="items" item="item" separator=",">
-                (#{orderId}, #{item.productId}, #{item.unitPrice}, #{item.quantity})
-            </foreach>
+        INSERT INTO order_detail_tb (
+            order_id,
+            product_id,
+            unit_price,
+            quantity,
+            set_id,
+            selected_drink_id,
+            selected_side_id
+        )
+        VALUES
+        <foreach collection="items" item="item" separator=",">
+            (
+                #{orderId},
+                #{item.productId},
+                #{item.unitPrice},
+                #{item.quantity},
+                #{item.setId},
+                #{item.selectedDrinkId},
+                #{item.selectedSideId}
+            )
+        </foreach>
     </insert>
 
-    <select id="getOrderHistory" resultType="com.korit.allways_back.dto.response.OrderHistoryRespDto">
+    <select id="findOrderHistoryByUserId" resultType="OrderDetail">
         SELECT
-            pd.product_id as productId,
-            o.ordered_at as orderedAt,
-            i.item_name as productName,
-            GROUP_CONCAT(ing.ingredient_name SEPARATOR ', ') as ingredients,
-            od.unit_price as unitPrice,
-            (od.unit_price * od.quantity) as totalPrice
-        FROM order_tb o
-            JOIN
-                order_detail_tb od ON o.order_id = od.order_id
-            JOIN
-                product_detail_tb pd ON od.product_id = pd.product_id
-            JOIN
-                item_tb i ON pd.item_id = i.item_id
-            LEFT JOIN
-                ingredient_tb ing ON pd.ingredient_id = ing.ingredient_id
-        WHERE o.user_id = #{userId}
-        GROUP BY
-            pd.product_id,
-            o.order_id,
-            i.item_name,
-            od.unit_price,
+            od.order_detail_id,
+            od.order_id,
             od.quantity,
-            o.ordered_at
-        ORDER BY
-            o.ordered_at DESC
-    </select>
-
-    <select id="getProductPrice" resultType="java.lang.Integer">
-        SELECT
-            i.price + SUM(IFNULL(ing.price, 0)) AS unitPrice
+            od.unit_price,
+            o.ordered_at,
+            i.item_name,
+            i.size AS itemSize,
+            GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ', ') AS ingredientsText,
+            sm.set_name,
+            d.ingredient_name AS drinkName,
+            s.ingredient_name AS sideName
         FROM
-            product_detail_tb pd
-            JOIN item_tb i ON pd.item_id = i.item_id
-            LEFT JOIN ingredient_tb ing ON pd.ingredient_id = ing.ingredient_id
+            order_detail_tb od
+            INNER JOIN order_tb o ON od.order_id = o.order_id
+            INNER JOIN product_item_tb pi ON od.product_id = pi.product_id
+            INNER JOIN item_tb i ON pi.item_id = i.item_id
+            LEFT JOIN product_ingredient_tb ping ON od.product_id = ping.product_id
+            LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+            LEFT JOIN category_tb c ON ing.category_id = c.category_id
+            LEFT JOIN set_menu_tb sm ON od.set_id = sm.set_id
+            LEFT JOIN ingredient_tb d ON od.selected_drink_id = d.ingredient_id
+            LEFT JOIN ingredient_tb s ON od.selected_side_id = s.ingredient_id
         WHERE
-            pd.product_id = #{productId}
+            o.user_id = #{userId}
+            AND o.payment_status IN ('pending', 'paid')
         GROUP BY
-            pd.product_id, i.price
+            od.order_detail_id
+        ORDER BY
+            o.ordered_at DESC, od.order_detail_id
     </select>
 </mapper>

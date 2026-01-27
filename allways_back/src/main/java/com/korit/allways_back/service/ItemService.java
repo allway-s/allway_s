@@ -15,7 +15,7 @@ public class ItemService {
 
     public List<Item> getItemByCategory(String categoryName) {
 
-        return itemMapper.getItemsByCategoryName(categoryName);
+        return itemMapper.findByCategoryName(categoryName);
 
     }
 

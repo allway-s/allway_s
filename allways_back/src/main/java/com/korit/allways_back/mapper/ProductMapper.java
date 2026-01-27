@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
 
-    Integer findExistingProductId(
+    Integer findExistingProduct(
             @Param("itemId") int itemId,
             @Param("ingredientIds") List<Integer> ingredientIds,
             @Param("ingredientCount") int ingredientCount
@@ -17,10 +17,12 @@ public interface ProductMapper {
 
     void insertProduct(Product product);
 
-    int insertProductDetails(
+    int insertProductItem(@Param("productId") int productId, @Param("itemId") int itemId);
+
+    int insertProductIngredients(
             @Param("productId") int productId,
-            @Param("itemId") int itemId,
             @Param("ingredientIds") List<Integer> ingredientIds
     );
 
+    int calculatePrice(int productId);
 }

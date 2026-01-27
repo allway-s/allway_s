@@ -5,21 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class Category {
 
-    private Integer itemId;
     private Integer categoryId;
-    private String itemName;
-    private String description;
-    private Integer basePrice;
-    private Integer size; // 15, 30
-    private String imageUrl;
-    private Integer displayOrder;
-
-    // 조인용 필드
+    private String categoryType;
     private String categoryName;
+    private Integer displayOrder;
+    private Boolean isActive;
+    private LocalDateTime createdAt;
 }

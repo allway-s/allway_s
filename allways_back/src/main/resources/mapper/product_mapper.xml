@@ -1,33 +1,113 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.korit.allways_back.mapper.ProductMapper">
 
-    <select id="findExistingProductId" resultType="java.lang.Integer">
-        SELECT product_id
-        FROM product_detail_tb
-        WHERE item_id = #{itemId}
-        GROUP BY product_id
-        HAVING COUNT(ingredient_id) = #{ingredientCount}
-            AND COUNT(CASE WHEN ingredient_id IN
-                <foreach collection="ingredientIds" item="id" open="(" separator="," close=")">
-                    #{id}
-                </foreach>
-                THEN 1 END) = #{ingredientCount}
+    <select id="findExistingProduct" resultType="Integer">
+        SELECT
+            pi.product_id
+        FROM
+            product_item_tb pi
+        WHERE
+            pi.item_id = #{itemId}
+            AND pi.product_id IN (
+            SELECT
+                product_id
+            FROM
+                product_ingredient_tb
+            WHERE
+                ingredient_id IN
+            <foreach collection="ingredientIds" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            GROUP BY
+                product_id
+            HAVING COUNT(DISTINCT ingredient_id) = #{ingredientCount}
+            )
+            AND
+                pi.product_id IN (
+                    SELECT
+                        product_id
+                    FROM
+                        product_ingredient_tb
+                    GROUP BY
+                        product_id
+                    HAVING COUNT(*) = #{ingredientCount}
+                )
         LIMIT 1
     </select>
 
     <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId">
-        INSERT INTO product_tb (is_sys)
-        VALUES (#{isSys})
+        INSERT INTO
+            product_tb (is_system)
+        VALUES
+            (#{isSystem})
     </insert>
-    
-    <insert id="insertProductDetails">
-        INSERT INTO product_detail_tb (product_id, item_id, ingredient_id)
-            VALUES
-                <foreach collection="ingredientIds" item="ingId" separator=",">
-                    (#{productId}, #{itemId}, #{ingId})
-                </foreach>
+
+    <insert id="insertProductItem">
+        INSERT INTO
+            product_item_tb (product_id, item_id)
+        VALUES
+            (#{productId}, #{itemId})
     </insert>
+
+    <insert id="insertProductIngredients">
+        INSERT INTO
+            product_ingredient_tb (product_id, ingredient_id)
+        VALUES
+        <foreach collection="ingredientIds" item="id" separator=",">
+            (#{productId}, #{id})
+        </foreach>
+    </insert>
+
+    <select id="findById" resultType="Product">
+        SELECT
+            p.product_id,
+            p.is_system,
+            pi.item_id,
+            i.item_name,
+            i.size AS itemSize,
+            img.file_path AS itemImageUrl
+        FROM
+            product_tb p
+            INNER JOIN product_item_tb pi ON p.product_id = pi.product_id
+            INNER JOIN item_tb i ON pi.item_id = i.item_id
+            LEFT JOIN image_tb img ON i.image_id = img.image_id
+        WHERE
+            p.product_id = #{productId}
+    </select>
+
+    <select id="findIngredientsByProductId" resultType="Ingredient">
+        SELECT
+            ing.ingredient_id,
+            ing.ingredient_name,
+            ing.price,
+            c.category_name,
+            img.file_path AS imageUrl
+        FROM
+            product_ingredient_tb ping
+            INNER JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+            INNER JOIN category_tb c ON ing.category_id = c.category_id
+            LEFT JOIN image_tb img ON ing.image_id = img.image_id
+        WHERE
+            ping.product_id = #{productId}
+        ORDER BY
+            c.display_order, ing.display_order
+    </select>
+
+    <select id="calculatePrice" resultType="int">
+        SELECT
+            i.base_price + COALESCE(SUM(ing.price), 0) AS totalPrice
+        FROM
+            product_item_tb pi
+            INNER JOIN item_tb i ON pi.item_id = i.item_id
+            LEFT JOIN product_ingredient_tb ping ON pi.product_id = ping.product_id
+            LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+        WHERE
+            pi.product_id = #{productId}
+        GROUP BY
+            i.base_price
+    </select>
+
 </mapper>
