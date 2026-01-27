@@ -15,7 +15,6 @@ export const LoginSuccess = ({setIsLoggedIn}) => {
             api.get("/api/user/me")
                 .then(() => {
                     setIsLoggedIn(true);
-                    alert("로그인 성공!");  
                     navigate("/", { replace: true });
                 })
                 .catch(() => {

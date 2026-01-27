@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import  * as s  from "./customPageStyle"; // 스타일 파일 임포트
 import { useState, useEffect } from "react"; // React 훅 임포트
-import { getIngredients, getSetMenus } from "../../apis/items/orderApi"; // 재료 및 세트 API 임포트
+import { getIngredients } from "../../apis/items/orderApi"; // 재료 및 세트 API 임포트
 import { useLocation, useNavigate, useParams } from "react-router-dom"; // 라우팅 관련 훅 임포트
 import { addToCart } from "../../utils/cartStore"; // 장바구니 저장 유틸 임포트
 
