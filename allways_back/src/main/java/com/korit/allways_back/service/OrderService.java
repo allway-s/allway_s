@@ -1,6 +1,7 @@
 package com.korit.allways_back.service;
 
 import com.korit.allways_back.dto.request.OrderReqDto;
+import com.korit.allways_back.entity.Ingredient;
 import com.korit.allways_back.entity.Order;
 import com.korit.allways_back.entity.OrderDetail;
 import com.korit.allways_back.mapper.OrderMapper;
@@ -39,5 +40,9 @@ public class OrderService {
         orderMapper.insertOrderDetails(order.getOrderId(), orderReqDto.getItems());
 
         return orderNumber;
+    }
+
+    public List<OrderDetail> getOrderHistory(int userId) {
+        return orderMapper.findOrderHistoryByUserId(userId);
     }
 }

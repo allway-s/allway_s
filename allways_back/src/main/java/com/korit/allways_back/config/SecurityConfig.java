@@ -47,6 +47,7 @@ public class SecurityConfig {
             // 로그인 관련으로 누구나 접근가능하게
             auth.requestMatchers("/", "/login", "/signup").permitAll();
             auth.requestMatchers("/api/auth/**").permitAll();
+            // 토큰 유효성 검사
             auth.requestMatchers("/api/user/**").authenticated();
 
             // swagger 관련 필요한 설정
