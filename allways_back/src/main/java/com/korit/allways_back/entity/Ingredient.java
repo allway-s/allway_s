@@ -15,7 +15,7 @@ public class Ingredient {
     private Integer categoryId;
     private String ingredientName;
     private Integer price;
-    private Integer imageId;
+    private String imageUrl;
     private Integer displayOrder;
 
     // 조인용 필드

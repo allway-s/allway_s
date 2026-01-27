@@ -1,29 +1,25 @@
 import { api } from "../config/axiosConfig"
 
-export const getIngredients = (categoryValue) => {
-    return api.get(`/api/ingredients`, {params: {
-            categoryName: categoryValue
-        }})
+export const getIngredients = (categoryName) => {
+    return api.get(`/api/menu/ingredients/${categoryName}`)
 }   
 
-export const getItems = (categoryValue) => {
-    return api.get(`/api/items`, {params: {
-            categoryName: categoryValue
-        }})
+export const getItems = (categoryName) => {
+    return api.get(`/api/menu/items/${categoryName}`)
 }   
 
-export const validateOrder = (orderData) => {
-    return api.post(`/api/v1/orders/validate`, orderData)
-}
+// export const validateOrder = (orderData) => {
+//     return api.post(`/api//orders/validate`, orderData)
+// }
 
 export const createOrder = (orderData) => {
-    return api.post(`/api/v1/orders`, orderData)
+    return api.post(`/api/orders/placeOrder`, orderData)
 }
 
-export const getOrderHistory = () => {
-    return api.get(`/api/v1/orders/history`)
-}
+// export const getOrderHistory = () => {
+//     return api.get(`/api//orders/history`)
+// }
 
-export const getMyPresets = () => {
-    return api.get(`/api/v1//list/{userId}`)
-}
+// export const getMyPresets = () => {
+//     return api.get(`/api/list/{userId}`)
+// }
