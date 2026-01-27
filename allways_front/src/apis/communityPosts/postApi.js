@@ -1,7 +1,8 @@
 import { api } from "../config/axiosConfig"
 
-
-
-export const getPreset = (Value) => {
-  return api.get(`/api/user/preset`, Value)
+export const getAllPost = (userId) => {
+  return api.get(`/api/community/posts`, { params: { userId } });
 }
+
+export const postLike = (postId, userId) =>
+  api.post(`/api/community/post/${postId}/like`, { userId });
