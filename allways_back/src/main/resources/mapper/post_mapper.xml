@@ -22,15 +22,15 @@
     <!-- 전체 게시글 조회 (최신순/좋아요순) -->
     <select id="findAll" resultType="Post">
         SELECT
-            p.post_id,
-            p.preset_id,
-            p.posted_at,
-            p.like_count,
-            pr.preset_name,
-            pr.product_id,
-            u.nickname AS userNickname,
-            i.item_name,
-            img.img_url AS itemImageUrl,
+        p.post_id,
+        p.preset_id,
+        p.posted_at,
+        p.like_count,
+        pr.preset_name,
+        pr.product_id,
+        u.nickname AS userNickname,
+        i.item_name,
+        img.img_url AS itemImageUrl,
         <if test="currentUserId != null">
             (SELECT COUNT(*) > 0 FROM like_tb WHERE user_id = #{currentUserId} AND post_id = p.post_id) AS isLikedByMe,
         </if>
@@ -39,22 +39,27 @@
         </if>
         GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ', ') AS ingredientNamesText
         FROM
-            post_tb p
-            INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
-            INNER JOIN user_tb u ON pr.user_id = u.user_id
-            INNER JOIN product_item_tb pi ON pr.product_id = pi.product_id
-            INNER JOIN item_tb i ON pi.item_id = i.item_id
-            LEFT JOIN image_tb img ON i.image_id = img.image_id
-            LEFT JOIN product_ingredient_tb ping ON pr.product_id = ping.product_id
-            LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
-            LEFT JOIN category_tb c ON ing.category_id = c.category_id
-            GROUP BY
-            p.post_id
+        post_tb p
+        INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
+        INNER JOIN user_tb u ON pr.user_id = u.user_id
+        INNER JOIN product_item_tb pi ON pr.product_id = pi.product_id
+        INNER JOIN item_tb i ON pi.item_id = i.item_id
+        LEFT JOIN image_tb img ON i.image_id = img.image_id
+        LEFT JOIN product_ingredient_tb ping ON pr.product_id = ping.product_id
+        LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+        LEFT JOIN category_tb c ON ing.category_id = c.category_id
+        GROUP BY
+        p.post_id,
+        p.preset_id,
+        p.posted_at,
+        p.like_count,
+        pr.preset_name,
+        pr.product_id,
+        u.nickname,
+        i.item_name,
+        img.img_url
         ORDER BY
-            <choose>
-                <when test="sortBy == 'like'">p.like_count DESC, p.posted_at DESC</when>
-                <otherwise>p.posted_at DESC</otherwise>
-            </choose>
+        p.posted_at DESC
     </select>
 
     <!-- 좋아요 토글 -->

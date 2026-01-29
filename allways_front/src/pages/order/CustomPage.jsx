@@ -258,40 +258,6 @@ function CustomPage() {
 
         return (
             <div css={s.setComponentsStyle}>
-                {hasDrink && drinkOptions.length > 0 && (
-                    <div css={s.componentSectionStyle}>
-                        <h4>음료 선택</h4>
-                        <div css={s.ingredientsGridStyle}>
-                            {drinkOptions.map(drink => (
-                                <button 
-                                    key={drink.ingredientId}
-                                    onClick={() => handleDrinkSelect(drink)}
-                                    css={[
-                                        s.ingredientCardStyle, 
-                                        selectedDrink === drink.ingredientId && s.ingredientCardSelectedStyle
-                                    ]}
-                                >
-                                    <div css={s.ingredientImageWrapperStyle}>
-                                        {drink.imageUrl && (
-                                            <img 
-                                                src={drink.imageUrl} 
-                                                alt={drink.ingredientName} 
-                                                css={s.ingredientImageStyle} 
-                                            />
-                                        )}
-                                        {selectedDrink === drink.ingredientId && (
-                                            <div css={s.selectedBadgeStyle}>✓</div>
-                                        )}
-                                    </div>
-                                    <div css={s.ingredientInfoStyle}>
-                                        <div css={s.ingredientNameStyle}>{drink.ingredientName}</div>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
                 {hasSide && sideOptions.length > 0 && (
                     <div css={s.componentSectionStyle}>
                         <h4>사이드 선택</h4>
@@ -319,6 +285,39 @@ function CustomPage() {
                                     </div>
                                     <div css={s.ingredientInfoStyle}>
                                         <div css={s.ingredientNameStyle}>{side.ingredientName}</div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+            )}
+                {hasDrink && drinkOptions.length > 0 && (
+                    <div css={s.componentSectionStyle}>
+                        <h4>음료 선택</h4>
+                        <div css={s.ingredientsGridStyle}>
+                            {drinkOptions.map(drink => (
+                                <button 
+                                    key={drink.ingredientId}
+                                    onClick={() => handleDrinkSelect(drink)}
+                                    css={[
+                                        s.ingredientCardStyle, 
+                                        selectedDrink === drink.ingredientId && s.ingredientCardSelectedStyle
+                                    ]}
+                                >
+                                    <div css={s.ingredientImageWrapperStyle}>
+                                        {drink.imageUrl && (
+                                            <img 
+                                                src={drink.imageUrl} 
+                                                alt={drink.ingredientName} 
+                                                css={s.ingredientImageStyle} 
+                                            />
+                                        )}
+                                        {selectedDrink === drink.ingredientId && (
+                                            <div css={s.selectedBadgeStyle}>✓</div>
+                                        )}
+                                    </div>
+                                    <div css={s.ingredientInfoStyle}>
+                                        <div css={s.ingredientNameStyle}>{drink.ingredientName}</div>
                                     </div>
                                 </button>
                             ))}

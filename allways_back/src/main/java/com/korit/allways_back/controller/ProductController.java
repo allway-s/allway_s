@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,7 +30,7 @@ public class ProductController {
      */
     @PostMapping
     public ResponseEntity<Map<String, Integer>> createOrFindProduct(@RequestBody ProductCreateRequestDto dto) {
-        // Map에서 꺼낼 때 했던 (Integer) 캐스팅이 필요 없어짐
+
         Integer productId = productService.createOrFindProduct(
                 dto.getItemId(),
                 dto.getIngredientIds(),
