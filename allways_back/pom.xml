@@ -29,6 +29,14 @@
     <properties>
         <java.version>21</java.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <!-- 토큰 관련 의존성 -->
@@ -114,11 +122,11 @@
             <version>2.8.14</version>
         </dependency>
 
-        <!--webclient 의존성 -->
+        <!-- 포트원 결제 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-            <version>4.1.0-M1</version>
+            <groupId>com.github.iamport</groupId>
+            <artifactId>iamport-rest-client-java</artifactId>
+            <version>0.2.23</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
