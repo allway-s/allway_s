@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { S } from './MyPreset.styles.js';
 import axios from 'axios';
+import { createPost, deletePreset, getMyPresets, getPosts } from '../../apis/items/communityApi.js';
 
 export default function MyPreSet() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function MyPreSet() {
     const checkData = async () => {
       if (!userId) return;
       try {
-        const response = await axios.get(`http://localhost:8080/api/preset/list/${userId}`);
+        const response = getMyPresets(userId);
         const data = response.data || [];
         
         console.log("=== 🔍 데이터 정밀 진단 시작 ===");
@@ -71,7 +72,7 @@ const handleShare = async (preset) => {
 
   try {
     // 2. [사전 검사] 커뮤니티에 이미 동일한 productId를 가진 게시글이 있는지 확인
-    const communityRes = await axios.get('http://localhost:8080/api/post/getAllPost');
+    const communityRes = getPosts();
     const communityPosts = communityRes.data || [];
 
     // DB의 product_id와 현재 프리셋의 productId를 비교
@@ -88,7 +89,7 @@ const handleShare = async (preset) => {
     if (!window.confirm(`'${preset.presetName}' 레시피를 커뮤니티에 공유하시겠습니까?`)) return;
 
     const token = localStorage.getItem("accessToken");
-    const response = await axios.post(`http://localhost:8080/api/preset/create`,
+    const response = await axios.post(createPost(),
       { presetId: preset.presetId }, // 서버 규격에 맞게 ID 전달
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -121,7 +122,7 @@ const handleShare = async (preset) => {
     const token = localStorage.getItem("accessToken");
 
     try {
-      const response = await axios.delete(`http://localhost:8080/api/preset/delete/${presetId}`, {
+      const response = await axios.delete(deletePreset(), {
         params: { userId: userId }, 
         headers: { Authorization: `Bearer ${token}` }
       });
