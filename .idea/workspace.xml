@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/allways_front/src/apis/items/orderApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/apis/items/orderApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/MainPage/components/HomeMenu.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/MainPage/components/HomeMenu.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/config/WebClientConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/config/WebClientConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +41,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "197-프론트랑-연동",
+    "git-widget-placeholder": "211-오류-수정",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",

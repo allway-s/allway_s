@@ -6,6 +6,8 @@ export const createProduct = (data) => api.post("/api/products", data);
 // 상품 가격 계산
 export const calculateProductPrice = (productId) => api.get(`/api/products/${productId}/price`);
 
+export const getOrderHistory = () => api.get("/api/orders/history");
+
 // 주문 생성
 export const createOrder = (orderData) => api.post("/api/orders", orderData);
 
