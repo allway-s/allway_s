@@ -23,40 +23,35 @@ jobs:
             echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_MINJAE}}" >> $GITHUB_ENV
             echo "REACT_ENV=${{secrets.REACT_ENV_MINJAE}}" >> $GITHUB_ENV
 
-          elif [ ${{github.ref}} == 'refs/heads/deploy-minjae' ]; then
-          if [ ${{github.ref}} == 'refs/heads/deploy-qorrbs' ]; then
-          
-            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_MINJAE}}" >> $GITHUB_ENV
-            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_MINJAE}}" >> $GITHUB_ENV
-            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_MINJAE}}" >> $GITHUB_ENV
-            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_MINJAE}}" >> $GITHUB_ENV
-            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_MINJAE}}" >> $GITHUB_ENV
-            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_MINJAE}}" >> $GITHUB_ENV
-            echo "REACT_ENV=${{secrets.REACT_ENV_MINJAE}}" >> $GITHUB_ENV
-
           elif [ ${{github.ref}} == 'refs/heads/deploy-qorrbs' ]; then
-          if [ ${{github.ref}} == 'refs/heads/deploy-hyeondeok' ]; then
           
-            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_MINJAE}}" >> $GITHUB_ENV
-            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_MINJAE}}" >> $GITHUB_ENV
-            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_MINJAE}}" >> $GITHUB_ENV
-            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_MINJAE}}" >> $GITHUB_ENV
-            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_MINJAE}}" >> $GITHUB_ENV
-            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_MINJAE}}" >> $GITHUB_ENV
-            echo "REACT_ENV=${{secrets.REACT_ENV_MINJAE}}" >> $GITHUB_ENV
+            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_QORRBS}}" >> $GITHUB_ENV
+            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_QORRBS}}" >> $GITHUB_ENV
+            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_QORRBS}}" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_QORRBS}}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_QORRBS}}" >> $GITHUB_ENV
+            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_QORRBS}}" >> $GITHUB_ENV
+            echo "REACT_ENV=${{secrets.REACT_ENV_QORRBS}}" >> $GITHUB_ENV
 
           elif [ ${{github.ref}} == 'refs/heads/deploy-hyeondeok' ]; then
-                    if [ ${{github.ref}} == 'refs/heads/deploy-jinhyun' ]; then
           
-            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_MINJAE}}" >> $GITHUB_ENV
-            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_MINJAE}}" >> $GITHUB_ENV
-            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_MINJAE}}" >> $GITHUB_ENV
-            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_MINJAE}}" >> $GITHUB_ENV
-            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_MINJAE}}" >> $GITHUB_ENV
-            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_MINJAE}}" >> $GITHUB_ENV
-            echo "REACT_ENV=${{secrets.REACT_ENV_MINJAE}}" >> $GITHUB_ENV
+            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_HYEONDEOK}}" >> $GITHUB_ENV
+            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_HYEONDEOK}}" >> $GITHUB_ENV
+            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_HYEONDEOK}}" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_HYEONDEOK}}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_HYEONDEOK}}" >> $GITHUB_ENV
+            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_HYEONDEOK}}" >> $GITHUB_ENV
+            echo "REACT_ENV=${{secrets.REACT_ENV_HYEONDEOK}}" >> $GITHUB_ENV
 
           elif [ ${{github.ref}} == 'refs/heads/deploy-jinhyun' ]; then
+          
+            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_JINHYUN}}" >> $GITHUB_ENV
+            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_JINHYUN}}" >> $GITHUB_ENV
+            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_JINHYUN}}" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_JINHYUN}}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_JINHYUN}}" >> $GITHUB_ENV
+            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_JINHYUN}}" >> $GITHUB_ENV
+            echo "REACT_ENV=${{secrets.REACT_ENV_JINHYUN}}" >> $GITHUB_ENV
           fi
       - name: checkout
         uses: actions/checkout@v6.0.2
