@@ -67,10 +67,4 @@ public class PostService {
         postMapper.deleteByPresetId(presetId);
     }
 
-    /**
-     * 중복 게시글 확인
-     */
-    public boolean isPostDuplicate(Integer userId, Integer productId) {
-        return postMapper.existsByUserIdAndProductId(userId, productId);
-    }
 }

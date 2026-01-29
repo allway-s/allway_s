@@ -13,7 +13,6 @@ import java.util.List;
 public class PresetService {
 
     private final PresetMapper presetMapper;
-    private final ProductService productService;
 
     private static final int MAX_PRESETS_PER_USER = 10; // 사용자당 최대 프리셋 수
 

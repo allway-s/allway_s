@@ -59,10 +59,8 @@ public class OrderService {
 
         order.setTotalPrice(totalPrice);
 
-        // 주문 생성
         orderMapper.insertOrder(order);
 
-        // 주문 상세 생성
         orderMapper.insertOrderDetails(order.getOrderId(), orderDetails);
 
         return order;

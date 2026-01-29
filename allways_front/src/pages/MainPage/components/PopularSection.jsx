@@ -3,7 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, TrendingUp } from 'lucide-react';
 import { PresetCard } from '../../../components/PresetCard.jsx';
-import { S } from './PopularSection.styles.js';
+import { S } from './PopularSectionStyles.js';
 import axios from 'axios';
 
 export function PopularSection({ user }) {
@@ -15,7 +15,7 @@ export function PopularSection({ user }) {
   const fetchPosts = async () => {
     try {
       // 커뮤니티 전체 게시글 가져오기
-      const response = await axios.get('http://localhost:8080/api/post/getAllPost');
+      const response = (userId) => api.get("/api/posts", { params: { userId } });
       setPosts(response.data || []);
     } catch (error) {
       console.error("최신 레시피 로드 실패:", error);
