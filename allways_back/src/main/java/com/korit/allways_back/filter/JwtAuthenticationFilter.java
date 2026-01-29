@@ -44,9 +44,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // DB에서 실제 유저 정보 조회
             User foundUser = userMapper.findByUserId(userId);
+            System.out.println("필터 디버깅 - 조회된 유저 객체: " + foundUser); // ◀ 이게 null인지 확인
 
             if (foundUser != null) {
-                // ROLE_USER만 쓰니까 authorities에 이것만 직접 주입
+                // 성공 로그로 변경해서 혼동을 방지하세요
+                System.out.println("필터 성공: 유저 인증 완료 - " + foundUser.getNickname());
+
                 Collection<? extends GrantedAuthority> authorities =
                         List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
@@ -59,6 +62,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(principalUser, null, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                System.out.println("필터 실패: DB에 유저가 없음 (userId 확인 필요)");
             }
         }
 
