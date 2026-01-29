@@ -16,7 +16,7 @@ public class Item {
     private Integer categoryId;
     private String itemName;
     private String description;
-    private Integer basePrice;
+    private Integer price;
     private Integer size; // 15 or 30 (cm)
     private Integer imageId;
     private String imageUrl;

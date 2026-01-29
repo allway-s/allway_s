@@ -3,9 +3,10 @@ import  * as s  from "./menuPageStyle";
 import { useState, useEffect } from 'react';
 import { getItems } from '../../apis/items/menuApi';
 import { useNavigate } from 'react-router-dom';
-import { getCartItemCount } from '../../utils/cartStore';
 
 const MenuPage = () => {
+
+    const navigate = useNavigate();
 
     const [items, setItems] = useState([]); 
     const [selectedCategory, setSelectedCategory] = useState('샌드위치');
@@ -15,7 +16,6 @@ const MenuPage = () => {
     
     const displayItems = items.filter(item => item.size === 15 || !item.size);
     
-    const navigate = useNavigate();
 
     const fetchItems = async (category) => {
         try {
@@ -27,7 +27,9 @@ const MenuPage = () => {
     };
     
     const handleCustomClick = (item) => {
+
         setShowModal(false);
+        
         navigate(`/custom/${item.itemId}`, { 
             state: { 
                 category: selectedCategory,
@@ -42,21 +44,13 @@ const MenuPage = () => {
     };
 
     const handleSubwayPickClick = (item) => {
-    };
-
-    const updateCartCount = () => {
-        setCartCount(getCartItemCount());
+        console.log('좀있다구현')
     };
 
     useEffect(() => {
         fetchItems(selectedCategory);
     }, [selectedCategory]);
 
-    useEffect(() => {
-        updateCartCount();
-        const interval = setInterval(updateCartCount, 1000);
-        return () => clearInterval(interval);
-    }, []);
 
     const get30cmVariant = (baseItem) => {
         return items.find(i => i.itemName === baseItem.itemName && i.size === 30);
@@ -90,7 +84,7 @@ const MenuPage = () => {
                             </div>
                             <h3 css={s.itemNameStyle}>{item.itemName}</h3>
                             <p css={s.itemDescStyle}>{item.description}</p>
-                            <p css={s.priceStyle}>{item.basePrice?.toLocaleString()}원</p>
+                            <p css={s.priceStyle}>{item.price?.toLocaleString()}원</p>
                             <div css={s.buttonGroupStyle}>
                                 <button 
                                     css={s.subwayPickButtonStyle}
@@ -135,7 +129,7 @@ const MenuPage = () => {
                                 css={s.sizeButtonStyle}
                                 onClick={() => {
                                     const size30Item = get30cmVariant(activeItem);
-                                        handleCustomClick(size30Item);
+                                    handleCustomClick(size30Item);
                                 }}
                             >
                                 30cm
