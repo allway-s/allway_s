@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { S } from './MainBanner.styles';
+import { S } from './MainBannerStyles.js';
 
 export function MainBanner({ items }) {
   const extendedSlides = [items[items.length - 1], ...items, items[0]];

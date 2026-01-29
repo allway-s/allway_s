@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { styles } from './HomePage.styles.js';
+import { styles } from './HomePageStyles.js';
 import { ArrowRight } from 'lucide-react';
 
 import { MainBanner } from './components/MainBanner.jsx';
