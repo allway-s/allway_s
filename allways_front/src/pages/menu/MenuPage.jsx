@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import  * as s  from "./menuPageStyle";
 import { useState, useEffect } from 'react';
-import { getItems } from '../../apis/items/orderApi';
+import { getItems } from '../../apis/items/menuApi';
 import { useNavigate } from 'react-router-dom';
 import { getCartItemCount } from '../../utils/cartStore';
 

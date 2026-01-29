@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import  * as s  from "./cartPageStyles";
+import * as s from "./cartPageStyles";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -42,7 +42,25 @@ const CartPage = () => {
 
         setLoading(true);
         try {
-            await createOrder(cart);
+            // API 요청 형식에 맞게 데이터 변환
+            const orderData = {
+                order: {
+                    userId: 0, // 실제 userId로 변경 필요
+                    address: "주소", // 실제 주소 입력 필요
+                    detailAddress: "상세주소", // 실제 상세주소 입력 필요
+                    totalPrice: calculateTotalPrice()
+                },
+                orderDetails: cart.orders.map(item => ({
+                    productId: item.productId,
+                    unitPrice: item.unitPrice,
+                    quantity: item.quantity,
+                    setId: item.setId || null,
+                    selectedDrinkId: item.selectedDrinkId || null,
+                    selectedSideId: item.selectedSideId || null
+                }))
+            };
+
+            await createOrder(orderData);
             alert('주문이 완료되었습니다!');
             clearCart();
             navigate('/menu'); 
@@ -52,6 +70,18 @@ const CartPage = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    // 세트 이름 가져오기 (옵션)
+    const getSetName = (setId) => {
+        const setNames = {
+            1: '단품',
+            2: '웨지감자 세트',
+            3: '칩 세트',
+            4: '쿠키 세트',
+            5: '수프 세트'
+        };
+        return setNames[setId] || '단품';
     };
 
     return (
@@ -73,9 +103,15 @@ const CartPage = () => {
                                 <div css={s.itemInfoStyle}>
                                     <h3>
                                         {item.itemName}
-                                        {/* [해결] size가 0보다 클 때만 cm 단위를 붙여서 표시합니다. */}
                                         {item.size > 0 && <span> ({item.size}cm)</span>}
                                     </h3>
+
+                                    {/* 세트 정보 표시 */}
+                                    {item.setId && (
+                                        <div css={s.setInfoStyle}>
+                                            <strong>세트:</strong> {getSetName(item.setId)}
+                                        </div>
+                                    )}
 
                                     <div css={s.ingredientListStyle}>
                                         <strong>재료:</strong> {
@@ -124,8 +160,5 @@ const CartPage = () => {
         </div>
     );
 };
-
-
-
 
 export default CartPage;
