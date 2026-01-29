@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { s } from './CommunityPage.styles';
-import { getAllPost, postLike } from '../../apis/communityPosts/postApi';
+import { getPosts,toggleLike } from '../../apis/items/communityApi';
 
 // 빵, 치즈
 const pickOne = (ingredients, cid) =>
@@ -58,7 +58,7 @@ export default function CommunityPage() {
 
   const fetchPosts = async () => {
     try {
-      const res = await getAllPost(userId);
+      const res = await getPosts(userId);
 
       setPosts(res?.data ?? []);
       console.log('posts:', res?.data);
@@ -76,8 +76,7 @@ export default function CommunityPage() {
   const onClickLike = async (e, postId) => {
     e.stopPropagation();
     try {
-      await postLike(postId, userId);
-      // ✅ 서버가 토글 처리 끝냈으니, DB 기준으로 다시 받아와서 화면 갱신
+      await toggleLike(postId, userId);
       await fetchPosts();
     } catch (err) {
       console.error('좋아요 실패', err);

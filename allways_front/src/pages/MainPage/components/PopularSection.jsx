@@ -15,7 +15,7 @@ export function PopularSection({ user }) {
   const fetchPosts = async () => {
     try {
       // 커뮤니티 전체 게시글 가져오기
-      const response = await axios.get('http://localhost:8080/api/post/getAllPost');
+      const response = (userId) => api.get("/api/posts", { params: { userId } });
       setPosts(response.data || []);
     } catch (error) {
       console.error("최신 레시피 로드 실패:", error);
