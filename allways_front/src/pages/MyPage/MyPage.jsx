@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'; // ◀ 수정: useState, useEffect 추가
 import { useNavigate } from 'react-router-dom';
-import { S } from './MyPage.styles.js';
+import { S } from './MypageStyles.js';
 import axios from 'axios';
 import { api } from '../../apis/config/axiosConfig.js';
 

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { S } from './FeatureSection.styles';
+import { S } from './FeatureSectionStyles.js';
 
 export function FeatureSection({ features = [] }) {
   return (

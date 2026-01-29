@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import { s } from './CommunityPage.styles';
+import { s } from './CommunityPageStyles.js';
 import { getPosts,toggleLike } from '../../apis/items/communityApi';
 
 // 빵, 치즈

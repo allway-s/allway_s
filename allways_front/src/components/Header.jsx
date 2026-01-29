@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { s } from './Header.styles';
+import { s } from './HeaderStyles.js';
 import MainLogo from '../assets/images/MainUpperImages/MainLogo2.png'; 
 
 export default function Header({ onLogout, logoSrc }) {
