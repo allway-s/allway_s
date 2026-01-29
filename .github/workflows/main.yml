@@ -67,7 +67,7 @@ jobs:
       - name: Springboot Build
         run: |
           cd allways_back
-          echo ${{env.APPLICATION_SECRET}} | base64 -- decode > ./src/main/resources/application-secret.yml
+          echo ${{env.APPLICATION_SECRET}} | base64 --decode > ./src/main/resources/application-secret.yml
           chmod 777 ./mvnw
           ./mvnw clean package -Dtestskip
 

@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { S } from './MyPage.styles.js';
 import axios from 'axios';
 import { api } from '../../apis/config/axiosConfig.js';
-import { getMyPresets } from '../../apis/items/communityApi.js';
-import { getOrderDetail } from '../../apis/items/orderApi.js';
 
 export const MyPage = () => {
   const navigate = useNavigate();
@@ -30,34 +28,75 @@ export const MyPage = () => {
     } catch (e) { return null; }
   };
 
-  useEffect(() => {
-    const fetchPresets = async () => {
-      const userId = getUserIdFromToken();
-      if (!userId) return;
-      try {
-        const response = getMyPresets();
-        // 최신순으로 3개만 잘라서 상태에 저장
-        setPresets(response.data.slice(0, 3) || []);
-      } catch (error) {
-        console.error("마이페이지 프리셋 로드 실패:", error);
-      }
-    };
-    fetchPresets();
-  }, []);
 
   useEffect(() => {
-  const fetchOrders = async () => {
-    try {
-      // RecentOrder와 동일한 API 호출
-      const response = getOrderDetail();
-      // 마이페이지 요약용으로 최근 2개만 저장
-      setOrders(response.data.slice(0, 2) || []);
-    } catch (error) {
-      console.error("마이페이지 주문 내역 로드 실패:", error);
-    }
-  };
-  fetchOrders();
-}, []);
+    const fetchMyPageData = async () => {
+      const userId = getUserIdFromToken();
+      console.log("마이페이지 데이터 요청 시작 - ID:", userId);
+
+      if (!userId) return;
+
+      try {
+        // [수정] 컨트롤러 규격(?userId=)에 맞춰서 호출
+        const [presetRes, orderRes] = await Promise.all([
+          // GET /api/presets?userId=3
+          api.get('/api/presets', { params: { userId } }),
+          // GET /api/orders/history?userId=3
+          api.get('/api/orders/history', { params: { userId } })
+        ]);
+
+        console.log("프리셋 로드 완료:", presetRes.data);
+        console.log("주문내역 로드 완료:", orderRes.data);
+
+        setPresets(presetRes.data.slice(0, 3) || []);
+        setOrders(orderRes.data.slice(0, 2) || []);
+      } catch (error) {
+        // 주소가 틀리면 여기서 401이 나고, 인터셉터가 로그인창으로 튕겨버립니다.
+        console.error("마이페이지 로드 실패:", error);
+      }
+    };
+
+    fetchMyPageData();
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchPresets = async () => {
+  //     const userId = getUserIdFromToken();
+
+  //     console.log("마이페이지 데이터 요청 시작 - ID:", userId); // ◀ 확인용 로그
+
+  //     if (!userId) return;
+      
+  //     try {
+  //       // const response = await axios.get(`http://localhost:8080/api/preset/list/${userId}`); 수정 전
+  //       const response = await api.get(`/api/preset/list/${userId}`); // 수정 이후
+  //       // 최신순으로 3개만 잘라서 상태에 저장
+  //       setPresets(response.data.slice(0, 3) || []);
+  //     } catch (error) {
+  //       console.error("마이페이지 프리셋 로드 실패:", error);
+  //     }
+  //   };
+  //   fetchPresets();
+  // }, []);
+
+//   useEffect(() => {
+//   const fetchOrders = async () => {
+//     const userId = getUserIdFromToken(); // ID 추출
+//     console.log("마이페이지 주문조회용 userId:", userId); // ◀ 확인용 로그
+
+//     if (!userId) return;
+
+//     try {
+//       // ◀ 수정: 주문 내역 API에도 userId가 필요할 것입니다 (orderApi.js 설계 확인 필요)
+//       // 만약 getOrderDetail(userId) 로 설계되어 있다면 아래처럼 수정하세요.
+//       const response = await getOrderDetail(userId); 
+//       setOrders(response.data.slice(0, 2) || []);
+//     } catch (error) {
+//       console.error("마이페이지 주문 내역 로드 실패:", error);
+//     }
+//   };
+//   fetchOrders();
+// }, []);
 
   return (
     <div css={S.container}>

@@ -10,7 +10,7 @@
             i.category_id,
             i.item_name,
             i.description,
-            i.base_price,
+            i.price,
             i.size,
             i.image_id,
             c.category_name,

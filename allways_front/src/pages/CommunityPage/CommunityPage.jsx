@@ -7,13 +7,13 @@ import { getPosts,toggleLike } from '../../apis/items/communityApi';
 
 // 빵, 치즈
 const pickOne = (ingredients, cid) =>
-  ingredients?.find((x) => x.ingredientCategoryId === cid)?.ingredientName ??
+  ingredients?.find((x) => x.categoryId === cid)?.ingredientName ??
   '선택안함';
 
 // 야채, 소스
 const pickMany = (ingredients, cid) =>
   ingredients
-    ?.filter((x) => x.ingredientCategoryId === cid)
+    ?.filter((x) => x.categoryId === cid)
     .map((x) => x.ingredientName)
     .join(', ') ?? '선택안함';
 
@@ -158,10 +158,10 @@ export default function CommunityPage() {
                 </div>
 
                 <div css={s.desc}>
-                  빵: {pickOne(item.ingredients, 1)} · 치즈:{' '}
-                  {pickOne(item.ingredients, 2)} · 야채:{' '}
-                  {pickMany(item.ingredients, 3)} · 소스:{' '}
-                  {pickMany(item.ingredients, 4)}
+                  빵: {pickOne(item.ingredients, 4)} · 치즈:{' '}
+                  {pickOne(item.ingredients, 5)} · 야채:{' '}
+                  {pickMany(item.ingredients, 6)} · 소스:{' '}
+                  {pickMany(item.ingredients, 7)}
                 </div>
               </div>
 

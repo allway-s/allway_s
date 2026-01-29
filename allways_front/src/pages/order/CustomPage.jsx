@@ -29,7 +29,6 @@ function CustomPage() {
     const [ingredients, setIngredients] = useState([]); 
     const [selectedIngredients, setSelectedIngredients] = useState({});
     
-    // 세트 관련 상태
     const [setMenus, setSetMenus] = useState([]); 
     const [selectedSetId, setSelectedSetId] = useState(null);
     const [setComponents, setSetComponents] = useState(null);
@@ -44,7 +43,7 @@ function CustomPage() {
 
     const isRequiredStep = currentCategory?.required && !(currentCategory.id === '빵' && categoryName === '샐러드');
 
-    // 세트 메뉴 목록 가져오기 (컴포넌트 마운트 시 한 번만)
+    // 세트 메뉴 목록 가져오기
     useEffect(() => {
         getSets()
             .then(response => {
@@ -55,17 +54,15 @@ function CustomPage() {
                 console.error('세트 메뉴 조회 실패:', err);
                 setSetMenus([]);
             });
-    }, []); // 빈 배열: 마운트 시 한 번만 실행
+    }, []);
 
     // 현재 단계의 재료 가져오기
     useEffect(() => {
         if (!currentCategory) return;
 
         if (currentCategory.id === '세트') {
-            // 세트 단계에서는 이미 로드된 setMenus 사용
             setIngredients(setMenus);
         } else {
-            // 일반 재료 로드
             getIngredients(currentCategory.id)
                 .then(response => {
                     setIngredients(response.data);
@@ -76,22 +73,21 @@ function CustomPage() {
                         return [...prev, ...newItems];
                     });
                 })
-                .catch(err => console.error('재료 조회 실패:', err));
         }
-    }, [step]); // step만 의존성으로 설정
+    }, [step]);
 
-    // 세트 단계일 때 setMenus가 로드되면 ingredients 업데이트
     useEffect(() => {
         if (currentCategory?.id === '세트' && setMenus.length > 0) {
             setIngredients(setMenus);
         }
-    }, [setMenus]); // setMenus가 로드되면 실행
+    }, [setMenus]);
 
     // 선택된 세트의 구성 요소 가져오기
     useEffect(() => {
         if (selectedSetId && selectedSetId !== 1) {
             getSetDetail(selectedSetId)
                 .then(response => {
+                    console.log(response);
                     setSetComponents(response.data);
                     
                     const options = response.data.selectableOptions || {};
@@ -99,7 +95,6 @@ function CustomPage() {
                     setSideOptions(Array.isArray(options.side) ? options.side : []);
                 })
                 .catch(err => {
-                    console.error('세트 구성 조회 실패:', err);
                     setSetComponents(null);
                     setDrinkOptions([]);
                     setSideOptions([]);
@@ -116,7 +111,6 @@ function CustomPage() {
     const handleIngredientClick = (ingredient) => {
         const categoryId = currentCategory.id;
         
-        // 세트 선택인 경우
         if (categoryId === '세트') {
             setSelectedSetId(ingredient.setId);
             setSelectedIngredients(prev => ({
@@ -181,7 +175,6 @@ function CustomPage() {
             return;
         }
 
-        // 세트 선택 후, 세트 구성 요소가 있는 경우 음료/사이드 선택 확인
         if (currentCategory.id === '세트' && selectedSetId && selectedSetId !== 1) {
             const needsDrink = setComponents?.components?.some(c => c.componentType === 'drink');
             const needsSide = setComponents?.components?.some(c => c.componentType === 'side');
@@ -205,35 +198,58 @@ function CustomPage() {
     };
 
     const handleAddToCart = () => {
-        // 재료 ID 수집 (세트 제외)
-        const ingredientIds = Object.entries(selectedIngredients)
-            .filter(([key]) => key !== '세트')
-            .flatMap(([_, ids]) => ids);
+        // 1. 선택된 재료 ID 추출
+        const ingredientIds = Object.values(selectedIngredients).flat();
 
+        // 2. 선택된 재료들의 상세 정보 조회 및 추가 가격 합산
         const selectedDetails = allIngredients.filter(ing => 
             ingredientIds.includes(ing.ingredientId)
         );
+        const ingredientExtraPrice = selectedDetails.reduce((sum, ing) => sum + (Number(ing.price) || 0), 0);
 
-        const extraPrice = selectedDetails.reduce((sum, ing) => sum + (ing.price || 0), 0);
-        const finalPrice = (selectedItem?.price || 0) + extraPrice;
+        const selectedDrinkData = drinkOptions.find(d => d.ingredientId === selectedDrink);
+        const selectedSideData = sideOptions.find(s => s.ingredientId === selectedSide);
+        
+        const drinkPrice = selectedDrinkData ? (Number(selectedDrinkData.price) || 0) : 0;
+        const sidePrice = selectedSideData ? (Number(selectedSideData.price) || 0) : 0;
+        
+        const setAddPrice = (selectedSetId && selectedSetId !== 1) ? (drinkPrice + sidePrice) : 0;
 
-        const ingredientNames = selectedDetails.map(ing => ing.ingredientName);
+        // 3. 최종 단가 계산
+        const basePrice = Number(selectedItem?.price) || 0;
+        const finalUnitPrice = basePrice + ingredientExtraPrice + setAddPrice;
 
+        // 4. 장바구니에 넘길 객체 구성
         const orderItem = {
             productId: parseInt(itemId),
             itemId: parseInt(itemId),
             itemName: selectedItem?.itemName,
-            imgUrl: selectedItem?.imgUrl,
-            quantity: quantity,
-            unitPrice: finalPrice,
+            imgUrl: selectedItem?.imageUrl || selectedItem?.imgUrl,
+            quantity: quantity || 1,
+            unitPrice: finalUnitPrice,
+            price: finalUnitPrice,
             ingredientIds: ingredientIds,
-            ingredientName: ingredientNames, 
-            price: finalPrice, 
+            ingredientName: selectedDetails.map(ing => ing.ingredientName),
             size: selectedItem?.size,
             setId: selectedSetId || null,
             selectedDrinkId: selectedDrink || null,
             selectedSideId: selectedSide || null,
+            // ✅ 가격 분해 정보 저장 (디버깅/확인용)
+            basePrice: basePrice,
+            ingredientPrice: ingredientExtraPrice,
+            setPrice: setAddPrice,
+            drinkPrice: drinkPrice,
+            sidePrice: sidePrice,
         };
+
+        console.log("✅ 장바구니 추가 - 최종 금액:", {
+            기본가격: basePrice,
+            재료추가: ingredientExtraPrice,
+            음료가격: drinkPrice,
+            사이드가격: sidePrice,
+            세트합계: setAddPrice,
+            합계: finalUnitPrice
+        });
 
         addToCart(orderItem);
         alert('장바구니에 추가되었습니다!');
@@ -252,7 +268,6 @@ function CustomPage() {
         if (!setComponents || !selectedSetId || selectedSetId === 1) {
             return null;
         }
-
         const hasDrink = setComponents.components?.some(c => c.componentType === 'drink');
         const hasSide = setComponents.components?.some(c => c.componentType === 'side');
 
@@ -285,12 +300,15 @@ function CustomPage() {
                                     </div>
                                     <div css={s.ingredientInfoStyle}>
                                         <div css={s.ingredientNameStyle}>{side.ingredientName}</div>
+                                        <div css={s.ingredientPriceStyle}>
+                                            {side.price > 0 ? `+${side.price}원` : "기본"}
+                                        </div>
                                     </div>
                                 </button>
                             ))}
                         </div>
                     </div>
-            )}
+                )}
                 {hasDrink && drinkOptions.length > 0 && (
                     <div css={s.componentSectionStyle}>
                         <h4>음료 선택</h4>
@@ -318,6 +336,9 @@ function CustomPage() {
                                     </div>
                                     <div css={s.ingredientInfoStyle}>
                                         <div css={s.ingredientNameStyle}>{drink.ingredientName}</div>
+                                        <div css={s.ingredientPriceStyle}>
+                                            {drink.price > 0 ? `+${drink.price}원` : "기본"}
+                                        </div>
                                     </div>
                                 </button>
                             ))}
@@ -369,7 +390,6 @@ function CustomPage() {
 
                 <div css={s.ingredientsGridStyle}>
                     {currentCategory?.id === '세트' ? (
-                        // 세트 메뉴 표시
                         setMenus.length > 0 ? (
                             setMenus.map(setMenu => {
                                 const isSelected = selectedSetId === setMenu.setId;
@@ -392,7 +412,6 @@ function CustomPage() {
                             <p>세트 메뉴를 불러오는 중...</p>
                         )
                     ) : (
-                        // 일반 재료 표시
                         ingredients.map(ingredient => {
                             const isSelected = (selectedIngredients[currentCategory.id] || []).includes(ingredient.ingredientId);
                             return (
@@ -417,7 +436,6 @@ function CustomPage() {
                     )}
                 </div>
 
-                {/* 세트 구성 요소 선택 UI */}
                 {currentCategory?.id === '세트' && renderSetComponents()}
             </div>
 
