@@ -33,6 +33,7 @@ public interface OrderMapper {
     List<OrderDetail> findOrderHistoryByUserId(@Param("userId") Integer userId);
 
     /**
+     *
      * 주문 ID로 주문 정보 조회
      */
     Order findOrderById(@Param("orderId") Integer orderId);

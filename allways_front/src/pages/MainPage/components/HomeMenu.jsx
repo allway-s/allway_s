@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useRef } from 'react';
 import { S } from './HomeMenu.styles.js';
-import { getItems } from '../../../apis/items/orderApi';
+import { getItems } from '../../../apis/items/menuApi.js';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react'; // 아이콘 라이브러리 활용
 

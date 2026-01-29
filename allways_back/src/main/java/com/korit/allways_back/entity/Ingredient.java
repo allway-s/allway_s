@@ -17,6 +17,7 @@ public class Ingredient {
     private String ingredientName;
     private Integer price;
     private Integer imageId;
+    private String imageUrl;
 
     // 조인용 필드 (필요시)
     @JsonIgnore
