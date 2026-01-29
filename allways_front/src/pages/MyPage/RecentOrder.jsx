@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { S } from './RecentOrder.styles.js'; 
+import { S } from './RecentOrderStyles.js'; 
 import { api } from '../../apis/config/axiosConfig.js';
 
 export const RecentOrder = () => {

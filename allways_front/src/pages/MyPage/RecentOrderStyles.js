@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { S as CommonS } from './MyPreset.styles.js'; // 기존 공통 스타일 활용
+import { S as CommonS } from './MyPresetStyles.js'; // 기존 공통 스타일 활용
 
 export const S = {
   ...CommonS,

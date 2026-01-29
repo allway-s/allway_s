@@ -3,7 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, TrendingUp } from 'lucide-react';
 import { PresetCard } from '../../../components/PresetCard.jsx';
-import { S } from './PopularSection.styles.js';
+import { S } from './PopularSectionStyles.js';
 import axios from 'axios';
 
 export function PopularSection({ user }) {
