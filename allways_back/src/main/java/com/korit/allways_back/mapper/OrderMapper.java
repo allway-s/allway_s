@@ -4,6 +4,7 @@ import com.korit.allways_back.entity.Order;
 import com.korit.allways_back.entity.OrderDetail;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -41,4 +42,8 @@ public interface OrderMapper {
      * 주문 ID로 주문 상세 목록 조회
      */
     List<OrderDetail> findOrderDetailsByOrderId(@Param("orderId") Integer orderId);
+
+    Integer findTotalPriceByOrderNumber(@Param("orderNumber") String orderNumber);
+
+    Integer updateStatus(@Param("orderNumber") String orderNumber, @Param("status") String status);
 }
