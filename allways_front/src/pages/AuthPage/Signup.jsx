@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { S } from './Signup.styles.js';
+import { S } from './SignupStyles.js';
 import { api } from '../../apis/config/axiosConfig.js';
 
 export const Signup = ({setIsLoggedIn}) => {

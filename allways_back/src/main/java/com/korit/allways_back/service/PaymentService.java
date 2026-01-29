@@ -1,60 +1,47 @@
 package com.korit.allways_back.service;
 
-import com.korit.allways_back.dto.request.KakaoReadyRequest;
-import com.korit.allways_back.dto.response.KakaoApproveResponse;
-import com.korit.allways_back.dto.response.KakaoReadyResponse;
+import com.korit.allways_back.dto.request.PaymentVerifyDto;
+import com.korit.allways_back.mapper.OrderMapper;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final WebClient kakaoWebClient;
+    private final IamportClient iamportClient;
+    private final OrderMapper orderMapper;
 
-    @Value("${kakao.pay.secret-key}")
-    private String secretKey;
-    @Value("${kakao.pay.cid}")
-    private String cid;
+    @Transactional
+    public boolean verifyAndCompleteOrder(PaymentVerifyDto verifyDto) throws Exception {
+        // 포트원 서버에서 결제된 정보 가져오기
+        IamportResponse<Payment> response = iamportClient.paymentByImpUid(verifyDto.getImpUid());
+        Payment payment = response.getResponse();
 
-    public KakaoReadyResponse payReady(KakaoReadyRequest requestDto) {
-        return kakaoWebClient.post()
-                // 요청 url
-                .uri("/online/v1/payment/ready")
-                // 헤더
-                .header("Authorization", "SECRET_KEY " + secretKey)
-                // 데이터
-                .bodyValue(requestDto)
-                // 요청 실행
-                .retrieve()
-                // 응답 TYPE
-                .bodyToMono(KakaoReadyResponse.class)
-                // 비동기처리를 동기처리 처럼 대기
-                .block();
+        // 포트원 조회 결과가 없는 경우
+        if (payment == null) {
+            throw new RuntimeException("결제 내역을 찾을 수 없음");
+        }
+
+        // DB에서 총액 조회
+        Integer dbTotalPrice = orderMapper.findTotalPriceByOrderNumber(verifyDto.getOrderNumber());
+
+        // DB에 주문이 없는 경우
+        if (dbTotalPrice == null) {
+            throw new RuntimeException("DB에 해당 주문이 존재하지 않음");
+        }
+
+        // 포트원 결제 금액과 DB 금액 비교
+        if (payment.getAmount().intValue() == dbTotalPrice) {
+            orderMapper.updateStatus(verifyDto.getOrderNumber(), "PAID");
+            return true;
+        }
+        return false;
     }
 
-    public KakaoApproveResponse payApprove(String tid, String pgToken) {
-        // 승인 요청에 필요한 데이터를 Map이나 DTO에 담습니다.
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("cid", cid);
-        parameters.put("tid", tid);
-        parameters.put("partner_order_id", "주문번호"); // 준비 단계와 동일해야 함
-        parameters.put("partner_user_id", "유저ID");  // 준비 단계와 동일해야 함
-        parameters.put("pg_token", pgToken);      // 카카오가 준 토큰
-
-        return kakaoWebClient.post()
-                .uri("/online/v1/payment/approve")
-                .header("Authorization", "SECRET_KEY " + secretKey)
-                .bodyValue(parameters)
-                .retrieve()
-                .bodyToMono(KakaoApproveResponse.class)
-                .block();
-    }
 
 }

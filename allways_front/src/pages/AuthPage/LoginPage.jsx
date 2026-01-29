@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { S } from './Login.styles.js';
+import { S } from './LoginPageStyles.js';
 
 const Login = () => {
 

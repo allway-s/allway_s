@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/items")
+@RequestMapping
 @RequiredArgsConstructor
 public class ItemController {
 
@@ -22,8 +22,8 @@ public class ItemController {
      * 카테고리별 아이템 조회
      * GET /api/items?category=피자
      */
-    @GetMapping
-    public ResponseEntity<List<Item>> getItemsByCategory(@RequestParam String category) {
+    @GetMapping("/api/items")
+    public ResponseEntity<List<Item>> getItemsByCategory(@RequestParam("categoryName") String category) {
         List<Item> items = itemService.getItemByCategory(category);
         return ResponseEntity.ok(items);
     }

@@ -11,7 +11,7 @@
             ing.price,
             ing.image_id,
             c.category_name,
-            img.img_url AS imgURL
+            img.img_url AS imageUrl
         FROM
             ingredient_tb ing
             INNER JOIN category_tb c ON ing.category_id = c.category_id
