@@ -47,6 +47,12 @@ public class SecurityConfig {
             // 로그인 관련으로 누구나 접근가능하게
             auth.requestMatchers("/", "/login", "/signup").permitAll();
             auth.requestMatchers("/api/auth/**").permitAll();
+
+            // [추가 및 수정] 마이페이지에서 호출하는 API들을 명시적으로 허용하거나 인증 설정
+            // 지금은 테스트 중이니 .permitAll()로 열어서 401이 발생하는지 먼저 확인합시다.
+            auth.requestMatchers("/api/presets/**", "/api/orders/**").permitAll();
+
+
             // 토큰 유효성 검사
             auth.requestMatchers("/api/user/**").authenticated();
 
@@ -57,7 +63,7 @@ public class SecurityConfig {
             ).permitAll();
 
             // 나중에 authenticated 해줘야할 것들
-            auth.requestMatchers("/api/**").permitAll();
+//            auth.requestMatchers("/api/**").permitAll();
 
             // 그 외 모든 요청은 인증 필요
             auth.anyRequest().authenticated();
