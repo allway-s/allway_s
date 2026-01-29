@@ -19,6 +19,7 @@ public class Item {
     private Integer basePrice;
     private Integer size; // 15 or 30 (cm)
     private Integer imageId;
+    private String imageUrl;
 
     // 조인용 필드 (필요시)
     @JsonIgnore

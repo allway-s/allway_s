@@ -56,7 +56,6 @@
         WHERE
             ing.category_id = #{categoryId}
             AND c.category_type = 'ingredient'
-            AND c.is_active = TRUE
         ORDER BY
             ing.ingredient_id
     </select>

@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { S } from './MyPage.styles.js';
 import axios from 'axios';
 import { api } from '../../apis/config/axiosConfig.js';
+import { getMyPresets } from '../../apis/items/communityApi.js';
+import { getOrderDetail } from '../../apis/items/orderApi.js';
 
 export const MyPage = () => {
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ export const MyPage = () => {
       const userId = getUserIdFromToken();
       if (!userId) return;
       try {
-        const response = await axios.get(`http://localhost:8080/api/preset/list/${userId}`);
+        const response = getMyPresets();
         // 최신순으로 3개만 잘라서 상태에 저장
         setPresets(response.data.slice(0, 3) || []);
       } catch (error) {
@@ -47,7 +49,7 @@ export const MyPage = () => {
   const fetchOrders = async () => {
     try {
       // RecentOrder와 동일한 API 호출
-      const response = await api.get("/api/v1/orders/history");
+      const response = getOrderDetail();
       // 마이페이지 요약용으로 최근 2개만 저장
       setOrders(response.data.slice(0, 2) || []);
     } catch (error) {

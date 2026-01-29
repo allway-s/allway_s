@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ingredients")
+@RequestMapping
 @RequiredArgsConstructor
 public class IngredientController {
 
@@ -22,8 +22,8 @@ public class IngredientController {
      * 카테고리별 재료 조회
      * GET /api/ingredients?category=토핑
      */
-    @GetMapping
-    public ResponseEntity<List<Ingredient>> getIngredientsByCategory(@RequestParam String category) {
+    @GetMapping("/api/ingredients")
+    public ResponseEntity<List<Ingredient>> getIngredientsByCategory(@RequestParam("categoryName") String category) {
         List<Ingredient> ingredients = ingredientService.getIngredientsByCategory(category);
         return ResponseEntity.ok(ingredients);
     }
