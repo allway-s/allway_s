@@ -34,10 +34,10 @@ jobs:
             echo "REACT_ENV=${{ secrets.REACT_ENV_JINHYUN }}" >> $GITHUB_ENV
           fi
 
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: install JDK
+      - name: Install JDK
         uses: actions/setup-java@v4
         with:
           java-version: '21'
