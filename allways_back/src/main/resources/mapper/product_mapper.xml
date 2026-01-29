@@ -98,7 +98,7 @@
 
     <select id="calculatePrice" resultType="int">
         SELECT
-            i.base_price + COALESCE(SUM(ing.price), 0) AS totalPrice
+            i.price + COALESCE(SUM(ing.price), 0) AS totalPrice
         FROM
             product_item_tb pi
             INNER JOIN item_tb i ON pi.item_id = i.item_id
@@ -107,7 +107,7 @@
         WHERE
             pi.product_id = #{productId}
         GROUP BY
-            i.base_price
+            i.price
     </select>
 
 </mapper>
