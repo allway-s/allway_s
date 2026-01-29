@@ -2,18 +2,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import { s } from './CommunityPage.styles';
-import { getAllPost, postLike } from '../../apis/communityPosts/postApi';
+import { s } from './CommunityPageStyles.js';
+import { getPosts,toggleLike } from '../../apis/items/communityApi';
 
 // 빵, 치즈
 const pickOne = (ingredients, cid) =>
-  ingredients?.find((x) => x.ingredientCategoryId === cid)?.ingredientName ??
+  ingredients?.find((x) => x.categoryId === cid)?.ingredientName ??
   '선택안함';
 
 // 야채, 소스
 const pickMany = (ingredients, cid) =>
   ingredients
-    ?.filter((x) => x.ingredientCategoryId === cid)
+    ?.filter((x) => x.categoryId === cid)
     .map((x) => x.ingredientName)
     .join(', ') ?? '선택안함';
 
@@ -58,7 +58,7 @@ export default function CommunityPage() {
 
   const fetchPosts = async () => {
     try {
-      const res = await getAllPost(userId);
+      const res = await getPosts(userId);
 
       setPosts(res?.data ?? []);
       console.log('posts:', res?.data);
@@ -76,8 +76,7 @@ export default function CommunityPage() {
   const onClickLike = async (e, postId) => {
     e.stopPropagation();
     try {
-      await postLike(postId, userId);
-      // ✅ 서버가 토글 처리 끝냈으니, DB 기준으로 다시 받아와서 화면 갱신
+      await toggleLike(postId, userId);
       await fetchPosts();
     } catch (err) {
       console.error('좋아요 실패', err);
@@ -159,10 +158,10 @@ export default function CommunityPage() {
                 </div>
 
                 <div css={s.desc}>
-                  빵: {pickOne(item.ingredients, 1)} · 치즈:{' '}
-                  {pickOne(item.ingredients, 2)} · 야채:{' '}
-                  {pickMany(item.ingredients, 3)} · 소스:{' '}
-                  {pickMany(item.ingredients, 4)}
+                  빵: {pickOne(item.ingredients, 4)} · 치즈:{' '}
+                  {pickOne(item.ingredients, 5)} · 야채:{' '}
+                  {pickMany(item.ingredients, 6)} · 소스:{' '}
+                  {pickMany(item.ingredients, 7)}
                 </div>
               </div>
 

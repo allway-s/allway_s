@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import  * as s  from "./customPageStyle"; // 스타일 파일 임포트
-import { useState, useEffect } from "react"; // React 훅 임포트
-import { getIngredients } from "../../apis/items/orderApi"; // 재료 및 세트 API 임포트
-import { useLocation, useNavigate, useParams } from "react-router-dom"; // 라우팅 관련 훅 임포트
-import { addToCart } from "../../utils/cartStore"; // 장바구니 저장 유틸 임포트
+import * as s from "./customPageStyle";
+import { useState, useEffect } from "react"; 
+import { getIngredients, getSets, getSetDetail } from "../../apis/items/menuApi";
+import { useLocation, useNavigate, useParams } from "react-router-dom"; 
+import { addToCart } from "../../utils/cartStore"; 
 
 function CustomPage() {
     
@@ -25,38 +25,101 @@ function CustomPage() {
     
     const initialStep = categoryName === '샐러드' ? 2 : 1;
 
-    const [sets, setSets] = useState([]);
-    const [selectedSet, setSelectedSet] = useState(null);
-    
-    
     const [step, setStep] = useState(initialStep);
     const [ingredients, setIngredients] = useState([]); 
     const [selectedIngredients, setSelectedIngredients] = useState({});
+    
+    const [setMenus, setSetMenus] = useState([]); 
+    const [selectedSetId, setSelectedSetId] = useState(null);
+    const [setComponents, setSetComponents] = useState(null);
+    const [selectedDrink, setSelectedDrink] = useState(null);
+    const [selectedSide, setSelectedSide] = useState(null);
+    const [drinkOptions, setDrinkOptions] = useState([]);
+    const [sideOptions, setSideOptions] = useState([]);
+
     const [allIngredients, setAllIngredients] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const currentCategory = categories[step - 1];
 
     const isRequiredStep = currentCategory?.required && !(currentCategory.id === '빵' && categoryName === '샐러드');
 
+    // 세트 메뉴 목록 가져오기
     useEffect(() => {
-        if (currentCategory) {
+        getSets()
+            .then(response => {
+                const sets = Array.isArray(response.data) ? response.data : [];
+                setSetMenus(sets);
+            })
+            .catch(err => {
+                console.error('세트 메뉴 조회 실패:', err);
+                setSetMenus([]);
+            });
+    }, []);
+
+    // 현재 단계의 재료 가져오기
+    useEffect(() => {
+        if (!currentCategory) return;
+
+        if (currentCategory.id === '세트') {
+            setIngredients(setMenus);
+        } else {
             getIngredients(currentCategory.id)
                 .then(response => {
                     setIngredients(response.data);
                     setAllIngredients(prev => {
                         const newItems = response.data.filter(
                             newItem => !prev.some(oldItem => oldItem.ingredientId === newItem.ingredientId)
-                        )
+                        );
                         return [...prev, ...newItems];
-                    })
+                    });
                 })
-                .catch(err => console.error(err));
         }
     }, [step]);
 
+    useEffect(() => {
+        if (currentCategory?.id === '세트' && setMenus.length > 0) {
+            setIngredients(setMenus);
+        }
+    }, [setMenus]);
+
+    // 선택된 세트의 구성 요소 가져오기
+    useEffect(() => {
+        if (selectedSetId && selectedSetId !== 1) {
+            getSetDetail(selectedSetId)
+                .then(response => {
+                    console.log(response);
+                    setSetComponents(response.data);
+                    
+                    const options = response.data.selectableOptions || {};
+                    setDrinkOptions(Array.isArray(options.drink) ? options.drink : []);
+                    setSideOptions(Array.isArray(options.side) ? options.side : []);
+                })
+                .catch(err => {
+                    setSetComponents(null);
+                    setDrinkOptions([]);
+                    setSideOptions([]);
+                });
+        } else {
+            setSetComponents(null);
+            setDrinkOptions([]);
+            setSideOptions([]);
+            setSelectedDrink(null);
+            setSelectedSide(null);
+        }
+    }, [selectedSetId]);
 
     const handleIngredientClick = (ingredient) => {
         const categoryId = currentCategory.id;
+        
+        if (categoryId === '세트') {
+            setSelectedSetId(ingredient.setId);
+            setSelectedIngredients(prev => ({
+                ...prev,
+                [categoryId]: [ingredient.setId]
+            }));
+            return;
+        }
+
         const ingredientId = ingredient.ingredientId;
 
         setSelectedIngredients(prev => {
@@ -84,6 +147,14 @@ function CustomPage() {
         });
     };
 
+    const handleDrinkSelect = (ingredient) => {
+        setSelectedDrink(ingredient.ingredientId);
+    };
+
+    const handleSideSelect = (ingredient) => {
+        setSelectedSide(ingredient.ingredientId);
+    };
+
     const handleSelectAllVegetables = () => {
         const categoryId = '야채';
         const currentSelected = selectedIngredients[categoryId] || [];
@@ -104,6 +175,21 @@ function CustomPage() {
             return;
         }
 
+        if (currentCategory.id === '세트' && selectedSetId && selectedSetId !== 1) {
+            const needsDrink = setComponents?.components?.some(c => c.componentType === 'drink');
+            const needsSide = setComponents?.components?.some(c => c.componentType === 'side');
+
+            if (needsDrink && !selectedDrink) {
+                alert('음료를 선택해주세요!');
+                return;
+            }
+
+            if (needsSide && !selectedSide) {
+                alert('사이드를 선택해주세요!');
+                return;
+            }
+        }
+
         if (step < categories.length) {
             setStep(step + 1);
         } else {
@@ -112,34 +198,156 @@ function CustomPage() {
     };
 
     const handleAddToCart = () => {
-        const allSelectedIds = Object.values(selectedIngredients).flat();
+        // 1. 선택된 재료 ID 추출
+        const ingredientIds = Object.values(selectedIngredients).flat();
 
+        // 2. 선택된 재료들의 상세 정보 조회 및 추가 가격 합산
         const selectedDetails = allIngredients.filter(ing => 
-            allSelectedIds.includes(ing.ingredientId)
+            ingredientIds.includes(ing.ingredientId)
         );
+        const ingredientExtraPrice = selectedDetails.reduce((sum, ing) => sum + (Number(ing.price) || 0), 0);
 
-        const extraPrice = selectedDetails.reduce((sum, ing) => sum + (ing.price || 0), 0);
-        const finalPrice = (selectedItem?.price || 0) + extraPrice;
+        const selectedDrinkData = drinkOptions.find(d => d.ingredientId === selectedDrink);
+        const selectedSideData = sideOptions.find(s => s.ingredientId === selectedSide);
+        
+        const drinkPrice = selectedDrinkData ? (Number(selectedDrinkData.price) || 0) : 0;
+        const sidePrice = selectedSideData ? (Number(selectedSideData.price) || 0) : 0;
+        
+        const setAddPrice = (selectedSetId && selectedSetId !== 1) ? (drinkPrice + sidePrice) : 0;
 
-        const ingredientNames = selectedDetails.map(ing => ing.ingredientName);
+        // 3. 최종 단가 계산
+        const basePrice = Number(selectedItem?.price) || 0;
+        const finalUnitPrice = basePrice + ingredientExtraPrice + setAddPrice;
 
+        // 4. 장바구니에 넘길 객체 구성
         const orderItem = {
+            productId: parseInt(itemId),
             itemId: parseInt(itemId),
             itemName: selectedItem?.itemName,
-            imgUrl: selectedItem?.imgUrl,
-            quantity: quantity,
-            ingredientIds: allSelectedIds,
-            ingredientName: ingredientNames, 
-            price: finalPrice, 
+            imgUrl: selectedItem?.imageUrl || selectedItem?.imgUrl,
+            quantity: quantity || 1,
+            unitPrice: finalUnitPrice,
+            price: finalUnitPrice,
+            ingredientIds: ingredientIds,
+            ingredientName: selectedDetails.map(ing => ing.ingredientName),
             size: selectedItem?.size,
+            setId: selectedSetId || null,
+            selectedDrinkId: selectedDrink || null,
+            selectedSideId: selectedSide || null,
+            // ✅ 가격 분해 정보 저장 (디버깅/확인용)
+            basePrice: basePrice,
+            ingredientPrice: ingredientExtraPrice,
+            setPrice: setAddPrice,
+            drinkPrice: drinkPrice,
+            sidePrice: sidePrice,
         };
+
+        console.log("✅ 장바구니 추가 - 최종 금액:", {
+            기본가격: basePrice,
+            재료추가: ingredientExtraPrice,
+            음료가격: drinkPrice,
+            사이드가격: sidePrice,
+            세트합계: setAddPrice,
+            합계: finalUnitPrice
+        });
 
         addToCart(orderItem);
         alert('장바구니에 추가되었습니다!');
         navigate('/cart');
     };
 
-    const getSelectedCount = () => selectedIngredients[currentCategory?.id]?.length || 0;
+    const getSelectedCount = () => {
+        if (currentCategory?.id === '세트') {
+            return selectedSetId ? 1 : 0;
+        }
+        return selectedIngredients[currentCategory?.id]?.length || 0;
+    };
+
+    // 세트 구성 요소 선택 UI 렌더링
+    const renderSetComponents = () => {
+        if (!setComponents || !selectedSetId || selectedSetId === 1) {
+            return null;
+        }
+        const hasDrink = setComponents.components?.some(c => c.componentType === 'drink');
+        const hasSide = setComponents.components?.some(c => c.componentType === 'side');
+
+        return (
+            <div css={s.setComponentsStyle}>
+                {hasSide && sideOptions.length > 0 && (
+                    <div css={s.componentSectionStyle}>
+                        <h4>사이드 선택</h4>
+                        <div css={s.ingredientsGridStyle}>
+                            {sideOptions.map(side => (
+                                <button 
+                                    key={side.ingredientId}
+                                    onClick={() => handleSideSelect(side)}
+                                    css={[
+                                        s.ingredientCardStyle, 
+                                        selectedSide === side.ingredientId && s.ingredientCardSelectedStyle
+                                    ]}
+                                >
+                                    <div css={s.ingredientImageWrapperStyle}>
+                                        {side.imageUrl && (
+                                            <img 
+                                                src={side.imageUrl} 
+                                                alt={side.ingredientName} 
+                                                css={s.ingredientImageStyle} 
+                                            />
+                                        )}
+                                        {selectedSide === side.ingredientId && (
+                                            <div css={s.selectedBadgeStyle}>✓</div>
+                                        )}
+                                    </div>
+                                    <div css={s.ingredientInfoStyle}>
+                                        <div css={s.ingredientNameStyle}>{side.ingredientName}</div>
+                                        <div css={s.ingredientPriceStyle}>
+                                            {side.price > 0 ? `+${side.price}원` : "기본"}
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                {hasDrink && drinkOptions.length > 0 && (
+                    <div css={s.componentSectionStyle}>
+                        <h4>음료 선택</h4>
+                        <div css={s.ingredientsGridStyle}>
+                            {drinkOptions.map(drink => (
+                                <button 
+                                    key={drink.ingredientId}
+                                    onClick={() => handleDrinkSelect(drink)}
+                                    css={[
+                                        s.ingredientCardStyle, 
+                                        selectedDrink === drink.ingredientId && s.ingredientCardSelectedStyle
+                                    ]}
+                                >
+                                    <div css={s.ingredientImageWrapperStyle}>
+                                        {drink.imageUrl && (
+                                            <img 
+                                                src={drink.imageUrl} 
+                                                alt={drink.ingredientName} 
+                                                css={s.ingredientImageStyle} 
+                                            />
+                                        )}
+                                        {selectedDrink === drink.ingredientId && (
+                                            <div css={s.selectedBadgeStyle}>✓</div>
+                                        )}
+                                    </div>
+                                    <div css={s.ingredientInfoStyle}>
+                                        <div css={s.ingredientNameStyle}>{drink.ingredientName}</div>
+                                        <div css={s.ingredientPriceStyle}>
+                                            {drink.price > 0 ? `+${drink.price}원` : "기본"}
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     return (
         <div css={s.containerStyle}>
@@ -171,36 +379,64 @@ function CustomPage() {
                         </span>
                     </h3>
                     
-                    <div style={{ marginTop: '10px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                        {currentCategory?.id === '야채' && (
+                    {currentCategory?.id === '야채' && (
+                        <div style={{ marginTop: '10px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
                             <button onClick={handleSelectAllVegetables} css={s.actionButtonStyle}>
-                                { (selectedIngredients['야채']?.length === ingredients.length) ? "전부 빼기" : "전부 넣기" }
+                                {(selectedIngredients['야채']?.length === ingredients.length) ? "전부 빼기" : "전부 넣기"}
                             </button>
-                        )}  
-                    </div>
+                        </div>
+                    )}
                 </div>
 
                 <div css={s.ingredientsGridStyle}>
-                    {ingredients.map(ingredient => {
-                        const isSelected = (selectedIngredients[currentCategory.id] || []).includes(ingredient.ingredientId);
-                        return (
-                            <button 
-                                key={ingredient.ingredientId} 
-                                onClick={() => handleIngredientClick(ingredient)}
-                                css={[s.ingredientCardStyle, isSelected && s.ingredientCardSelectedStyle]}
-                            >
-                                <div css={s.ingredientImageWrapperStyle}>
-                                    <img src={ingredient.imageUrl} alt={ingredient.ingredientName} css={s.ingredientImageStyle} />
-                                    {isSelected && <div css={s.selectedBadgeStyle}>✓</div>}
-                                </div>
-                                <div css={s.ingredientInfoStyle}>
-                                    <div css={s.ingredientNameStyle}>{ingredient.ingredientName}</div>
-                                    <div css={s.ingredientPriceStyle}>{ingredient.price > 0 ? `+${ingredient.price}원` : null}</div>
-                                </div>
-                            </button>
-                        );
-                    })}
+                    {currentCategory?.id === '세트' ? (
+                        setMenus.length > 0 ? (
+                            setMenus.map(setMenu => {
+                                const isSelected = selectedSetId === setMenu.setId;
+                                return (
+                                    <button 
+                                        key={setMenu.setId} 
+                                        onClick={() => handleIngredientClick(setMenu)}
+                                        css={[s.ingredientCardStyle, isSelected && s.ingredientCardSelectedStyle]}
+                                    >
+                                        <div css={s.ingredientImageWrapperStyle}>
+                                            {isSelected && <div css={s.selectedBadgeStyle}>✓</div>}
+                                        </div>
+                                        <div css={s.ingredientInfoStyle}>
+                                            <div css={s.ingredientNameStyle}>{setMenu.setName}</div>
+                                        </div>
+                                    </button>
+                                );
+                            })
+                        ) : (
+                            <p>세트 메뉴를 불러오는 중...</p>
+                        )
+                    ) : (
+                        ingredients.map(ingredient => {
+                            const isSelected = (selectedIngredients[currentCategory.id] || []).includes(ingredient.ingredientId);
+                            return (
+                                <button 
+                                    key={ingredient.ingredientId} 
+                                    onClick={() => handleIngredientClick(ingredient)}
+                                    css={[s.ingredientCardStyle, isSelected && s.ingredientCardSelectedStyle]}
+                                >
+                                    <div css={s.ingredientImageWrapperStyle}>
+                                        <img src={ingredient.imageUrl} alt={ingredient.ingredientName} css={s.ingredientImageStyle} />
+                                        {isSelected && <div css={s.selectedBadgeStyle}>✓</div>}
+                                    </div>
+                                    <div css={s.ingredientInfoStyle}>
+                                        <div css={s.ingredientNameStyle}>{ingredient.ingredientName}</div>
+                                        <div css={s.ingredientPriceStyle}>
+                                            {ingredient.price > 0 ? `+${ingredient.price}원` : null}
+                                        </div>
+                                    </div>
+                                </button>
+                            );
+                        })
+                    )}
                 </div>
+
+                {currentCategory?.id === '세트' && renderSetComponents()}
             </div>
 
             <div css={s.footerStyle}>
@@ -218,7 +454,5 @@ function CustomPage() {
         </div>
     );
 }
-
-
 
 export default CustomPage;

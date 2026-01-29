@@ -17,7 +17,7 @@ import PresetImage3 from './assets/images/PresetImages/PresetImage3.png';
 import MyPreSet from './pages/MyPage/MyPreset.jsx';
 import RecentOrder from './pages/MyPage/RecentOrder.jsx';
 import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
-import Header from './components/header.jsx';
+import Header from './components/Header.jsx';
 import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
 import CommunityPage from './pages/CommunityPage/CommunityPage.jsx';
 import CustomPage from './pages/order/CustomPage.jsx';

@@ -5,7 +5,7 @@ import axios from 'axios';
 import PresetImage1 from '../../../assets/images/PresetImages/PresetImage1.png';
 import PresetImage2 from '../../../assets/images/PresetImages/PresetImage2.png';
 import PresetImage3 from '../../../assets/images/PresetImages/PresetImage3.png';
-import { S } from './LittleCommunity.styles.js';
+import { S } from './LittleCommunityStyles.js';
 import { Heart, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
