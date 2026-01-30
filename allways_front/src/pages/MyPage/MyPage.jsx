@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { S } from './MypageStyles.js';
 import axios from 'axios';
 import { api } from '../../apis/config/axiosConfig.js';
+import SubwayNearby from '../../components/SubwayNearby.jsx';
 
 export const MyPage = () => {
   const navigate = useNavigate();
