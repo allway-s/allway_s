@@ -10,7 +10,7 @@ export const Signup = ({setIsLoggedIn}) => {
   const oauth2Id = searchParams.get("oauth2Id");
   const email = searchParams.get("email");
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // 버튼을 누르면 제출중이라 클릭 더 못하게
   const [chkNickMessage, setChkNickMessage] = useState('');
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(null);
   const [formErrorMessage, setFormErrorMessage] = useState('');
@@ -18,7 +18,6 @@ export const Signup = ({setIsLoggedIn}) => {
     name: '',
     nickname: '',
     phoneNumber: '',
-    address: ''
   });
 
   // 이름 관련 메세지 및 상태
@@ -146,7 +145,6 @@ export const Signup = ({setIsLoggedIn}) => {
       if (!formData.name.trim()) return setFormErrorMessage("이름을 입력해주세요.");
       if (!formData.nickname.trim()) return setFormErrorMessage("닉네임을 입력해주세요.");
       if (!formData.phoneNumber.trim()) return setFormErrorMessage("전화번호를 입력해주세요.");
-      if (!formData.address.trim()) return setFormErrorMessage("주소를 입력해주세요.");
 
       if (isNicknameAvailable !== true) return setFormErrorMessage("닉네임 중복 확인이 필요합니다.");
 
@@ -224,21 +222,13 @@ export const Signup = ({setIsLoggedIn}) => {
 
             <span css={S.checkMessage(isPhoneNumValid)}>{phoneNumMessage}</span>
           </div>
-          
-          <input 
-            css={S.input} 
-            name="address"
-            placeholder="주소" 
-            value={formData.address}
-            onChange={handleChange}
-          />
         </div>
 
         <span style={{marginBottom: "5px"}}>{formErrorMessage}</span>
 
         <button css={S.submitButton}
                 onClick={handleSubmit}
-                disabled={!isNameValid || !isNickNameValid || !isPhoneNumValid || !formData.address.trim() || isNicknameAvailable !== true || isSubmitting}
+                disabled={!isNameValid || !isNickNameValid || !isPhoneNumValid || isNicknameAvailable !== true || isSubmitting}
                 >완료</button>
       </main>
     </div>
