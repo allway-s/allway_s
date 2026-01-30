@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/set_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/set_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/CartPage/CartPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/CartPage/CartPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/order/CustomPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/order/CustomPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/utils/cartStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/utils/cartStore.js" afterDir="false" />
-    </list>
+    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,7 +39,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "214-배포관련",
+    "git-widget-placeholder": "새브쿼리-dto-수정",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -80,6 +75,7 @@
       <workItem from="1769477618629" duration="135000" />
       <workItem from="1769498592779" duration="773000" />
       <workItem from="1769657145653" duration="1634000" />
+      <workItem from="1769671341178" duration="409000" />
     </task>
     <servers />
   </component>

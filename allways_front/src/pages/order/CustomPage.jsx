@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getIngredients, getSets, getSetDetail } from "../../apis/items/menuApi";
 import { useLocation, useNavigate, useParams } from "react-router-dom"; 
 import { addToCart } from "../../utils/cartStore"; 
+import { createProduct } from "../../apis/items/orderApi";
 
 function CustomPage() {
     
@@ -197,31 +198,61 @@ function CustomPage() {
         }
     };
 
-    const handleAddToCart = () => {
-        // 1. 선택된 재료 ID 추출
-        const ingredientIds = Object.values(selectedIngredients).flat();
+    const handleAddToCart = async () => {
+        // 1. 선택된 재료 ID 추출 (세트 ID 제외)
+        const ingredientIds = Object.entries(selectedIngredients)
+            .filter(([key]) => key !== '세트')  // 세트는 제외
+            .flatMap(([_, ids]) => ids)
+            .filter(id => typeof id === 'number');
+
+        console.log("🔍 선택된 재료 IDs:", ingredientIds);
 
         // 2. 선택된 재료들의 상세 정보 조회 및 추가 가격 합산
         const selectedDetails = allIngredients.filter(ing => 
             ingredientIds.includes(ing.ingredientId)
         );
-        const ingredientExtraPrice = selectedDetails.reduce((sum, ing) => sum + (Number(ing.price) || 0), 0);
+        const ingredientExtraPrice = selectedDetails.reduce(
+            (sum, ing) => sum + (Number(ing.price) || 0), 0
+        );
 
+        // 3. 음료/사이드 가격
         const selectedDrinkData = drinkOptions.find(d => d.ingredientId === selectedDrink);
         const selectedSideData = sideOptions.find(s => s.ingredientId === selectedSide);
         
         const drinkPrice = selectedDrinkData ? (Number(selectedDrinkData.price) || 0) : 0;
         const sidePrice = selectedSideData ? (Number(selectedSideData.price) || 0) : 0;
-        
         const setAddPrice = (selectedSetId && selectedSetId !== 1) ? (drinkPrice + sidePrice) : 0;
 
-        // 3. 최종 단가 계산
+        // 4. 최종 단가 계산
         const basePrice = Number(selectedItem?.price) || 0;
         const finalUnitPrice = basePrice + ingredientExtraPrice + setAddPrice;
 
-        // 4. 장바구니에 넘길 객체 구성
+        // ✅ 5. 백엔드에서 productId 생성/조회
+        let productId = null;
+        try {
+            console.log("📦 Product 생성 요청:", {
+                itemId: parseInt(itemId),
+                ingredientIds: ingredientIds,
+                isSystem: false
+            });
+
+            const response = await createProduct({
+                itemId: parseInt(itemId),
+                ingredientIds: ingredientIds,
+                isSystem: false
+            });
+
+            productId = response.data.productId;
+            console.log("✅ Product 생성/조회 완료:", productId);
+            
+        } catch (error) {
+            console.error("❌ Product 생성 실패:", error);
+            alert("상품 정보 처리 중 오류가 발생했습니다.");
+            return;
+        }
+
         const orderItem = {
-            productId: parseInt(itemId),
+            productId: productId,          // ⭐⭐⭐ 이거 추가
             itemId: parseInt(itemId),
             itemName: selectedItem?.itemName,
             imgUrl: selectedItem?.imageUrl || selectedItem?.imgUrl,
@@ -229,26 +260,28 @@ function CustomPage() {
             unitPrice: finalUnitPrice,
             price: finalUnitPrice,
             ingredientIds: ingredientIds,
-            ingredientName: selectedDetails.map(ing => ing.ingredientName),
+            ingredientNames: selectedDetails.map(ing => ing.ingredientName),
             size: selectedItem?.size,
             setId: selectedSetId || null,
             selectedDrinkId: selectedDrink || null,
             selectedSideId: selectedSide || null,
-            // ✅ 가격 분해 정보 저장 (디버깅/확인용)
             basePrice: basePrice,
             ingredientPrice: ingredientExtraPrice,
-            setPrice: setAddPrice,
             drinkPrice: drinkPrice,
             sidePrice: sidePrice,
+            setPrice: setAddPrice,
         };
 
-        console.log("✅ 장바구니 추가 - 최종 금액:", {
+
+        console.log("✅ 장바구니 추가 - 최종 데이터:", {
+            productId: orderItem.productId,
+            itemId: orderItem.itemId,
             기본가격: basePrice,
             재료추가: ingredientExtraPrice,
             음료가격: drinkPrice,
             사이드가격: sidePrice,
             세트합계: setAddPrice,
-            합계: finalUnitPrice
+            최종단가: finalUnitPrice
         });
 
         addToCart(orderItem);

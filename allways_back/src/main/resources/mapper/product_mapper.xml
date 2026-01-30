@@ -80,8 +80,7 @@
     <select id="findById" resultType="com.korit.allways_back.entity.Product">
         SELECT
             product_id,
-            is_system,
-            created_at
+            is_system
         FROM
             product_tb
         WHERE

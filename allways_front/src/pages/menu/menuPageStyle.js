@@ -37,14 +37,14 @@ export const cartButtonStyle = css`
     }
 `;
 
-// 네비게이션
 export const navStyle = css`
+    position: sticky;
+    top: 70px;
     background: white;
     padding: 15px 40px;
     display: flex;
     justify-content: center;
     gap: 30px;
-    
     z-index: 90;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 `;
