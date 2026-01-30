@@ -95,7 +95,7 @@ export default function CommunityPage() {
       return copied;
     }
 
-    copied.sort((a, b) => (b.likeCnt ?? 0) - (a.likeCnt ?? 0));
+    copied.sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0));
     return copied;
   }, [sort, posts]);
 
@@ -124,7 +124,6 @@ export default function CommunityPage() {
             <option value='like'>인기순</option>
             <option value='latest'>최신순</option>
           </select>
-
           <button
             type='button'
             css={s.addBtn}
@@ -181,7 +180,7 @@ export default function CommunityPage() {
                     stroke={item.liked ? '#ff4d4f' : 'currentColor'}
                   />
                 </button>
-                <span css={s.countMini}>{item.likeCnt ?? 0}</span>
+                <span css={s.countMini}>{item.likeCount ?? 0}</span>
               </div>
             </div>
           ))}
@@ -255,10 +254,12 @@ export default function CommunityPage() {
                 >
                   <Heart
                     css={s.heart}
-                    fill={selected.liked ? 'currentColor' : 'none'}
+                    fill={selected.liked ? '#ff4d4f' : 'none'}
+                    // 테두리
+                    stroke={selected.liked ? '#ff4d4f' : 'currentColor'}
                   />
                 </button>
-                <span css={s.count}>{selected.likeCnt ?? 0}</span>
+                <span css={s.count}>{selected.likeCount ?? 0}</span>
               </div>
             </div>
           </div>
