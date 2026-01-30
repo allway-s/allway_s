@@ -8,8 +8,7 @@
         INSERT INTO order_tb (
             user_id,
             order_number,
-            total_pric
-        e,
+            total_price,
             ordered_at,
             address,
             detail_address,
