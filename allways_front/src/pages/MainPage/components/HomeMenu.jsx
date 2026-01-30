@@ -62,11 +62,11 @@ export function HomeMenu() {
               {items.map((menu) => (
                 <div key={menu.itemId} css={S.menuCard} onClick={() => navigate('/menu')}>
                   <div css={S.imageArea}>
-                    <img src={menu.imgUrl} alt={menu.itemName} />
+                    <img src={menu.imageUrl} alt={menu.itemName}/>
                   </div>
                   <div css={S.infoArea}>
                     <strong>{menu.itemName}</strong>
-                    <p css={S.itemDesc}>{menu.content}</p>
+                    <p css={S.itemDesc}>{menu.description}</p>
                   </div>
                 </div>
               ))}

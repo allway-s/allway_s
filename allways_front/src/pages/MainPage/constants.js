@@ -3,7 +3,6 @@ import image2 from '../../assets/images/MainBannerImages/image2.png';
 import image3 from '../../assets/images/MainBannerImages/image3.png';
 import image4 from '../../assets/images/MainBannerImages/image4.png';
 
-
 import LobsterAndShrimp from '../../assets/images/MainMenuImages/랍스터&쉬림프.png';
 import PulledPorkBarbecue from '../../assets/images/MainMenuImages/풀드포크바비큐.png';
 import SpicyItalian from '../../assets/images/MainMenuImages/스파이시이탈리안.png';
