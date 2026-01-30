@@ -98,7 +98,6 @@ const CartPage = () => {
         return setNames[setId] || '단품';
     };
 
-    // ✅ [추가] 가격 상세 정보 표시 (선택사항)
     const renderPriceDetail = (item) => {
         const hasDetails = item.basePrice !== undefined || 
                           item.ingredientPrice !== undefined || 
