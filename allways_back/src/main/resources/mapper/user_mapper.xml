@@ -8,52 +8,52 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user_tb
         VALUES (
-        default,
-        #{oauth2Id},
-        #{nickname},
-        #{name},
-        #{email},
-        #{phoneNumber},
-        now()
+            default,
+            #{oauth2Id},
+            #{nickname},
+            #{name},
+            #{email},
+            #{phoneNumber},
+            now()
         )
     </insert>
 
     <select id="findByUserId" resultType="User">
         SELECT
-        user_id,
-        oauth2_id,
-        nickname,
-        name,
-        email,
-        phone_number,
-        created_at
+            user_id,
+            oauth2_id,
+            nickname,
+            name,
+            email,
+            phone_number,
+            created_at
         FROM
-        user_tb
+            user_tb
         WHERE
-        user_id = #{userId}
+            user_id = #{userId}
     </select>
 
     <select id="findByOauth2Id" resultType="User">
         SELECT
-        user_id,
-        oauth2_id,
-        nickname,
-        name,
-        email,
-        phone_number,
-        created_at
+            user_id,
+            oauth2_id,
+            nickname,
+            name,
+            email,
+            phone_number,
+            created_at
         FROM
-        user_tb
+            user_tb
         WHERE
-        oauth2_id = #{oauth2Id}
+            oauth2_id = #{oauth2Id}
     </select>
 
     <select id="countByNickname" resultType="integer">
         SELECT
-        COUNT(*)
+            COUNT(*)
         FROM
-        user_tb
+            user_tb
         WHERE
-        nickname = #{nickname}
+            nickname = #{nickname}
     </select>
 </mapper>

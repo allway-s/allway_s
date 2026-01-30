@@ -3,6 +3,12 @@ spring:
     active: local
     group:
       local: common, secret  # local을 켜면 아래의 common 블록과 외부 secret 파일을 합침
+#spring:
+#  profiles:
+#    active: dev
+#    group:
+#      dev: dev, common, secret-dev
+#      minjae: minjae-server, common, secret-prod
 
 ---
 

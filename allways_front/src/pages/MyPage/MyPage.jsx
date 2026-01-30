@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { S } from './MypageStyles.js';
 import { api } from '../../apis/config/axiosConfig.js';
+import SubwayNearby from '../../components/SubwayNearby.jsx';
 
 export const MyPage = () => {
   const navigate = useNavigate();

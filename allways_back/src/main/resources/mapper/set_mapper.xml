@@ -40,6 +40,12 @@
             sc.component_type
     </select>
 
+    <select id="findIngredientPrice" resultType="Integer">
+        SELECT price
+        FROM ingredient_tb
+        WHERE ingredient_id = #{ingredientId}
+    </select>
+
     <select id="findSelectableIngredients" resultType="Ingredient">
         SELECT
             ing.ingredient_id,

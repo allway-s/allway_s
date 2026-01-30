@@ -10,12 +10,14 @@ import {
 } from '../../utils/cartStore';
 import { createOrder } from "../../apis/items/orderApi";
 import { getUserIdFromToken } from "../../utils/getUserId";
+import SubwayNearbyModal from '../../components/SubwayNearbyModal';
 
 
 const CartPage = () => {
     const [cart, setCart] = useState({ orders: [] });
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         loadCart();
@@ -205,6 +207,8 @@ const CartPage = () => {
                 </>
             )}
             <button css={s.backButtonStyle} onClick={() => navigate('/menu')}>+ 메뉴 추가하기</button>
+            <button onClick={() => setOpen(true)}>서브웨이 찾기 열기</button>
+            <SubwayNearbyModal isOpen={open} onClose={() => setOpen(false)} />
         </div>
     );
 };

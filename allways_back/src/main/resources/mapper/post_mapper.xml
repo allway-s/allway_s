@@ -6,61 +6,81 @@
     <!-- 게시글 생성 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post_tb (
-            preset_id,
-            user_id,
-            posted_at,
-            like_count
+        preset_id,
+        user_id,
+        posted_at,
+        like_count
         )
         VALUES (
-            #{presetId},
-            #{userId},
-            NOW(),
-            0
+        #{presetId},
+        #{userId},
+        NOW(),
+        0
         )
     </insert>
 
     <!-- 전체 게시글 조회 (최신순/좋아요순) -->
-    <select id="findAll" resultType="Post">
+    <resultMap id="PostWithIngredientsMap" type="com.korit.allways_back.entity.Post">
+        <id     property="postId"     column="post_id"/>
+        <result property="userId"     column="user_id"/>
+        <result property="postedAt"   column="posted_at"/>
+        <result property="likeCount"  column="like_count"/>
+        <result property="imgUrl"     column="img_url"/>
+
+        <result property="presetName" column="preset_name"/>
+        <result property="itemName"   column="item_name"/>
+        <result property="nickname"   column="nickname"/>
+
+        <!-- liked: 0/1 -->
+        <result property="liked"      column="liked"/>
+
+        <collection property="ingredients" ofType="com.korit.allways_back.entity.Ingredient">
+            <result property="ingredientName" column="ingredient_name"/>
+            <result property="categoryId" column="category_id"/>
+        </collection>
+    </resultMap>
+
+
+
+    <select id="findAll" resultMap="PostWithIngredientsMap" parameterType="java.lang.Integer">
         SELECT
         p.post_id,
-        p.preset_id,
+        p.user_id,
         p.posted_at,
         p.like_count,
+
+        imt.img_url,
         pr.preset_name,
-        pr.product_id,
-        u.nickname AS userNickname,
-        i.item_name,
-        img.img_url AS itemImageUrl,
-        <if test="currentUserId != null">
-            (SELECT COUNT(*) > 0 FROM like_tb WHERE user_id = #{currentUserId} AND post_id = p.post_id) AS isLikedByMe,
-        </if>
-        <if test="currentUserId == null">
-            FALSE AS isLikedByMe,
-        </if>
-        GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ', ') AS ingredientNamesText
-        FROM
-        post_tb p
-        INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
-        INNER JOIN user_tb u ON pr.user_id = u.user_id
-        INNER JOIN product_item_tb pi ON pr.product_id = pi.product_id
-        INNER JOIN item_tb i ON pi.item_id = i.item_id
-        LEFT JOIN image_tb img ON i.image_id = img.image_id
-        LEFT JOIN product_ingredient_tb ping ON pr.product_id = ping.product_id
-        LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
-        LEFT JOIN category_tb c ON ing.category_id = c.category_id
-        GROUP BY
-        p.post_id,
-        p.preset_id,
-        p.posted_at,
-        p.like_count,
-        pr.preset_name,
-        pr.product_id,
+        it.item_name,
         u.nickname,
-        i.item_name,
-        img.img_url
-        ORDER BY
-        p.posted_at DESC
+
+        CASE
+        WHEN #{userId} IS NULL THEN 0
+        WHEN EXISTS (
+        SELECT 1
+        FROM like_tb l
+        WHERE l.post_id = p.post_id
+        AND l.user_id = #{userId}
+        ) THEN 1
+        ELSE 0
+        END AS liked,
+
+        igt.ingredient_name,
+        igt.category_id
+
+        FROM post_tb p
+        JOIN preset_tb pr ON pr.preset_id = p.preset_id
+        JOIN user_tb u ON u.user_id = p.user_id
+        JOIN product_item_tb pdi ON pdi.product_id = pr.product_id
+        JOIN item_tb it ON it.item_id = pdi.item_id
+        JOIN image_tb imt ON imt.image_id = it.image_id
+
+        LEFT JOIN product_ingredient_tb pit ON pit.product_id = pr.product_id
+        LEFT JOIN ingredient_tb igt ON igt.ingredient_id = pit.ingredient_id
+        ORDER BY p.like_count DESC, p.posted_at DESC;
     </select>
+
+
 
     <!-- 좋아요 토글 -->
     <insert id="insertLike">

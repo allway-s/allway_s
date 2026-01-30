@@ -22,11 +22,15 @@ public class OrderCreateRequestDto {
     @Getter
     @Setter
     public static class OrderDetailRequestDto {
-        private Integer productId; // 커스텀 상품 ID
-        private Integer unitPrice; // 주문 시점 가격
-        private Integer quantity; // 수량
-        private Integer setId; // 세트 ID (null 허용)
-        private Integer selectedDrinkId; // 선택 음료
-        private Integer selectedSideId; // 선택 사이드
+        private Integer productId;
+        private Integer itemId;
+        private List<Integer> ingredientIds;
+
+        private Integer unitPrice;
+        private Integer quantity;
+        private Integer setId;
+        private Integer selectedDrinkId;
+        private Integer selectedSideId;
     }
+
 }

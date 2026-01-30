@@ -13,7 +13,7 @@ public interface PostMapper {
     int insert(Post post);
 
     List<Post> findAll(
-            @Param("currentUserId") Integer currentUserId
+            @Param("userId") Integer currentUserId
     );
 
     int insertLike(

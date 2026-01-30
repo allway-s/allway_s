@@ -29,7 +29,4 @@ public class SignupRequestDto {
     @NotBlank(message = "전화번호는 필수입니다.")
     @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "전화번호 형식(010-0000-0000)이 올바르지 않습니다.")
     private String phoneNumber;
-
-    @NotBlank(message = "주소는 필수입니다.")
-    private String address;
 }
