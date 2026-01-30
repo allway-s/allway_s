@@ -18,4 +18,6 @@ public interface SetMapper {
     List<SetComponent> findComponentsBySetId(@Param("setId") Integer setId);
 
     List<Ingredient> findSelectableIngredients(@Param("categoryId") Integer categoryId);
+
+    Integer findIngredientPrice(@Param("ingredientId") Integer ingredientId);
 }
