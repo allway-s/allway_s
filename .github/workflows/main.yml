@@ -7,8 +7,7 @@ on:
     branches: [deploy-minjae, deploy-qorrbs, deploy-hyeondeok, deploy-jinhyun]
 
 jobs:
-  set-env-minjae:
-    if: github.ref == 'refs/heads/deploy-minjae'
+  buildAndDeploy:
     runs-on: ubuntu-22.04
     steps:
       - name: "환경변수 세팅"
@@ -25,13 +24,13 @@ jobs:
 
           elif [ ${{github.ref}} == 'refs/heads/deploy-qorrbs' ]; then
           
-            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_QORRBS}}" >> $GITHUB_ENV
-            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_QORRBS}}" >> $GITHUB_ENV
-            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_QORRBS}}" >> $GITHUB_ENV
-            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_QORRBS}}" >> $GITHUB_ENV
-            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_QORRBS}}" >> $GITHUB_ENV
-            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_QORRBS}}" >> $GITHUB_ENV
-            echo "REACT_ENV=${{secrets.REACT_ENV_QORRBS}}" >> $GITHUB_ENV
+            echo "GCP_VM_HOST=${{secrets.GCP_VM_HOST_BAEKGYUN}}" >> $GITHUB_ENV
+            echo "GCP_VM_USERNAME=${{secrets.GCP_VM_USERNAME_BAEKGYUN}}" >> $GITHUB_ENV
+            echo "GCP_VM_SSHKEY=${{secrets.GCP_VM_SSHKEY_BAEKGYUN}}" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{secrets.DOCKER_USERNAME_BAEKGYUN}}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_BAEKGYUN}}" >> $GITHUB_ENV
+            echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_BAEKGYUN}}" >> $GITHUB_ENV
+            echo "REACT_ENV=${{secrets.REACT_ENV_BAEKGYUN}}" >> $GITHUB_ENV
 
           elif [ ${{github.ref}} == 'refs/heads/deploy-hyeondeok' ]; then
           
