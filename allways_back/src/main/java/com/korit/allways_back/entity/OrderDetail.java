@@ -5,23 +5,32 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDetail {
-
     private Integer orderDetailId;
     private Integer orderId;
     private Integer productId;
-    private Integer unitPrice; // 주문 시점 가격 (히스토리 보존)
+
+    // ✅ Product 생성을 위한 필드 추가
+    private Integer itemId;
+    private List<Integer> ingredientIds;
+
     private Integer quantity;
-    private Integer setId; // 선택한 세트
+    private Integer unitPrice;
+
+    // 세트메뉴 관련
+    private Integer setId;
     private Integer selectedDrinkId;
     private Integer selectedSideId;
 
-    // 조인용 필드 (필요시)
-    private Order order;
-    private Product product;
-    private SetMenu setMenu;
+    // 조회 시 함께 가져올 정보들 (화면 표시용)
+    private String itemName;
+    private String imgUrl;
+    private String size;
+    private List<String> ingredientNames;
 }
