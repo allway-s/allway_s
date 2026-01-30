@@ -1,113 +1,122 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.korit.allways_back.mapper.ProductMapper">
 
+    <!-- 상품 생성 -->
+    <insert id="insertProduct" parameterType="com.korit.allways_back.entity.Product"
+            useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO product_tb (is_system)
+        VALUES (#{isSystem})
+    </insert>
+
+    <!-- 상품-아이템 연결 -->
+    <insert id="insertProductItem">
+        INSERT INTO product_item_tb (product_id, item_id)
+        VALUES (#{productId}, #{itemId})
+    </insert>
+
+    <!-- 상품-재료 연결 -->
+    <insert id="insertProductIngredients">
+        INSERT INTO product_ingredient_tb (product_id, ingredient_id)
+        VALUES
+        <foreach collection="ingredientIds" item="ingredientId" separator=",">
+            (#{productId}, #{ingredientId})
+        </foreach>
+    </insert>
+
+    <!-- 기존 상품 찾기 (중복 체크) -->
     <select id="findExistingProduct" resultType="Integer">
-        SELECT
-            pi.product_id
-        FROM
-            product_item_tb pi
-        WHERE
-            pi.item_id = #{itemId}
-            AND pi.product_id IN (
-            SELECT
-                product_id
-            FROM
-                product_ingredient_tb
-            WHERE
-                ingredient_id IN
-                <foreach collection="ingredientIds" item="id" open="(" separator="," close=")">
+        <choose>
+            <when test="ingredientIds == null or ingredientIds.isEmpty()">
+                <!-- 재료가 없는 경우: 재료가 없는 product 찾기 -->
+                SELECT p.product_id
+                FROM product_tb p
+                INNER JOIN product_item_tb pi ON p.product_id = pi.product_id
+                WHERE pi.item_id = #{itemId}
+                AND NOT EXISTS (
+                SELECT 1
+                FROM product_ingredient_tb ping
+                WHERE ping.product_id = p.product_id
+                )
+                LIMIT 1
+            </when>
+            <otherwise>
+                <!-- 재료가 있는 경우: 동일한 조합 찾기 -->
+                SELECT p.product_id
+                FROM product_tb p
+                INNER JOIN product_item_tb pi ON p.product_id = pi.product_id
+                WHERE pi.item_id = #{itemId}
+                AND (
+                SELECT COUNT(DISTINCT ping.ingredient_id)
+                FROM product_ingredient_tb ping
+                WHERE ping.product_id = p.product_id
+                ) = #{ingredientCount}
+                AND (
+                SELECT SUM(CASE WHEN ping.ingredient_id IN
+                <foreach collection="ingredientIds" item="id" open="(" close=")" separator=",">
                     #{id}
                 </foreach>
-            GROUP BY
-                product_id
-            HAVING COUNT(DISTINCT ingredient_id) = #{ingredientCount}
-            )
-            AND
-            pi.product_id IN (
-                SELECT
-                    product_id
-                FROM
-                    product_ingredient_tb
-                GROUP BY
-                    product_id
-                HAVING COUNT(*) = #{ingredientCount}
+                THEN 1 ELSE 0 END)
+                FROM product_ingredient_tb ping
+                WHERE ping.product_id = p.product_id
+                ) = #{ingredientCount}
+                AND NOT EXISTS (
+                SELECT 1
+                FROM product_ingredient_tb ping
+                WHERE ping.product_id = p.product_id
+                AND ping.ingredient_id NOT IN
+                <foreach collection="ingredientIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
                 )
-            LIMIT 1
+                LIMIT 1
+            </otherwise>
+        </choose>
     </select>
 
-    <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId">
-        INSERT INTO
-            product_tb (is_system)
-        VALUES
-            (#{isSystem})
-    </insert>
-
-    <insert id="insertProductItem">
-        INSERT INTO
-            product_item_tb (product_id, item_id)
-        VALUES
-            (#{productId}, #{itemId})
-    </insert>
-
-    <insert id="insertProductIngredients">
-        INSERT INTO
-            product_ingredient_tb (product_id, ingredient_id)
-        VALUES
-            <foreach collection="ingredientIds" item="id" separator=",">
-                (#{productId}, #{id})
-            </foreach>
-    </insert>
-
-    <select id="findById" resultType="Product">
+    <!-- 상품 ID로 조회 -->
+    <select id="findById" resultType="com.korit.allways_back.entity.Product">
         SELECT
-            p.product_id,
-            p.is_system,
-            pi.item_id,
-            i.item_name,
-            i.size AS itemSize,
-            img.img_url AS itemImageUrl
+            product_id,
+            is_system,
+            created_at
         FROM
-            product_tb p
-            INNER JOIN product_item_tb pi ON p.product_id = pi.product_id
-            INNER JOIN item_tb i ON pi.item_id = i.item_id
-            LEFT JOIN image_tb img ON i.image_id = img.image_id
+            product_tb
         WHERE
-            p.product_id = #{productId}
+            product_id = #{productId}
     </select>
 
-    <select id="findIngredientsByProductId" resultType="Ingredient">
+    <!-- 상품의 재료 목록 조회 -->
+    <select id="findIngredientsByProductId" resultType="com.korit.allways_back.entity.Ingredient">
         SELECT
-            ing.ingredient_id,
-            ing.ingredient_name,
-            ing.price,
-            ing.category_id,
-            ing.image_id,
-            c.category_name,
-            img.img_url AS imgURL
+            i.ingredient_id,
+            i.ingredient_name,
+            i.price,
+            i.category_id,
+            i.img_url
         FROM
-            product_ingredient_tb ping
-            INNER JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
-            INNER JOIN category_tb c ON ing.category_id = c.category_id
-            LEFT JOIN image_tb img ON ing.image_id = img.image_id
-        WHERE
-            ping.product_id = #{productId}
-    </select>
-
-    <select id="calculatePrice" resultType="int">
-        SELECT
-            i.price + COALESCE(SUM(ing.price), 0) AS totalPrice
-        FROM
-            product_item_tb pi
-            INNER JOIN item_tb i ON pi.item_id = i.item_id
-            LEFT JOIN product_ingredient_tb ping ON pi.product_id = ping.product_id
-            LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+            ingredient_tb i
+                INNER JOIN
+            product_ingredient_tb pi ON i.ingredient_id = pi.ingredient_id
         WHERE
             pi.product_id = #{productId}
+    </select>
+
+    <select id="calculatePrice" resultType="Integer">
+        SELECT
+            COALESCE(i.price, 0) + COALESCE(SUM(ing.price), 0) AS totalPrice
+        FROM
+            product_tb p
+                LEFT JOIN product_item_tb pi ON p.product_id = pi.product_id
+                LEFT JOIN item_tb i ON pi.item_id = i.item_id
+                LEFT JOIN product_ingredient_tb ping ON p.product_id = ping.product_id
+                LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
+        WHERE
+            p.product_id = #{productId}
         GROUP BY
-            i.price
+            p.product_id, i.price
     </select>
 
 </mapper>

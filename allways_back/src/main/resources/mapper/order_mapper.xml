@@ -11,26 +11,28 @@
         total_price,
         ordered_at,
         address,
-        detail_address
+        detail_address,
+        status
         ) VALUES (
         #{userId},
         #{orderNumber},
         #{totalPrice},
         NOW(),
         #{address},
-        #{detailAddress}
+        #{detailAddress},
+        'READY'
         )
     </insert>
 
     <insert id="insertOrderDetails">
         INSERT INTO order_detail_tb (
-        order_id,
-        product_id,
-        unit_price,
-        quantity,
-        set_id,
-        selected_drink_id,
-        selected_side_id
+            order_id,
+            product_id,
+            unit_price,
+            quantity,
+            set_id,
+            selected_drink_id,
+            selected_side_id
         )
         VALUES
         <foreach collection="items" item="item" separator=",">
@@ -59,27 +61,26 @@
         o.ordered_at,
         i.item_name,
         i.size AS itemSize,
-        GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ', ') AS ingredientsText,
         sm.set_name,
         d.ingredient_name AS drinkName,
-        s.ingredient_name AS sideName
+        s.ingredient_name AS sideName,
+        (
+        SELECT GROUP_CONCAT(ing2.ingredient_name ORDER BY c2.display_order SEPARATOR ', ')
+        FROM product_ingredient_tb ping2
+        INNER JOIN ingredient_tb ing2 ON ping2.ingredient_id = ing2.ingredient_id
+        INNER JOIN category_tb c2 ON ing2.category_id = c2.category_id
+        WHERE ping2.product_id = od.product_id
+        ) AS ingredientsText
         FROM
         order_detail_tb od
         INNER JOIN order_tb o ON od.order_id = o.order_id
         INNER JOIN product_item_tb pi ON od.product_id = pi.product_id
         INNER JOIN item_tb i ON pi.item_id = i.item_id
-        LEFT JOIN product_ingredient_tb ping ON od.product_id = ping.product_id
-        LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id
-        LEFT JOIN category_tb c ON ing.category_id = c.category_id
         LEFT JOIN set_menu_tb sm ON od.set_id = sm.set_id
         LEFT JOIN ingredient_tb d ON od.selected_drink_id = d.ingredient_id
         LEFT JOIN ingredient_tb s ON od.selected_side_id = s.ingredient_id
         WHERE
         o.user_id = #{userId}
-        GROUP BY
-        od.order_detail_id, od.order_id, od.product_id, od.unit_price, od.quantity,
-        od.set_id, od.selected_drink_id, od.selected_side_id, o.ordered_at,
-        i.item_name, i.size, sm.set_name, d.ingredient_name, s.ingredient_name
         ORDER BY
         o.ordered_at DESC, od.order_detail_id
     </select>
@@ -122,17 +123,17 @@
     <!-- 주문 ID로 주문 정보 조회 -->
     <select id="findOrderById" resultType="Order">
         SELECT
-        order_id,
-        user_id,
-        order_number,
-        total_price,
-        ordered_at,
-        address,
-        detail_address
+            order_id,
+            user_id,
+            order_number,
+            total_price,
+            ordered_at,
+            address,
+            detail_address
         FROM
-        order_tb
+            order_tb
         WHERE
-        order_id = #{orderId}
+            order_id = #{orderId}
     </select>
 
     <!-- 주문 ID로 주문 상세 목록 조회 -->
@@ -171,37 +172,23 @@
         ORDER BY
         od.order_detail_id
     </select>
-<!--    <select id="findOrderDetailsByOrderId" resultType="OrderDetail">-->
-<!--        SELECT-->
-<!--            od.order_detail_id,-->
-<!--            od.order_id,-->
-<!--            od.product_id,-->
-<!--            od.unit_price,-->
-<!--            od.quantity,-->
-<!--            od.set_id,-->
-<!--            od.selected_drink_id,-->
-<!--            od.selected_side_id,-->
-<!--            i.item_name,-->
-<!--            i.size AS itemSize,-->
-<!--            GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ', ') AS ingredientsText,-->
-<!--            sm.set_name,-->
-<!--            d.ingredient_name AS drinkName,-->
-<!--            s.ingredient_name AS sideName-->
-<!--        FROM-->
-<!--            order_detail_tb od-->
-<!--            INNER JOIN product_item_tb pi ON od.product_id = pi.product_id-->
-<!--            INNER JOIN item_tb i ON pi.item_id = i.item_id-->
-<!--            LEFT JOIN product_ingredient_tb ping ON od.product_id = ping.product_id-->
-<!--            LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id-->
-<!--            LEFT JOIN category_tb c ON ing.category_id = c.category_id-->
-<!--            LEFT JOIN set_menu_tb sm ON od.set_id = sm.set_id-->
-<!--            LEFT JOIN ingredient_tb d ON od.selected_drink_id = d.ingredient_id-->
-<!--            LEFT JOIN ingredient_tb s ON od.selected_side_id = s.ingredient_id-->
-<!--        WHERE-->
-<!--            od.order_id = #{orderId}-->
-<!--        GROUP BY-->
-<!--            od.order_detail_id-->
-<!--        ORDER BY-->
-<!--            od.order_detail_id-->
-<!--    </select>-->
+
+    <!-- 주문번호로 가격 조회 -->
+    <select id="findTotalPriceByOrderNumber" resultType="Integer">
+        select
+            total_price
+        from
+            order_tb
+        where
+            order_number = #{orderNumber}
+    </select>
+
+    <update id="updateStatus">
+        update
+            order_tb
+        set
+            status = #{status}
+        where
+            order_number = #{orderNumber}
+    </update>
 </mapper>

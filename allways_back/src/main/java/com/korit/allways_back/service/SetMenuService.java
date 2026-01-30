@@ -34,7 +34,16 @@ public class SetMenuService {
         }
         return setMenu;
     }
+    /**
+     * ingredient 가격 조회
+     */
+    public int getIngredientPrice(Integer ingredientId) {
+        if (ingredientId == null) return 0;
 
+        // SetMapper에 메서드 추가 필요
+        Integer price = setMapper.findIngredientPrice(ingredientId);
+        return price != null ? price : 0;
+    }
     /**
      * 세트 ID로 구성요소 조회
      */
@@ -67,13 +76,6 @@ public class SetMenuService {
         return setMapper.findSelectableIngredients(categoryId);
     }
 
-    /**
-     * 세트 선택 유효성 검증
-     * @param setId 세트 ID
-     * @param selectedDrinkId 선택한 음료 ID
-     * @param selectedSideId 선택한 사이드 ID
-     * @return 유효하면 true
-     */
     public boolean validateSetSelection(Integer setId, Integer selectedDrinkId, Integer selectedSideId) {
         List<SetComponent> components = setMapper.findComponentsBySetId(setId);
 

@@ -32,14 +32,17 @@ public class OrderController {
                 .build();
 
         List<OrderDetail> orderDetails = dto.getOrderDetails().stream()
-                .map(detailDto -> OrderDetail.builder()
+                    .map(detailDto -> OrderDetail.builder()
                         .productId(detailDto.getProductId())
+                        .itemId(detailDto.getItemId())                 // ⭐ 추가
+                        .ingredientIds(detailDto.getIngredientIds())   // ⭐ 추가
                         .quantity(detailDto.getQuantity())
                         .setId(detailDto.getSetId())
                         .selectedDrinkId(detailDto.getSelectedDrinkId())
                         .selectedSideId(detailDto.getSelectedSideId())
                         .build())
                 .toList();
+
 
         Order createdOrder = orderService.createOrder(order, orderDetails);
         return ResponseEntity.ok(createdOrder);

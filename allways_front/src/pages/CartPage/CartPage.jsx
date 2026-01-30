@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "./cartPageStyles";
+import * as s from "./cartPageStyles.js";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {

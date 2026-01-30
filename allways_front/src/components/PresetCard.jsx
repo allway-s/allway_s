@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { Heart, Plus } from 'lucide-react'; // Copy 대신 Plus 사용
-import { S } from './PresetCard.styles';
+import { S } from './PresetCardStyles.js';
 
 export function PresetCard({ preset, onLike, onCopy }) {
   if (!preset) return null;
