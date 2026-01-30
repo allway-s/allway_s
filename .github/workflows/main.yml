@@ -7,8 +7,7 @@ on:
     branches: [deploy-minjae, deploy-qorrbs, deploy-hyeondeok, deploy-jinhyun]
 
 jobs:
-  set-env-minjae:
-    if: github.ref == 'refs/heads/deploy-minjae'
+  buildAndDeploy:
     runs-on: ubuntu-22.04
     steps:
       - name: "환경변수 세팅"
