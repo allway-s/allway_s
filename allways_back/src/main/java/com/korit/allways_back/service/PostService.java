@@ -20,7 +20,6 @@ public class PostService {
 
         Post post = Post.builder()
                 .userId(userId)
-                .presetId(dto.getPresetId())
                 .postedAt(java.time.LocalDateTime.now())
                 .likeCount(0)
                 .build();
@@ -30,8 +29,8 @@ public class PostService {
         return post;
     }
 
-    public List<Post> getAllPosts(Integer currentUserId) {
-        return postMapper.findAll(currentUserId);
+    public List<Post> getAllPosts(Integer userId) {
+        return postMapper.findAll(userId);
     }
 
     /**
