@@ -29,7 +29,8 @@ export default function MyPreSet() {
     const checkData = async () => {
       if (!userId) return;
       try {
-        const response = getMyPresets(userId);
+        // 수정 후 (async/await 적용)
+        const response = await getMyPresets(userId); // 실제 데이터를 받아올 때까지 대기
         const data = response.data || [];
         
         console.log("=== 🔍 데이터 정밀 진단 시작 ===");
@@ -72,7 +73,7 @@ const handleShare = async (preset) => {
 
   try {
     // 2. [사전 검사] 커뮤니티에 이미 동일한 productId를 가진 게시글이 있는지 확인
-    const communityRes = getPosts();
+    const communityRes = await getPosts();
     const communityPosts = communityRes.data || [];
 
     // DB의 product_id와 현재 프리셋의 productId를 비교
@@ -89,10 +90,7 @@ const handleShare = async (preset) => {
     if (!window.confirm(`'${preset.presetName}' 레시피를 커뮤니티에 공유하시겠습니까?`)) return;
 
     const token = localStorage.getItem("accessToken");
-    const response = await axios.post(createPost(),
-      { presetId: preset.presetId }, // 서버 규격에 맞게 ID 전달
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const response = await createPost({ presetId: preset.presetId });
 
     if (response.status === 200 || response.status === 201) {
       alert("커뮤니티에 성공적으로 공유되었습니다!");
@@ -103,6 +101,8 @@ const handleShare = async (preset) => {
     if (error.response?.status === 401) {
       alert("세션이 만료되었거나 공유 권한이 없습니다.");
     } else {
+      // 여기서 error.response를 출력해보면 더 정확한 원인을 알 수 있습니다.
+      console.error("공유 API 호출 에러 상세:", error.response);
       alert("공유 중 오류가 발생했습니다.");
     }
   }

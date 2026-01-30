@@ -8,10 +8,36 @@ export const RecentOrder = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
 
+
+  // [추가] 토큰에서 userId를 추출하는 공통 함수
+  const getUserIdFromToken = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return null;
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => 
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      const decoded = JSON.parse(jsonPayload);
+      return decoded.userId || decoded.id || decoded.sub;
+    } catch (e) { return null; }
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
+
+      const userId = getUserIdFromToken();
+
+      if (!userId) {
+        console.log("사용자 ID를 찾을 수 없습니다");
+        return;
+      }
+
+      
       try {
-        const response = await api.get("/api/v1/orders/history");
+        const response = await api.get("/api/orders/history", {
+          params: {userId: userId}
+        });
         setOrders(response.data);
       } catch (error) {
         console.error("데이터를 가져오는데 실패했습니다.", error);
