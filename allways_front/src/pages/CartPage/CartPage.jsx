@@ -45,17 +45,25 @@ const CartPage = () => {
     const handleOrder = async () => {
         const currentUserId = getUserIdFromToken(); 
 
+        if (!currentUserId) {
+            alert("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
+
         setLoading(true);
         try {
             const orderData = {
                 order: {
                     userId: currentUserId,
-                    address: "주소", 
-                    detailAddress: "상세주소", 
+                    address: "주소", // TODO: 사용자 입력값 연동
+                    detailAddress: "상세주소", // TODO: 사용자 입력값 연동
                     totalPrice: calculateTotalPrice()
                 },
                 orderDetails: cart.orders.map(item => ({
                     productId: item.productId,
+                    itemId: item.itemId,           // ✅ 추가: 상품 생성을 위해 필수
+                    ingredientIds: item.ingredientIds,
                     unitPrice: item.price || item.unitPrice,
                     quantity: item.quantity,
                     setId: item.setId || null,
@@ -64,14 +72,15 @@ const CartPage = () => {
                 }))
             };
 
-            console.log("주문 데이터:", orderData);
+            console.log("📦 전송될 주문 데이터:", orderData);
 
             await createOrder(orderData);
             alert('주문이 완료되었습니다!');
             clearCart();
+            loadCart(); // 카트 상태 초기화
             navigate('/menu'); 
         } catch (err) {
-            console.error('주문 실패:', err);
+            console.error('❌ 주문 실패:', err);
             alert(err.response?.data?.message || '주문 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
@@ -201,7 +210,7 @@ const CartPage = () => {
                             }}>전체 삭제</button>
                             <button css={s.orderButtonStyle} onClick={handleOrder} disabled={loading}>
                                 {loading ? "처리 중..." : "주문하기"}
-                            </button>
+                            </button>   
                         </div>
                     </div>
                 </>
