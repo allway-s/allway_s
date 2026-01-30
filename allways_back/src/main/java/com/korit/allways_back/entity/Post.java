@@ -14,13 +14,19 @@ import java.util.List;
 @AllArgsConstructor
 public class Post {
 
+
     private Integer postId;
-    private Integer presetId;
     private Integer userId;
     private LocalDateTime postedAt;
     private Integer likeCount;
+    private String imgUrl;
+    private String presetName;
+    private String itemName;
+    private String nickname;
 
-    // 조인용 필드 (필요시)
-    private Preset preset;
-    private List<Like> likes;
+    // 내가 좋아요를 눌렀는지
+    private Boolean liked;
+
+    // 재료 리스트 (ingredientName, ingredientCategoryId) 카테고리id로 재료 구분
+    private List<Ingredient> ingredients;
 }
