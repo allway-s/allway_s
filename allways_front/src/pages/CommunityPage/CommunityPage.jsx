@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { s } from './CommunityPageStyles.js';
-import { getPosts,toggleLike } from '../../apis/items/communityApi';
+import { getPosts,savePreset,toggleLike } from '../../apis/items/communityApi';
 
 // 빵, 치즈
 const pickOne = (ingredients, cid) =>
@@ -80,6 +80,15 @@ export default function CommunityPage() {
       await fetchPosts();
     } catch (err) {
       console.error('좋아요 실패', err);
+    }
+  };
+  
+  const onClickSave = async (postId) => {
+    try {
+      await savePreset(postId, userId);
+      navigate('/mypreset');
+    } catch (err) {
+      console.log('저장 실패', err)
     }
   };
 
@@ -215,8 +224,9 @@ export default function CommunityPage() {
             </button>
 
             <div css={s.menuCard}>
-              <button css={s.saveBtn}>내 프리셋에 저장하기</button>
-
+              {userId !== selected.userId && (
+                <button css={s.saveBtn} onClick={() => onClickSave(selected.postId)}>내 프리셋에 저장하기</button>
+              )}
               <img
                 css={s.img}
                 src={selected.imgUrl}
@@ -232,16 +242,16 @@ export default function CommunityPage() {
                   <span>베이스 :</span> {selected.itemName ?? '선택 안함'}
                 </div>
                 <div>
-                  <span>빵 :</span> {pickOne(selected.ingredients, 1)}
+                  <span>빵 :</span> {pickOne(selected.ingredients, 4)}
                 </div>
                 <div>
-                  <span>치즈 :</span> {pickOne(selected.ingredients, 2)}
+                  <span>치즈 :</span> {pickOne(selected.ingredients, 5)}
                 </div>
                 <div>
-                  <span>야채 :</span> {pickMany(selected.ingredients, 3)}
+                  <span>야채 :</span> {pickMany(selected.ingredients, 6)}
                 </div>
                 <div>
-                  <span>소스 :</span> {pickMany(selected.ingredients, 4)}
+                  <span>소스 :</span> {pickMany(selected.ingredients, 7)}
                 </div>
               </div>
 
