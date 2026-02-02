@@ -4,16 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { S } from './MypageStyles.js';
 import { api } from '../../apis/config/axiosConfig.js';
 import SubwayNearby from '../../components/SubwayNearby.jsx';
+// ✅ [수정] 닉네임 매칭을 위해 커뮤니티 게시글을 가져오는 API 추가
+import { getPosts } from '../../apis/items/communityApi.js';
 
 export const MyPage = () => {
   const navigate = useNavigate();
   
-  // 1. 실제 데이터 바구니 (userInfo를 null로 시작하여 로딩 상태 처리)
   const [userInfo, setUserInfo] = useState(null);
   const [presets, setPresets] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  // 2. 토큰에서 유저 ID 추출 (이미 검증됨)
   const getUserIdFromToken = () => {
     const token = localStorage.getItem("accessToken");
     if (!token) return null;
@@ -23,7 +23,7 @@ export const MyPage = () => {
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => 
         '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
       const decoded = JSON.parse(jsonPayload);
-      return decoded.userId || decoded.id || decoded.sub;
+      return Number(decoded.userId || decoded.id || decoded.sub);
     } catch (e) { return null; }
   };
 
@@ -36,29 +36,46 @@ export const MyPage = () => {
       }
 
       try {
-        // [본질] 성공이 보장된 API들만 호출합니다. (튕김 방지)
-        const [presetRes, orderRes] = await Promise.all([
+        // ✅ [수정] getPosts()를 추가 호출하여 커뮤니티의 작성자 정보를 확보합니다.
+        const [presetRes, orderRes, postRes] = await Promise.all([
           api.get('/api/presets', { params: { userId } }),
-          api.get('/api/orders/history', { params: { userId } })
+          api.get('/api/orders/history', { params: { userId } }),
+          getPosts() 
         ]);
 
-        // 데이터 저장
-        setPresets(presetRes.data.slice(0, 3) || []);
+        const communityPosts = postRes.data || [];
+        const rawPresets = presetRes.data || [];
+
+        // ✅ [수정] 프리셋 데이터에 실제 작성자 닉네임을 매칭하여 넣어줍니다.
+        const enrichedPresets = rawPresets.map(preset => {
+          // 1. 내가 만든 오리지널인 경우 (userId === postedUserId)
+          if (Number(preset.userId) === Number(preset.postedUserId)) {
+            return { ...preset, authorName: "진현" }; 
+          }
+          // 2. 저장한 커뮤니티 레시피인 경우, communityPosts에서 닉네임을 찾습니다.
+          const match = communityPosts.find(p => Number(p.userId) === Number(preset.postedUserId));
+          return {
+            ...preset,
+            authorName: match ? match.nickname : `User ${preset.postedUserId}`
+          };
+        });
+
+        // 상위 3개만 표시
+        setPresets(enrichedPresets.slice(0, 3));
+        
         const orderData = orderRes.data || [];
         setOrders(orderData.slice(0, 2));
 
-        // [핵심] DB 데이터 추출: 주문 내역이 하나라도 있다면 그 안의 유저 정보를 사용합니다.
         if (orderData.length > 0) {
           const latest = orderData[0];
           setUserInfo({
-            nickname: latest.nickname || latest.userNickname || "회원님의 닉네임",
-            name: latest.name || latest.userName || "회원님의 이름",
-            email: latest.email || "회원님의 이메일",
-            address: latest.address || "회원님의 주소",
-            phoneNumber: latest.phoneNumber || "회원님의 휴대폰 번호"
+            nickname: latest.nickname || latest.userNickname || "진현",
+            name: latest.name || latest.userName || "정보 없음",
+            email: latest.email || "정보 없음",
+            address: latest.address || "주소를 등록해주세요",
+            phoneNumber: latest.phoneNumber || "번호를 등록해주세요"
           });
         } else {
-          // 주문 내역이 없을 경우에만 로컬 스토리지 정보를 최소한으로 사용
           setUserInfo({
             nickname: localStorage.getItem('userName') || '진현',
             name: '정보 없음',
@@ -70,24 +87,27 @@ export const MyPage = () => {
 
       } catch (error) {
         console.error("데이터 로드 중 에러 발생:", error);
-        // 여기서 401이 나면 인터셉터가 처리하도록 둡니다.
       }
     };
 
     fetchMyPageData();
-  }, []);
+  }, [navigate]);
 
   return (
     <div css={S.container}>
-      {/* ... (중략: 타이틀 섹션은 동일) ... */}
+      <section css={S.titleSection}>
+        <div css={S.titleContainer}>
+          <h1 css={S.mainTitle}>My <span css={S.yellowText}>Page</span></h1>
+        </div>
+      </section>
       
       <main css={S.main}>
-        {/* 프로필 섹션: 이제 더미 데이터가 아닌 userInfo 상태를 사용합니다. */}
+        {/* 프로필 섹션 */}
         <section css={S.section}>
           <h3 css={S.sectionTitle}>프로필</h3>
           <div css={S.card}>
             <div css={S.profileInner}>
-              <div css={S.avatarCircle}>{userInfo?.nickname?.charAt(0) || 'S'}</div>
+              <div css={S.avatarCircle}>{userInfo?.nickname?.charAt(0) || '진'}</div>
               <div css={S.infoList}>
                 <p><strong>닉네임</strong> {userInfo?.nickname || '로딩 중...'}</p>
                 <p><strong>이름</strong> {userInfo?.name || '로딩 중...'}</p>
@@ -99,11 +119,11 @@ export const MyPage = () => {
           </div>
         </section>
 
-        {/* 프리셋 섹션 (실제 데이터 반영) */}
+        {/* 프리셋 섹션 */}
         <section css={S.section}>
           <div css={S.sectionHeader}>
             <h3 css={S.sectionTitle}>프리셋</h3>
-            <span css={S.moreLink} onClick={() => navigate('/mypreset')}>프리셋 관리 ＞</span>
+            <span css={S.moreLink} style={{ cursor: 'pointer' }} onClick={() => navigate('/mypreset')}>프리셋 관리 ＞</span>
           </div>
           <div css={S.presetGrid}>
             {presets.length > 0 ? (
@@ -113,7 +133,12 @@ export const MyPage = () => {
                     <img src={item.imgUrl || "/default-subway.png"} alt={item.presetName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <p style={{ fontWeight: 'bold', margin: '10px 0 5px' }}>{item.presetName}</p>
-                  <p style={{ fontSize: '0.8rem', color: '#888' }}>작성자 : {userInfo?.nickname}</p>
+                  
+                  {/* ✅ [수정] 무조건 본인 닉네임이 뜨던 부분을 매칭된 authorName으로 변경 */}
+                  <p style={{ fontSize: '0.8rem', color: '#888' }}>
+                    작성자 : {item.authorName}
+                  </p>
+                  
                   <button css={S.orderBtn} onClick={(e) => { e.stopPropagation(); navigate('/menu'); }}>주문하기</button>
                 </div>
               ))
@@ -123,11 +148,11 @@ export const MyPage = () => {
           </div>
         </section>
 
-        {/* 주문내역 섹션 (실제 데이터 반영) */}
+        {/* 주문내역 섹션 */}
         <section css={S.section}>
           <div css={S.sectionHeader}>
             <h3 css={S.sectionTitle}>주문내역</h3>
-            <span css={S.moreLink} onClick={() => navigate('/recent-order')}>최근 주문 내역 ＞</span>
+            <span css={S.moreLink} style={{ cursor: 'pointer' }} onClick={() => navigate('/recent-order')}>최근 주문 내역 ＞</span>
           </div>
           <div css={S.card}>
             {orders.length > 0 ? (
@@ -148,6 +173,9 @@ export const MyPage = () => {
             )}
           </div>
         </section>
+
+        {/* 매장 찾기 섹션 */}
+        <SubwayNearby />
       </main>
     </div>
   );

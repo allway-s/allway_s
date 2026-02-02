@@ -10,8 +10,12 @@ export const createPost = (data) => api.post("/api/posts", data);
 export const toggleLike = (postId, userId) => api.post(`/api/posts/${postId}/like`, { userId });
 
 // 프리셋 저장 (커뮤니티 post에서)
-export const savePreset = (postId, userId) =>
-  api.post("/api/presets/post", { userId, postId });
+// communityApi.js (이렇게 되어있는지 확인)
+export const savePreset = (postId, userId) => 
+  api.post("/api/presets/post", { 
+    userId: Number(userId), // 숫자로 강제 변환
+    postId: Number(postId)  // 숫자로 강제 변환
+  });
 
 // 내 프리셋 목록 조회
 export const getMyPresets = (userId) => api.get("/api/presets", { params: { userId } });
