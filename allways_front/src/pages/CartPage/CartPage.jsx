@@ -8,7 +8,7 @@ import {
     removeFromCart,
     clearCart
 } from '../../utils/cartStore';
-import { createOrder } from "../../apis/items/orderApi";
+import { createOrder, verifyPayment } from "../../apis/items/orderApi";
 import { getUserIdFromToken } from "../../utils/getUserId";
 import SubwayNearbyModal from '../../components/SubwayNearbyModal';
 
@@ -53,6 +53,25 @@ const CartPage = () => {
 
         setLoading(true);
         try {
+            // 첫 번째 메뉴만 표시
+            const firstItem = cart.orders[0];
+            let displayName = "";
+
+            // 세트 여부 표시
+            if (!!firstItem.setId) {
+                const setName = getSetName(firstItem.setId); 
+                displayName = `${firstItem.itemName} ${setName}`;
+            } else {
+                displayName = firstItem.itemName;
+            }
+
+            // [첫 번째 메뉴]외 ~건 표시
+            const ordersLength = cart.orders.length;
+            const finalPaymentName = ordersLength > 1 
+                ? `${displayName} 외 ${ordersLength - 1}건` 
+                : displayName;
+
+
             const orderData = {
                 order: {
                     userId: currentUserId,
@@ -62,7 +81,7 @@ const CartPage = () => {
                 },
                 orderDetails: cart.orders.map(item => ({
                     productId: item.productId,
-                    itemId: item.itemId,           // ✅ 추가: 상품 생성을 위해 필수
+                    itemId: item.itemId,           // 상품 생성을 위해 필수
                     ingredientIds: item.ingredientIds,
                     unitPrice: item.price || item.unitPrice,
                     quantity: item.quantity,
@@ -74,11 +93,47 @@ const CartPage = () => {
 
             console.log("📦 전송될 주문 데이터:", orderData);
 
-            await createOrder(orderData);
-            alert('주문이 완료되었습니다!');
-            clearCart();
-            loadCart(); // 카트 상태 초기화
-            navigate('/menu'); 
+            const response = await createOrder(orderData);
+
+            const { orderNumber, totalPrice } = response.data;
+
+            const { IMP } = window;
+            IMP.init("imp30286060");
+
+            const paymentParam = {
+                pg: "html5_inicis",
+                pay_method: "card",
+                merchant_uid: orderNumber,
+                name: finalPaymentName,
+                amount: totalPrice,
+            };
+
+            IMP.request_pay(paymentParam, async (rsp) => {
+            if (rsp.success) {
+                // 결제 성공 시 검증 api 호출
+                try {
+                    const verifyData = {
+                        impUid: rsp.imp_uid,
+                        orderNumber: orderNumber
+                    };
+                    
+                    await verifyPayment(verifyData);
+
+                    alert('결제가 완료되었습니다!');
+                    clearCart();
+                    loadCart();
+                    // 성공 페이지로 이동 (state에 주문번호 전달)
+                    navigate('/order/success', { state: { fromPayment: true, orderNumber } });
+                } catch (verifyErr) {
+                    console.error('검증 실패:', verifyErr);
+                    alert('결제 검증 중 오류가 발생했습니다.');
+                }
+            } else {
+                alert(`결제 실패: ${rsp.error_msg}`);
+            }
+        });
+
+
         } catch (err) {
             console.error('❌ 주문 실패:', err);
             alert(err.response?.data?.message || '주문 중 오류가 발생했습니다.');
@@ -100,10 +155,10 @@ const CartPage = () => {
 
     const renderPriceDetail = (item) => {
         const hasDetails = item.basePrice !== undefined || 
-                          item.ingredientPrice !== undefined || 
-                          item.setPrice !== undefined ||
-                          item.drinkPrice !== undefined ||
-                          item.sidePrice !== undefined;
+                        item.ingredientPrice !== undefined || 
+                        item.setPrice !== undefined ||
+                        item.drinkPrice !== undefined ||
+                        item.sidePrice !== undefined;
 
         if (!hasDetails) return null;
 

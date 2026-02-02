@@ -13,3 +13,6 @@ export const createOrder = (orderData) => api.post("/api/orders", orderData);
 
 // 주문 상세 내역 조회
 export const getOrderDetail = (orderId) => api.get(`/api/orders/${orderId}/details`);
+
+// 결제 검증
+export const verifyPayment = (verifyData) => api.post("/api/payment/verify", verifyData);

@@ -22,6 +22,7 @@ import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
 import CommunityPage from './pages/CommunityPage/CommunityPage.jsx';
 import CustomPage from './pages/order/CustomPage.jsx';
 import { api, ResponseInterceptor } from './apis/config/axiosConfig.js';
+import OrderSuccess from './pages/CartPage/OrderSuccess.jsx';
 
 
 function App() {
@@ -127,8 +128,8 @@ function App() {
         <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
         <Route path="/mypreset" element={<ProtectedRoute><MyPreSet isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} /></ProtectedRoute>} />
         <Route path="/recent-order" element={<ProtectedRoute><RecentOrder isLoggedIn={isLoggedIn} onLogout={handleLogout} /></ProtectedRoute>} />
-        
         <Route path='/custom/:itemId' element={<ProtectedRoute><CustomPage /></ProtectedRoute>}/>
+        <Route path='/order/success' element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>}/>
 
         {/* [변경점 3] PublicRoute 적용 유지 
             로그인/회원가입 페이지는 이미 로그인된 사용자가 접근할 경우 
@@ -140,7 +141,7 @@ function App() {
 
         {/* 메뉴 관련은 누구나 접근 가능 */}
         <Route path="/menu" element={<MenuPage />} />
-
+        
         {/* 커뮤니티 */}
         <Route path="/community" element={<CommunityPage />} />
         
