@@ -98,14 +98,15 @@ const CartPage = () => {
             const { orderNumber, totalPrice } = response.data;
 
             const { IMP } = window;
-            IMP.init("imp30286060");
+            IMP.init('imp30286060');
 
             const paymentParam = {
-                pg: "html5_inicis",
-                pay_method: "card",
+                pg: 'kakaopay.TC0ONETIME',
+                pay_method: 'card',
                 merchant_uid: orderNumber,
                 name: finalPaymentName,
                 amount: totalPrice,
+                storeId: 'store-b92791a0-bdc6-4d76-9331-77b569d37232',
             };
 
             IMP.request_pay(paymentParam, async (rsp) => {
@@ -132,7 +133,6 @@ const CartPage = () => {
                 alert(`결제 실패: ${rsp.error_msg}`);
             }
         });
-
 
         } catch (err) {
             console.error('❌ 주문 실패:', err);
