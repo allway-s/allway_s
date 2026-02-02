@@ -61,4 +61,10 @@ public class ProductController {
         response.put("price", price);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/subway-pick/{itemId}")
+    public ResponseEntity<Map<String, Object>> getSubwayPick(@PathVariable Integer itemId) {
+        Map<String, Object> subwayPick = productService.getSubwayPickByItemId(itemId);
+        return ResponseEntity.ok(subwayPick);
+    }
 }

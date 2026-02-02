@@ -10,6 +10,5 @@ public class Image {
 
     private Integer imageId;
     private String imgUrl;
-    private Integer width;
-    private Integer height;
+    private String imgName;
 }
