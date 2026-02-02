@@ -50,14 +50,15 @@ export default function MyPreSet() {
     checkData();
   }, [userId]);
 
-  // 3. 분류 로직
+// 3. 분류 로직 수정
+// 3. ✅ 분류 로직 수정 (문자열 기준 대신 ID 비교로 변경)
   const myOriginals = useMemo(() => {
-    return presets.filter(p => !p.presetName.includes("(by ")); 
-  }, [presets]);
+    return presets.filter(p => Number(p.userId) === Number(p.postedUserId)); 
+  }, [presets, userId]);
 
   const savedPresets = useMemo(() => {
-    return presets.filter(p => p.presetName.includes("(by ")); 
-  }, [presets]);
+    return presets.filter(p => Number(p.userId) !== Number(p.postedUserId)); 
+  }, [presets, userId]);
 
   
   // 4. 공유 핸들러 (수정 완료)
@@ -109,11 +110,12 @@ const handleShare = async (preset) => {
 };
 
 
-  // 5. 삭제 핸들러
-  const handleDelete = async (presetId, presetName) => {
-    const isScrapped = presetName.includes("(by ");
+  // 5. 삭제 핸들러 (ID 비교 방식으로 수정)
+  const handleDelete = async (presetId, postedUserId) => {
+    // 💡 수정한 부분: 문자열이 아닌 ID 숫자로 내 것인지 남의 것인지 판단
+    const isSavedRecipe = Number(userId) !== Number(postedUserId);
     
-    let confirmMsg = isScrapped 
+    let confirmMsg = isSavedRecipe 
       ? `[저장된 레시피 삭제]\n내 목록에서만 삭제되며, 원본 게시글에는 영향을 주지 않습니다.` 
       : `[오리지널 레시피 삭제]\n회원님이 만드신 레시피입니다.\n삭제 시 커뮤니티에 공유된 게시글도 '함께 삭제' 됩니다. 정말 삭제하시겠습니까?`;
 
@@ -122,13 +124,15 @@ const handleShare = async (preset) => {
     const token = localStorage.getItem("accessToken");
 
     try {
-      const response = await axios.delete(deletePreset(), {
+      // API 호출 시 userId를 쿼리 파라미터로 전송 (기존 유지)
+      const response = await axios.delete(`/api/presets/${presetId}`, { 
         params: { userId: userId }, 
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.status === 200 || response.status === 204) {
         alert("성공적으로 삭제되었습니다.");
+        // 상태 업데이트로 화면에서 즉시 제거 (기존 유지)
         setPresets(prev => prev.filter(p => p.presetId !== presetId));
       }
     } catch (error) {
@@ -139,7 +143,8 @@ const handleShare = async (preset) => {
     }
   };
 
-  // 6. 카드 렌더링 함수
+  
+  // 6. ✅ 카드 렌더링 함수 (공유 버튼 노출 조건만 수정)
   const renderCard = (item, isSaved) => {
     const ingredients = item.product?.ingredients || [];
     const getIng = (catId) => ingredients.find(i => i.ingredientCategoryId === catId)?.ingredientName || "선택안함";
@@ -158,11 +163,13 @@ const handleShare = async (preset) => {
           <li><span css={S.badge}>소스</span> {getIng(4)}</li>
         </ul>
         <div css={S.buttonGroup}>
+          {/* ✅ 오리지널일 때만 공유 버튼 표시 (타인 게시글 저장 시에는 숨김) */}
           {isOriginal && (
             <button css={S.btnShare} onClick={() => handleShare(item)}>공유</button>
           )}
           <button css={S.btnOrder} onClick={() => navigate('/menu')}>주문</button>
-          <button css={S.btnDelete} onClick={() => handleDelete(item.presetId, item.presetName)}>삭제</button>
+          {/* 삭제 시 postedUserId를 함께 넘기도록 수정 */}
+          <button css={S.btnDelete} onClick={() => handleDelete(item.presetId, item.postedUserId)}>삭제</button>
         </div>
       </div>
     );
