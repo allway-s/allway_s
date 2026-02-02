@@ -13,6 +13,10 @@ function CustomPage() {
 
     const categoryName = location.state?.category;
     const selectedItem = location.state?.item;
+    
+    // ✅ 썹픽 모드 확인
+    const isSubwayPick = location.state?.isSubwayPick || false;
+    const subwayPickData = location.state?.subwayPickData || null;
 
     const categories = [
         { id: '빵', name: '빵', limit: 1, required: true }, 
@@ -23,13 +27,14 @@ function CustomPage() {
         { id: '세트', name: '세트선택', limit: 1, required: true }, 
     ];
     
-    const initialStep = categoryName === '샐러드' ? 2 : 1;
-
+    // ✅ 썹픽 모드일 때는 바로 세트 선택(6단계)로 이동
+    const initialStep = isSubwayPick ? 6 : (categoryName === '샐러드' ? 2 : 1);
+    
     const [step, setStep] = useState(initialStep);
     const [ingredients, setIngredients] = useState([]); 
     const [selectedIngredients, setSelectedIngredients] = useState({});
     
-    const [setMenus, setSetMenus] = useState([]); 
+    const [setMenus, setSetMenus] = useState([]);
     const [selectedSetId, setSelectedSetId] = useState(null);
     const [setComponents, setSetComponents] = useState(null);
     const [selectedDrink, setSelectedDrink] = useState(null);
@@ -39,9 +44,22 @@ function CustomPage() {
 
     const [allIngredients, setAllIngredients] = useState([]);
     const [quantity, setQuantity] = useState(1);
+    
     const currentCategory = categories[step - 1];
-
     const isRequiredStep = currentCategory?.required && !(currentCategory.id === '빵' && categoryName === '샐러드');
+
+    // ✅ 썹픽 모드일 때 초기 재료 설정
+    useEffect(() => {
+        if (isSubwayPick && subwayPickData) {
+            console.log('🎯 썹픽 모드 활성화:', subwayPickData);
+            
+            // 재료 정보를 allIngredients에 저장
+            setAllIngredients(subwayPickData.ingredients || []);
+            
+            // selectedIngredients는 빈 객체로 유지 (이미 선택된 상태이므로)
+            // 가격 계산 시 subwayPickData.basePrice 사용
+        }
+    }, [isSubwayPick, subwayPickData]);
 
     // 세트 메뉴 목록 가져오기
     useEffect(() => {
@@ -50,19 +68,16 @@ function CustomPage() {
                 const sets = Array.isArray(response.data) ? response.data : [];
                 setSetMenus(sets);
             })
-            .catch(err => {
-                console.error('세트 메뉴 조회 실패:', err);
-                setSetMenus([]);
-            });
     }, []);
 
-    // 현재 단계의 재료 가져오기
+    // 현재 단계의 재료 가져오기 (썹픽 모드에서는 세트만 가져옴)
     useEffect(() => {
         if (!currentCategory) return;
 
         if (currentCategory.id === '세트') {
             setIngredients(setMenus);
-        } else {
+        } else if (!isSubwayPick) {
+            // 썹픽 모드가 아닐 때만 재료 가져오기
             getIngredients(currentCategory.id)
                 .then(response => {
                     setIngredients(response.data);
@@ -74,7 +89,7 @@ function CustomPage() {
                     });
                 })
         }
-    }, [step]);
+    }, [step, isSubwayPick]);
 
     useEffect(() => {
         if (currentCategory?.id === '세트' && setMenus.length > 0) {
@@ -198,17 +213,33 @@ function CustomPage() {
     };
 
     const handleAddToCart = () => {
-        // 1. 선택된 재료 ID 추출 (세트 제외)
-        const ingredientIds = Object.entries(selectedIngredients)
-            .filter(([categoryId, _]) => categoryId !== '세트')  // ✅ 세트 제외
-            .flatMap(([_, ids]) => ids);
+        let ingredientIds, selectedDetails, ingredientExtraPrice, basePrice;
 
-        // 2. 선택된 재료들의 상세 정보 조회 및 추가 가격 합산
-        const selectedDetails = allIngredients.filter(ing => 
-            ingredientIds.includes(ing.ingredientId)
-        );
-        const ingredientExtraPrice = selectedDetails.reduce((sum, ing) => sum + (Number(ing.price) || 0), 0);
+        if (isSubwayPick && subwayPickData) {
+            // ✅ 썹픽 모드: 미리 선택된 재료 사용
+            ingredientIds = subwayPickData.ingredientIds;
+            selectedDetails = subwayPickData.ingredients || [];
+            ingredientExtraPrice = 0; // 이미 basePrice에 포함됨
+            basePrice = subwayPickData.basePrice;
+            
+            console.log('🎯 썹픽 모드 장바구니 추가:', {
+                재료: subwayPickData.ingredientNames,
+                기본가격: basePrice,
+            });
+        } else {
+            // 일반 커스텀 모드
+            ingredientIds = Object.entries(selectedIngredients)
+                .filter(([categoryId, _]) => categoryId !== '세트')
+                .flatMap(([_, ids]) => ids);
 
+            selectedDetails = allIngredients.filter(ing => 
+                ingredientIds.includes(ing.ingredientId)
+            );
+            ingredientExtraPrice = selectedDetails.reduce((sum, ing) => sum + (Number(ing.price) || 0), 0);
+            basePrice = Number(selectedItem?.price) || 0;
+        }
+
+        // 세트 가격 계산 (공통)
         const selectedDrinkData = drinkOptions.find(d => d.ingredientId === selectedDrink);
         const selectedSideData = sideOptions.find(s => s.ingredientId === selectedSide);
         
@@ -217,13 +248,12 @@ function CustomPage() {
         
         const setAddPrice = (selectedSetId && selectedSetId !== 1) ? (drinkPrice + sidePrice) : 0;
 
-        // 3. 최종 단가 계산
-        const basePrice = Number(selectedItem?.price) || 0;
+        // 최종 단가 계산
         const finalUnitPrice = basePrice + ingredientExtraPrice + setAddPrice;
 
-        // 4. 장바구니에 넘길 객체 구성
+        // 장바구니에 넘길 객체 구성
         const orderItem = {
-            productId: parseInt(itemId),
+            productId: isSubwayPick ? subwayPickData.productId : parseInt(itemId),
             itemId: parseInt(itemId),
             itemName: selectedItem?.itemName,
             imgUrl: selectedItem?.imageUrl || selectedItem?.imgUrl,
@@ -231,12 +261,14 @@ function CustomPage() {
             unitPrice: finalUnitPrice,
             price: finalUnitPrice,
             ingredientIds: ingredientIds,
-            ingredientName: selectedDetails.map(ing => ing.ingredientName),
+            ingredientName: isSubwayPick 
+                ? subwayPickData.ingredientNames 
+                : selectedDetails.map(ing => ing.ingredientName),
             size: selectedItem?.size,
             setId: selectedSetId || null,
             selectedDrinkId: selectedDrink || null,
             selectedSideId: selectedSide || null,
-            // ✅ 가격 분해 정보 저장 (디버깅/확인용)
+            // 가격 분해 정보
             basePrice: basePrice,
             ingredientPrice: ingredientExtraPrice,
             setPrice: setAddPrice,
@@ -245,6 +277,7 @@ function CustomPage() {
         };
 
         console.log("✅ 장바구니 추가 - 최종 금액:", {
+            모드: isSubwayPick ? '썹픽' : '커스텀',
             기본가격: basePrice,
             재료추가: ingredientExtraPrice,
             음료가격: drinkPrice,
@@ -351,11 +384,35 @@ function CustomPage() {
         );
     };
 
+    // ✅ 썹픽 모드일 때 선택된 재료 표시
+    const renderSubwayPickInfo = () => {
+        if (!isSubwayPick || !subwayPickData) return null;
+
+        return (
+            <div style={{
+                padding: '15px',
+                backgroundColor: '#f0f8ff',
+                borderRadius: '8px',
+                marginBottom: '20px',
+                border: '2px solid #4CAF50'
+            }}>
+                <div style={{ fontSize: '14px', color: '#666' }}>
+                    <strong>재료:</strong> {subwayPickData.ingredientNames?.join(', ')}
+                </div>
+                <div style={{ fontSize: '14px', color: '#666', marginTop: '5px' }}>
+                    <strong>기본 가격:</strong> {subwayPickData.basePrice?.toLocaleString()}원
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div css={s.containerStyle}>
             <div css={s.headerStyle}>
                 <button onClick={() => navigate('/menu')} css={s.cancelButtonStyle}>취소</button>
-                <h2>{selectedItem?.itemName} 커스텀</h2>
+                <h2>
+                    {selectedItem?.itemName} {isSubwayPick ? '썹픽 🎯' : '커스텀'}
+                </h2>
                 <button onClick={() => navigate('/cart')} css={s.cartButtonStyle}>장바구니</button>
             </div>
 
@@ -365,6 +422,7 @@ function CustomPage() {
                         s.progressStepStyle, 
                         (idx + 1) === step && s.progressStepActiveStyle,
                         (idx + 1) < step && s.progressStepDoneStyle,
+                        (isSubwayPick && (idx + 1) < 6) && s.progressStepDoneStyle,
                         (categoryName === '샐러드' && (idx + 1) === 1) && s.progressStepSkippedStyle
                     ]}>
                         {cat.name}
@@ -373,6 +431,9 @@ function CustomPage() {
             </div>
 
             <div css={s.contentStyle}>
+                {/* ✅ 썹픽 정보 표시 */}
+                {renderSubwayPickInfo()}
+
                 <div css={s.stepHeaderStyle}>
                     <h3>
                         {step}단계: {currentCategory?.name}
@@ -381,7 +442,7 @@ function CustomPage() {
                         </span>
                     </h3>
                     
-                    {currentCategory?.id === '야채' && (
+                    {currentCategory?.id === '야채' && !isSubwayPick && (
                         <div style={{ marginTop: '10px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
                             <button onClick={handleSelectAllVegetables} css={s.actionButtonStyle}>
                                 {(selectedIngredients['야채']?.length === ingredients.length) ? "전부 빼기" : "전부 넣기"}
@@ -414,7 +475,7 @@ function CustomPage() {
                             <p>세트 메뉴를 불러오는 중...</p>
                         )
                     ) : (
-                        ingredients.map(ingredient => {
+                        !isSubwayPick && ingredients.map(ingredient => {
                             const isSelected = (selectedIngredients[currentCategory.id] || []).includes(ingredient.ingredientId);
                             return (
                                 <button 
