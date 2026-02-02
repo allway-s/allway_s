@@ -71,7 +71,7 @@ export const S = {
 
   grid: css`
     display: flex !important;
-    justify-content: space-between;
+    justify-content: start;
     gap: 4rem;
     width: 100%;
     flex-wrap: wrap;
@@ -80,7 +80,8 @@ export const S = {
 
   // ✅ 블러 상태를 인자로 받는 함수형 스타일
   cardWrapper: (isBlur) => css`
-    position: relative;
+    display: flex;
+    justify-content: start;
     flex: 0 1 320px;
     min-width: 280px;
     transition: all 0.3s ease;
