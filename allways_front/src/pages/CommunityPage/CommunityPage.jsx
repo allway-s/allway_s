@@ -92,10 +92,6 @@ export default function CommunityPage() {
     }
   };
 
-  /** ---------------------------
-   * selected + sorting
-  ----------------------------*/
-
   const sortedItems = useMemo(() => {
     const copied = [...posts];
 
@@ -108,6 +104,8 @@ export default function CommunityPage() {
     return copied;
   }, [sort, posts]);
 
+
+    // 모달
     const selected = useMemo(
     () => posts.find((x) => x.postId === selectedId) || null,
     [posts, selectedId],

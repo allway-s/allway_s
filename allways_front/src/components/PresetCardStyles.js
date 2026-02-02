@@ -13,6 +13,7 @@ export const S = {
     width: 100%;
     min-width: 300px;
     height: 450px; // 카드 높이 고정
+    cursor: pointer;
     transition: transform 0.3s ease;
     &:hover { transform: translateY(-8px); }
   `,
@@ -30,7 +31,7 @@ export const S = {
     height: 180px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin-top: 1rem;
     margin-bottom: 2rem;
   `,
@@ -89,10 +90,32 @@ export const S = {
   `,
 
 
-  likeCount: (isLiked) => css`
-    font-size: 1rem;
-    font-weight: 800;
-    color: ${isLiked ? "#ff4d4f" : "#000"}; /* 좋아요 시 숫자도 빨간색으로 */
-    transition: color 0.3s ease;
+
+  likeBox: css`
+    justify-self: end;
+    width: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  `,
+
+  likeMark: css`
+    background: transparent;
+    border: none;
+    padding: 0;
+    line-height: 0;
+  `,
+
+  heartMini: css`
+    width: 20px;
+    height: 20px;
+  `,
+
+  countMini: css`
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
   `,
 };
