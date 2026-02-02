@@ -1,12 +1,18 @@
 package com.korit.allways_back.controller;
 
+import com.korit.allways_back.dto.request.PostCreateRequestDto;
+import com.korit.allways_back.dto.request.PresetRequestDto;
+import com.korit.allways_back.entity.Post;
 import com.korit.allways_back.entity.Preset;
+import com.korit.allways_back.security.PrincipalUser;
 import com.korit.allways_back.service.PresetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/presets")
@@ -30,6 +36,14 @@ public class PresetController {
     public ResponseEntity<Preset> savePreset(@RequestBody Preset preset) {
         Preset savedPreset = presetService.savePreset(preset);
         return ResponseEntity.ok(savedPreset);
+    }
+
+    @PostMapping("/post")
+    public ResponseEntity<Preset> savePresetFromPost(
+            @RequestBody PresetRequestDto dto) {
+
+        Preset savedPresetFromPost = presetService.savePresetFromPost(dto.getUserId(), dto.getPostId());
+        return ResponseEntity.ok(savedPresetFromPost);
     }
 
     /**

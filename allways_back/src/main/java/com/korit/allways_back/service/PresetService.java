@@ -36,6 +36,17 @@ public class PresetService {
         return preset;
     }
 
+    @Transactional
+    public Preset savePresetFromPost(int userId, Integer postId) {
+
+        Preset preset = new Preset();
+        preset.setUserId(userId);
+        preset.setPostId(postId);
+
+        presetMapper.insertFromPost(preset);
+        return preset;
+    }
+
     /**
      * 사용자 ID로 프리셋 목록 조회
      */

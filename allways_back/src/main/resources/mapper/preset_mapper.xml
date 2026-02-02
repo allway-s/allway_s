@@ -9,12 +9,34 @@
         INSERT INTO preset_tb (
         user_id,
         product_id,
-        preset_name
+        preset_name,
+        posted_user_id
         ) VALUES (
         #{userId},
         #{productId},
-        #{presetName}
+        #{presetName},
+        #{postedUserId}
         )
+    </insert>
+
+    <!-- 커뮤니티 포스트에서 프리셋 저장 -->
+    <insert id="insertFromPost" useGeneratedKeys="true" keyProperty="presetId">
+        INSERT INTO preset_tb (
+        user_id,
+        product_id,
+        preset_name,
+        posted_user_id
+        )
+        SELECT
+        #{userId},
+        pr.product_id,
+        pr.preset_name,
+        p.user_id
+        FROM post_tb p
+        JOIN preset_tb pr
+        ON p.preset_id = pr.preset_id
+        WHERE p.post_id = #{postId};
+
     </insert>
 
     <!-- 사용자의 프리셋 목록 조회 -->
@@ -24,6 +46,7 @@
             p.user_id,
             p.product_id,
             p.preset_name,
+            p.posted_user_id,
             u.nickname AS userNickname,
             img.img_url AS itemImageUrl
         FROM
