@@ -18,18 +18,18 @@ export default function MyPreSet() {
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
       const decoded = JSON.parse(jsonPayload);
+      // ✅ 서버 데이터와 비교를 위해 Number 타입 변환 보장
       return Number(decoded.userId || decoded.id || decoded.sub);
     } catch (e) { return null; }
   };
 
   const userId = getUserIdFromToken();
 
-  // 2. 프리셋 목록 조회 (커뮤니티 게시글과 비교하여 닉네임 매칭 로직 추가)
+  // 2. 프리셋 목록 조회 (닉네임 매칭 로직 강화)
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) return;
       try {
-        // 프리셋 목록과 커뮤니티 게시글 목록을 동시에 가져옵니다.
         const [presetRes, postRes] = await Promise.all([
           getMyPresets(userId),
           getPosts()
@@ -38,22 +38,29 @@ export default function MyPreSet() {
         const presetData = presetRes.data || [];
         const communityPosts = postRes.data || [];
 
-        // ✅ 프리셋의 postedUserId와 커뮤니티 게시글의 userId를 비교하여 nickname을 주입합니다.
+        // ✅ [수정] 닉네임 매칭 로직: 현재 로그인한 userId와 상관없이 'postedUserId'를 기준으로 원작자를 찾습니다.
         const enrichedData = presetData.map(preset => {
+          // 커뮤니티 게시글에서 이 프리셋의 원작자(postedUserId)와 일치하는 게시물을 찾음
           const matchPost = communityPosts.find(post => Number(post.userId) === Number(preset.postedUserId));
+          
           return {
             ...preset,
-            // 매칭되는 게시글이 있으면 그 작성자의 닉네임을 사용합니다.
-            authorNickname: matchPost ? matchPost.nickname : (Number(preset.postedUserId) === Number(userId) ? "나" : `User ${preset.postedUserId}`)
+            // ✅ [수정] 닉네임 결정 우선순위
+            // 1. 커뮤니티에 원작자 닉네임이 있다면 그것을 사용
+            // 2. 없다면, 내가 원작자일 경우 "나"라고 표시
+            // 3. 둘 다 아니면 시스템상의 User ID 표시
+            authorNickname: matchPost ? matchPost.nickname : 
+                            (Number(preset.postedUserId) === Number(userId) ? "나" : `User ${preset.postedUserId}`)
           };
         });
         
-        console.log("=== 🔍 데이터 정밀 진단 시작 ===");
+        console.log("=== 🔍 데이터 정밀 진단 (로그인 ID: " + userId + ") ===");
         console.table(enrichedData.map(p => ({
           ID: p.presetId,
           이름: p.presetName,
-          작성자ID: p.postedUserId,
-          매칭된닉네임: p.authorNickname
+          소유자ID: p.userId,
+          원작자ID: p.postedUserId,
+          최종닉네임: p.authorNickname
         })));
         
         setPresets(enrichedData);
@@ -62,39 +69,37 @@ export default function MyPreSet() {
       }
     };
     fetchData();
-  }, [userId]);
+  }, [userId]); // ✅ userId가 바뀔 때마다(로그인 유저가 바뀔 때마다) 다시 로드
 
-  // 3. ✅ 분류 로직 (DB의 postedUserId 기반으로 완벽 분류)
+  // 3. ✅ [수정] 분류 로직: 현재 로그인한 사람(userId)이 원작자(postedUserId)인지만 확인하면 됩니다.
   const myOriginals = useMemo(() => {
+    // 내가 소유하고 있고, 내가 만든 것
     return presets.filter(p => Number(p.userId) === Number(p.postedUserId)); 
   }, [presets, userId]);
 
   const savedPresets = useMemo(() => {
+    // 내가 소유하고 있지만, 만든 사람은 남인 것
     return presets.filter(p => Number(p.userId) !== Number(p.postedUserId)); 
   }, [presets, userId]);
 
-  // 4. 공유 핸들러 (중복 방지 로직 포함)
+  // 4. 공유 핸들러 (유지)
   const handleShare = async (preset) => {
     const currentProductId = preset.productId || preset.product?.productId;
     if (!currentProductId) {
       alert("상품 정보를 찾을 수 없습니다.");
       return;
     }
-
     try {
       const communityRes = await getPosts();
       const communityPosts = communityRes.data || [];
       const isAlreadyShared = communityPosts.some(post => 
         Number(post.productId) === Number(currentProductId)
       );
-
       if (isAlreadyShared) {
         alert("이미 커뮤니티에 공유된 레시피입니다.");
         return;
       }
-
       if (!window.confirm(`'${preset.presetName}' 레시피를 공유하시겠습니까?`)) return;
-
       const response = await createPost({ presetId: preset.presetId });
       if (response.status === 200 || response.status === 201) {
         alert("성공적으로 공유되었습니다!");
@@ -105,23 +110,19 @@ export default function MyPreSet() {
     }
   };
 
-  // 5. ✅ 삭제 핸들러 (매개변수 postedUserId로 수정 완료)
+  // 5. 삭제 핸들러 (유지)
   const handleDelete = async (presetId, postedUserId) => {
     const isSavedRecipe = Number(userId) !== Number(postedUserId);
-    
     let confirmMsg = isSavedRecipe 
       ? `[저장된 레시피 삭제]\n내 목록에서만 삭제됩니다.` 
       : `[오리지널 레시피 삭제]\n삭제 시 커뮤니티 게시글도 함께 삭제됩니다. 정말 삭제하시겠습니까?`;
-
     if (!window.confirm(confirmMsg)) return;
-
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.delete(`/api/presets/${presetId}`, { 
         params: { userId: userId }, 
         headers: { Authorization: `Bearer ${token}` }
       });
-
       if (response.status === 200 || response.status === 204) {
         alert("성공적으로 삭제되었습니다.");
         setPresets(prev => prev.filter(p => p.presetId !== presetId));
@@ -131,7 +132,7 @@ export default function MyPreSet() {
     }
   };
 
-  // 6. ✅ 카드 렌더링 함수 (매칭된 authorNickname 출력)
+  // 6. 카드 렌더링 (유지)
   const renderCard = (item, isSaved) => {
     const ingredients = item.product?.ingredients || [];
     const getIng = (catId) => ingredients.find(i => i.ingredientCategoryId === catId)?.ingredientName || "선택안함";
@@ -144,9 +145,9 @@ export default function MyPreSet() {
           {isSaved && <div style={{ position: 'absolute', top: 5, right: 5, backgroundColor: '#009223', color: 'white', padding: '2px 6px', fontSize: '10px', borderRadius: '4px' }}>SAVED</div>}
         </div>
         
-        {/* ✅ 이름 옆에 (by 실제닉네임) 표시 */}
         <div style={{ padding: '0 4px', marginBottom: '8px' }}>
           <h3 css={S.presetName} style={{ display: 'inline' }}>{item.presetName}</h3>
+          {/* ✅ [수정] 오리지널이 아닐 때만 'by 원작자닉네임' 표시 */}
           {!isOriginal && (
             <span style={{ fontSize: '12px', color: '#888', marginLeft: '5px' }}>
               by {item.authorNickname}
