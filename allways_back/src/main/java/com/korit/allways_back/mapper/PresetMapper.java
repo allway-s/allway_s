@@ -12,6 +12,8 @@ public interface PresetMapper {
 
     int insert(Preset preset);
 
+    int insertFromPost(Preset preset);
+
     List<Preset> findByUserId(@Param("userId") Integer userId);
 
     Preset findById(@Param("presetId") Integer presetId);
