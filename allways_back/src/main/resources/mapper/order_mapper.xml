@@ -84,41 +84,6 @@
         ORDER BY
         o.ordered_at DESC, od.order_detail_id
     </select>
-<!--    <select id="findOrderHistoryByUserId" resultType="OrderDetail">-->
-<!--        SELECT-->
-<!--        od.order_detail_id,-->
-<!--        od.order_id,-->
-<!--        od.product_id,-->
-<!--        od.unit_price,-->
-<!--        od.quantity,-->
-<!--        od.set_id,-->
-<!--        od.selected_drink_id,-->
-<!--        od.selected_side_id,-->
-<!--        o.ordered_at,-->
-<!--        i.item_name,-->
-<!--        i.size AS itemSize,-->
-<!--        GROUP_CONCAT(ing.ingredient_name ORDER BY c.display_order SEPARATOR ', ') AS ingredientsText,-->
-<!--        sm.set_name,-->
-<!--        d.ingredient_name AS drinkName,-->
-<!--        s.ingredient_name AS sideName-->
-<!--        FROM-->
-<!--        order_detail_tb od-->
-<!--        INNER JOIN order_tb o ON od.order_id = o.order_id-->
-<!--        INNER JOIN product_item_tb pi ON od.product_id = pi.product_id-->
-<!--        INNER JOIN item_tb i ON pi.item_id = i.item_id-->
-<!--        LEFT JOIN product_ingredient_tb ping ON od.product_id = ping.product_id-->
-<!--        LEFT JOIN ingredient_tb ing ON ping.ingredient_id = ing.ingredient_id-->
-<!--        LEFT JOIN category_tb c ON ing.category_id = c.category_id-->
-<!--        LEFT JOIN set_menu_tb sm ON od.set_id = sm.set_id-->
-<!--        LEFT JOIN ingredient_tb d ON od.selected_drink_id = d.ingredient_id-->
-<!--        LEFT JOIN ingredient_tb s ON od.selected_side_id = s.ingredient_id-->
-<!--        WHERE-->
-<!--        o.user_id = #{userId}-->
-<!--        GROUP BY-->
-<!--        od.order_detail_id-->
-<!--        ORDER BY-->
-<!--        o.ordered_at DESC, od.order_detail_id-->
-<!--    </select>-->
 
     <!-- 주문 ID로 주문 정보 조회 -->
     <select id="findOrderById" resultType="Order">

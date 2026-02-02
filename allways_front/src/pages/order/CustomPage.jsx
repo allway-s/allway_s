@@ -198,8 +198,10 @@ function CustomPage() {
     };
 
     const handleAddToCart = () => {
-        // 1. 선택된 재료 ID 추출
-        const ingredientIds = Object.values(selectedIngredients).flat();
+        // 1. 선택된 재료 ID 추출 (세트 제외)
+        const ingredientIds = Object.entries(selectedIngredients)
+            .filter(([categoryId, _]) => categoryId !== '세트')  // ✅ 세트 제외
+            .flatMap(([_, ids]) => ids);
 
         // 2. 선택된 재료들의 상세 정보 조회 및 추가 가격 합산
         const selectedDetails = allIngredients.filter(ing => 

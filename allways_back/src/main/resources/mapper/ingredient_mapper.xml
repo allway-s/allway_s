@@ -2,6 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 카테고리 이름으로 재료가져오기 -->
 <mapper namespace="com.korit.allways_back.mapper.IngredientMapper">
     <select id="findByCategoryName" resultType="Ingredient">
         SELECT

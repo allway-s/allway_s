@@ -34,7 +34,7 @@
                     return existingProductId;
                 }
             }
-
+            
             // 새 상품 생성
             Product product = Product.builder()
                     .isSystem(false)
