@@ -16,6 +16,7 @@ public class PaymentController {
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyPayment(@RequestBody PaymentVerifyDto verifyDto) {
+        System.out.println(verifyDto.getPaymentId());
         try {
             boolean isVerified = paymentService.verifyAndCompleteOrder(verifyDto);
 
@@ -25,7 +26,8 @@ public class PaymentController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("결제 금액 불일치.");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결제 검증 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결제 검증 중 오류 발생: " + e.toString());
         }
     }
+
 }

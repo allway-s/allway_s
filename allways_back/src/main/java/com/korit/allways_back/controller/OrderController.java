@@ -6,6 +6,7 @@ import com.korit.allways_back.entity.OrderDetail;
 import com.korit.allways_back.security.PrincipalUser;
 import com.korit.allways_back.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,5 +102,16 @@ public class OrderController {
                 .selectedSideId((Integer) map.get("selectedSideId"))
                 .build()
         ).toList();
+    }
+
+    @PutMapping("/{orderNumber}/cancel")
+    public ResponseEntity<?> cancelOrder(@PathVariable String orderNumber) {
+        try {
+            orderService.cancelOrder(orderNumber);
+            return ResponseEntity.ok("주문이 취소되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("주문 취소 중 오류 발생: " + e.getMessage());
+        }
     }
 }

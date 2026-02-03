@@ -51,7 +51,7 @@ public class SecurityConfig {
             // [추가 및 수정] 마이페이지에서 호출하는 API들을 명시적으로 허용하거나 인증 설정
             // 지금은 테스트 중이니 .permitAll()로 열어서 401이 발생하는지 먼저 확인합시다.
             auth.requestMatchers("/api/presets/**", "/api/orders/**").permitAll();
-
+            auth.requestMatchers("/api/payment/**").permitAll();
 
             // 토큰 유효성 검사
             auth.requestMatchers("/api/user/**").authenticated();
