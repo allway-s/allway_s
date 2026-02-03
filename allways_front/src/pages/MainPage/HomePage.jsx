@@ -11,9 +11,7 @@ import { BANNER_ITEMS } from './constants.js';
 
 export function HomePage({
   isLoggedIn,
-  onLogout,
   communityPreSets = [],
-  onStartOrder,
   onNavigateToCommunity,
   onLike,
   onCopy,
@@ -33,7 +31,6 @@ export function HomePage({
     if (isMove) {
       navigate('/menu');
     }
-    // '취소'를 누르면 아무 일도 일어나지 않고 현재 페이지에 남습니다.
   };
 
 
@@ -63,7 +60,6 @@ export function HomePage({
             나만의 <span css={styles.heroTitleGreen}>Recipe</span> 를 만들고<br />
             <span css={styles.heroTitleGreen}>Recipe</span><span css={styles.heroTitleBlack}>-</span><span css={styles.heroTitleYellow}>s</span> 에 공유하세요!
           </h1>
-          {/* 여기서 handleOrderClick을 사용하고 있습니다 */}
           <button onClick={handleOrderClick} css={styles.orderButton}>
             지금 주문하기 <ArrowRight size={20} />
           </button>

@@ -20,6 +20,7 @@ public class PostService {
 
         Post post = Post.builder()
                 .userId(userId)
+                .presetId(dto.getPresetId())
                 .postedAt(java.time.LocalDateTime.now())
                 .likeCount(0)
                 .build();

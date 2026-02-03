@@ -3,6 +3,7 @@ import * as s from "./menuPageStyle";
 import { useState, useEffect } from "react";
 import { getItems, getSubwayPick } from "../../apis/items/menuApi";
 import { useNavigate } from "react-router-dom";
+import { ScrollToTop } from "../../utils/scrollToTop";
 
 const MenuPage = () => {
     const navigate = useNavigate();
@@ -35,8 +36,10 @@ const MenuPage = () => {
         }
     };
 
+    // 카테고리 바뀌면 스크롤 초기화
     useEffect(() => {
         fetchItems(selectedCategory);
+        window.scrollTo(0, 0); 
     }, [selectedCategory]);
 
     // 30cm variant 찾기
@@ -64,8 +67,6 @@ const MenuPage = () => {
         try {
             const response = await getSubwayPick(item.itemId);
             const pickData = response.data;
-
-            console.log('📦 썹픽 데이터:', pickData);
 
             // 세트 선택 페이지로 이동 (재료는 이미 선택된 상태)
             navigate(`/custom/${item.itemId}`, {

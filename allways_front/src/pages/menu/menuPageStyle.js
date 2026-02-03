@@ -39,6 +39,8 @@ export const cartButtonStyle = css`
 
 // 네비게이션
 export const navStyle = css`
+    position: sticky;
+    top: 70px;
     background: white;
     padding: 15px 40px;
     display: flex;
