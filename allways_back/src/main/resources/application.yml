@@ -1,27 +1,37 @@
 spring:
-  profiles:
-    active: local
-    group:
-      local: common, secret-dev  # local을 켜면 아래의 common 블록과 외부 secret 파일을 합침
-#spring:
-#  profiles:
-#    active: dev
-#    group:
-#      dev: dev, common, secret-dev
-#      minjae: minjae-server, common, secret-prod
+ profiles:
+   active: dev
+   group:
+     dev: dev, common, secret-dev
+     minjae: minjae-server, common, secret-prod
+     jinhyun: jinhyun-server, common, secret-prod
 
 ---
 
 spring:
   config:
     activate:
-      on-profile: common
+      on-profile: dev
 
+---
+
+spring:
+  config:
+    activate:
+      on-profile: minjae-server
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: jinhyun-server
+      
 ---
 spring:
   config:
     activate:
-      on-profile: local # 'local'이 활성화될 때 이 아래 설정을 읽으라고 명시!
+      on-profile: common # 'local'이 활성화될 때 이 아래 설정을 읽으라고 명시!
 
 springdoc:
   swagger-ui:
