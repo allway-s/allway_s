@@ -16,7 +16,7 @@ public class PaymentController {
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyPayment(@RequestBody PaymentVerifyDto verifyDto) {
-        System.out.println(verifyDto.getImpUid());
+        System.out.println(verifyDto.getPaymentId());
         try {
             boolean isVerified = paymentService.verifyAndCompleteOrder(verifyDto);
 
