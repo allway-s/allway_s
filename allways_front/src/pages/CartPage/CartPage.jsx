@@ -107,8 +107,6 @@ const CartPage = () => {
                 }))
             };
 
-            console.log("📦 전송될 주문 데이터:", orderData);
-
             const response = await createOrder(orderData);
 
             const { orderNumber, totalPrice } = response.data;
@@ -189,8 +187,6 @@ const CartPage = () => {
                 <div>기본: {(item.basePrice || 0).toLocaleString()}원</div>
                 {(item.ingredientPrice || 0) > 0 && <div>재료: +{item.ingredientPrice.toLocaleString()}원</div>}
                 {(item.setPrice || 0) > 0 && <div>세트: +{item.setPrice.toLocaleString()}원</div>}
-                {(item.drinkPrice || 0) > 0 && <div>음료: +{item.drinkPrice.toLocaleString()}원</div>}
-                {(item.sidePrice || 0) > 0 && <div>사이드: +{item.sidePrice.toLocaleString()}원</div>}
             </div>
         );
     };

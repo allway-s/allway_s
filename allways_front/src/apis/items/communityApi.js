@@ -1,20 +1,19 @@
 import { api } from "../config/axiosConfig";
 
-// 전체 게시글 조회
-export const getPosts = (userId) => api.get("/api/posts", { params: { userId } });
-
 // 게시글 작성
 export const createPost = (data) => api.post("/api/posts", data);
 
-// 좋아요 토글
-export const toggleLike = (postId, userId) => api.post(`/api/posts/${postId}/like`, { userId });
+// 전체 게시글 조회 (로그인 안 해도 볼 수 있게 백엔드 처리했으니 파라미터 삭제)
+export const getPosts = () => api.get("/api/posts");
 
-// 프리셋 저장 (커뮤니티 post에서)
-export const savePreset = (postId, userId) =>
-  api.post("/api/presets/post", { userId, postId });
+// 좋아요 토글 (body에 userId 보내던 거 삭제)
+export const toggleLike = (postId) => api.post(`/api/posts/${postId}/like`);
 
-// 내 프리셋 목록 조회
-export const getMyPresets = (userId) => api.get("/api/presets", { params: { userId } });
+// 프리셋 저장 (body에서 userId 삭제)
+export const savePreset = (postId) => api.post("/api/presets/post", { postId: Number(postId) });
 
-// 프리셋 삭제
-export const deletePreset = (presetId, userId) => api.delete(`/api/presets/${presetId}`, { params: { userId } });
+// 내 프리셋 목록 조회 (params 삭제)
+export const getMyPresets = () => api.get("/api/presets");
+
+// 프리셋 삭제 (params 삭제)
+export const deletePreset = (presetId) => api.delete(`/api/presets/${presetId}`);

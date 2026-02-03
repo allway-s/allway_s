@@ -18,7 +18,4 @@ public class Like {
     private Integer postId;
     private LocalDateTime likedAt;
 
-    // 조인용 필드 (필요시)
-    private User user;
-    private Post post;
 }

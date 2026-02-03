@@ -3,6 +3,7 @@ package com.korit.allways_back.controller;
 import com.korit.allways_back.dto.request.OrderCreateRequestDto;
 import com.korit.allways_back.entity.Order;
 import com.korit.allways_back.entity.OrderDetail;
+import com.korit.allways_back.security.PrincipalUser;
 import com.korit.allways_back.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +25,21 @@ public class OrderController {
      */
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody OrderCreateRequestDto dto) {
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) return ResponseEntity.status(401).build();
+
         Order order = Order.builder()
-                .userId(dto.getOrder().getUserId())
+                .userId(principalUser.getUser().getUserId())
                 .address(dto.getOrder().getAddress())
                 .detailAddress(dto.getOrder().getDetailAddress())
                 .totalPrice(dto.getOrder().getTotalPrice())
                 .build();
 
         List<OrderDetail> orderDetails = dto.getOrderDetails().stream()
-                    .map(detailDto -> OrderDetail.builder()
+                .map(detailDto -> OrderDetail.builder()
                         .productId(detailDto.getProductId())
-                        .itemId(detailDto.getItemId())                 // ⭐ 추가
-                        .ingredientIds(detailDto.getIngredientIds())   // ⭐ 추가
+                        .itemId(detailDto.getItemId())
+                        .ingredientIds(detailDto.getIngredientIds())
                         .quantity(detailDto.getQuantity())
                         .setId(detailDto.getSetId())
                         .selectedDrinkId(detailDto.getSelectedDrinkId())
@@ -43,18 +47,17 @@ public class OrderController {
                         .build())
                 .toList();
 
-
         Order createdOrder = orderService.createOrder(order, orderDetails);
         return ResponseEntity.ok(createdOrder);
     }
 
-    /**
-     * 사용자 주문 내역 조회
-     * GET /api/orders/history?userId=1
-     */
     @GetMapping("/history")
-    public ResponseEntity<List<OrderDetail>> getOrderHistory(@RequestParam Integer userId) {
-        List<OrderDetail> history = orderService.getOrderHistory(userId);
+    public ResponseEntity<List<OrderDetail>> getOrderHistory() { // @RequestParam 삭제!
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) return ResponseEntity.status(401).build();
+
+        // 토큰에서 꺼낸 ID로 조회
+        List<OrderDetail> history = orderService.getOrderHistory(principalUser.getUser().getUserId());
         return ResponseEntity.ok(history);
     }
 
