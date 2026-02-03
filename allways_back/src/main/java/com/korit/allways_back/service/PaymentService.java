@@ -40,7 +40,7 @@ public class PaymentService {
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
         Map<String, Object> payment = response.getBody();
 
-        // 3. 상태 및 금액 검증
+        // 상태 및 금액 검증
         // V2 응답 구조: payment.status, payment.amount.total
         String status = (String) payment.get("status");
         Map<String, Object> amount = (Map<String, Object>) payment.get("amount");
@@ -61,13 +61,13 @@ public class PaymentService {
         body.put("apiSecret", v2ApiSecret);
 
         try {
-            // V2는 응답 바디의 구조가 { "accessToken": "..." } 입니다.
+            // V2 응답 구조 { "accessToken": "..." }
             Map response = restTemplate.postForObject(url, body, Map.class);
             String token = (String) response.get("accessToken");
-            System.out.println("✅ V2 토큰 발급 성공: " + token.substring(0, 10) + "...");
+            System.out.println("토큰 발급 성공: " + token.substring(0, 10) + "...");
             return token;
         } catch (Exception e) {
-            System.err.println("❌ V2 토큰 발급 실패: " + e.getMessage());
+            System.err.println("V2 토큰 발급 실패: " + e.getMessage());
             throw new RuntimeException("V2 토큰 발급 실패");
         }
     }
