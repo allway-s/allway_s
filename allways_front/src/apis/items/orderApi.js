@@ -15,3 +15,8 @@ export const getOrderDetail = (orderId) => api.get(`/api/orders/${orderId}/detai
 
 // 결제 검증
 export const verifyPayment = (verifyData) => api.post("/api/payment/verify", verifyData);
+
+export const cancelOrder = async (orderNumber) => {
+    const response = await api.put(`/api/orders/${orderNumber}/cancel`);
+    return response;
+};
