@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PaymentVerifyDto {
-    private String impUid;
+    private String paymentId;
     private String orderNumber;
 }
