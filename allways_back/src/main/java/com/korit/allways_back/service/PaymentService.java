@@ -13,14 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class PaymentService {
 
     private final OrderMapper orderMapper;
     private final RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${portone.v2-api-secret}")
     private String v2ApiSecret;
+
+    public PaymentService(OrderMapper orderMapper, @Value("${portone.v2-api-secret}") String v2ApiSecret) {
+        this.orderMapper = orderMapper;
+        this.v2ApiSecret = v2ApiSecret;
+    }
 
     @Transactional
     public boolean verifyAndCompleteOrder(PaymentVerifyDto verifyDto) throws Exception {
