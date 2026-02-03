@@ -170,7 +170,6 @@ export const MyPage = () => {
           </div>
         </section>
 
-        <SubwayNearby />
       </main>
     </div>
   );

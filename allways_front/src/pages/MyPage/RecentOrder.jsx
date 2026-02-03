@@ -38,6 +38,7 @@ export const RecentOrder = () => {
         const response = await api.get("/api/orders/history", {
           params: {userId: userId}
         });
+        console.log("주문 내역 응답:", response.data); // 이 부분이 [] 인지 확인
         setOrders(response.data);
       } catch (error) {
         console.error("데이터를 가져오는데 실패했습니다.", error);
