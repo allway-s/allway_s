@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { s } from "./SubwayNearbyModalStyle";
 
-export default function SubwayNearbyModal({ isOpen, onClose }) {
+// ✅ onSelect props 추가: 주소가 확정되면 이 함수를 호출합니다.
+export default function SubwayNearbyModal({ isOpen, onClose, onSelect }) {
   const mapRef = useRef(null);
   const mapElRef = useRef(null);
 
@@ -317,6 +318,18 @@ export default function SubwayNearbyModal({ isOpen, onClose }) {
     });
   };
 
+  // ✅ [추가] "이 위치로 설정하기" 버튼 핸들러
+  const handleConfirmAddress = () => {
+    if (!pickedAddress) {
+        alert("지도를 클릭하거나 주소를 검색하여 배달받을 위치를 선택해주세요.");
+        return;
+    }
+    // 부모 컴포넌트(CartPage)로 주소 전달
+    if (onSelect) {
+        onSelect(pickedAddress);
+    }
+  };
+
   if (!isOpen) return null;
 
   return createPortal(
@@ -353,6 +366,27 @@ export default function SubwayNearbyModal({ isOpen, onClose }) {
           <div css={s.section}>
             <div css={s.sectionLabel}>📍 {pickedTitle}</div>
             <div css={s.pickedCard}>{pickedAddress || "지도를 클릭하세요"}</div>
+            
+            {/* ✅ [추가] 주소 선택 확정 버튼 (주소가 있을 때만 표시) */}
+            {pickedAddress && (
+                <button 
+                    onClick={handleConfirmAddress}
+                    style={{
+                        marginTop: '8px',
+                        width: '100%',
+                        padding: '10px',
+                        backgroundColor: '#009223', // 서브웨이 그린
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '14px'
+                    }}
+                >
+                    이 위치로 설정하기
+                </button>
+            )}
           </div>
 
           <div css={s.section}>
