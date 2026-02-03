@@ -147,7 +147,6 @@ const CartPage = () => {
                 }
             });
 
-
         } catch (err) {
             console.error('❌ 주문 실패:', err);
             alert(err.response?.data?.message || '주문 중 오류가 발생했습니다.');
@@ -325,6 +324,8 @@ const CartPage = () => {
                 </>
             )}
             <button css={s.backButtonStyle} onClick={() => navigate('/menu')}>+ 메뉴 추가하기</button>
+            
+            {/* ✅ [수정] 모달에 onSelect props 전달 */}
             <SubwayNearbyModal 
                 isOpen={open} 
                 onClose={() => setOpen(false)} 
