@@ -4,10 +4,7 @@ import com.korit.allways_back.dto.request.PaymentVerifyDto;
 import com.korit.allways_back.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -35,12 +32,13 @@ public class PaymentService {
         String url = "https://api.portone.io/payments/" + paymentId;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "PortOne " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
         Map<String, Object> payment = response.getBody();
 
-        // 3. 상태 및 금액 검증
+        // 상태 및 금액 검증
         // V2 응답 구조: payment.status, payment.amount.total
         String status = (String) payment.get("status");
         Map<String, Object> amount = (Map<String, Object>) payment.get("amount");
@@ -61,14 +59,19 @@ public class PaymentService {
         body.put("apiSecret", v2ApiSecret);
 
         try {
-            // V2는 응답 바디의 구조가 { "accessToken": "..." } 입니다.
+            // V2 응답 구조 { "accessToken": "..." }
             Map response = restTemplate.postForObject(url, body, Map.class);
+
+            if (response == null || !response.containsKey("accessToken")) {
+                throw new RuntimeException("응답에 토큰이 없습니다.");
+            }
+
             String token = (String) response.get("accessToken");
-            System.out.println("✅ V2 토큰 발급 성공: " + token.substring(0, 10) + "...");
+            System.out.println("토큰 발급 성공: " + token.substring(0, 10));
             return token;
         } catch (Exception e) {
-            System.err.println("❌ V2 토큰 발급 실패: " + e.getMessage());
-            throw new RuntimeException("V2 토큰 발급 실패");
+            System.err.println("V2 토큰 발급 실패: " + e.getMessage());
+            throw new RuntimeException("V2 토큰 발급 실패", e);
         }
     }
 }
