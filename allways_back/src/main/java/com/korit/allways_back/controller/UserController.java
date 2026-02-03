@@ -1,6 +1,7 @@
 package com.korit.allways_back.controller;
 
 import com.korit.allways_back.dto.request.SignupRequestDto;
+import com.korit.allways_back.dto.response.UserRespDto;
 import com.korit.allways_back.security.PrincipalUser;
 import com.korit.allways_back.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,22 @@ public class UserController {
 
 
     @GetMapping("/me")
-    public ResponseEntity<Void> tokenCheckValid() {
+    public ResponseEntity<UserRespDto> tokenCheckValid() {
         PrincipalUser principalUser = PrincipalUser.get();
 
         if (principalUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return ResponseEntity.ok().build();
+        UserRespDto dto = UserRespDto.builder()
+                .userId(principalUser.getUser().getUserId())
+                .name(principalUser.getUser().getName())
+                .email(principalUser.getUser().getEmail())
+                .nickname(principalUser.getUser().getNickname())
+                .phoneNumber(principalUser.getUser().getPhoneNumber())
+                .build();
+
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping("/signup") // 추가 회원가입

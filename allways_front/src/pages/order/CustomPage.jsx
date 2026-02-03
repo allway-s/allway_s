@@ -14,7 +14,6 @@ function CustomPage() {
     const categoryName = location.state?.category;
     const selectedItem = location.state?.item;
     
-    // ✅ 썹픽 모드 확인
     const isSubwayPick = location.state?.isSubwayPick || false;
     const subwayPickData = location.state?.subwayPickData || null;
 
@@ -27,7 +26,6 @@ function CustomPage() {
         { id: '세트', name: '세트선택', limit: 1, required: true }, 
     ];
     
-    // ✅ 썹픽 모드일 때는 바로 세트 선택(6단계)로 이동
     const initialStep = isSubwayPick ? 6 : (categoryName === '샐러드' ? 2 : 1);
     
     const [step, setStep] = useState(initialStep);
@@ -48,16 +46,10 @@ function CustomPage() {
     const currentCategory = categories[step - 1];
     const isRequiredStep = currentCategory?.required && !(currentCategory.id === '빵' && categoryName === '샐러드');
 
-    // ✅ 썹픽 모드일 때 초기 재료 설정
+    // 썹픽일때 재료 담기
     useEffect(() => {
         if (isSubwayPick && subwayPickData) {
-            console.log('🎯 썹픽 모드 활성화:', subwayPickData);
-            
-            // 재료 정보를 allIngredients에 저장
             setAllIngredients(subwayPickData.ingredients || []);
-            
-            // selectedIngredients는 빈 객체로 유지 (이미 선택된 상태이므로)
-            // 가격 계산 시 subwayPickData.basePrice 사용
         }
     }, [isSubwayPick, subwayPickData]);
 
@@ -70,14 +62,13 @@ function CustomPage() {
             })
     }, []);
 
-    // 현재 단계의 재료 가져오기 (썹픽 모드에서는 세트만 가져옴)
+    // 현재 단계의 재료 가져오기 (썹픽일때는 세트만 가져옴)
     useEffect(() => {
         if (!currentCategory) return;
 
         if (currentCategory.id === '세트') {
             setIngredients(setMenus);
         } else if (!isSubwayPick) {
-            // 썹픽 모드가 아닐 때만 재료 가져오기
             getIngredients(currentCategory.id)
                 .then(response => {
                     setIngredients(response.data);
@@ -98,6 +89,8 @@ function CustomPage() {
     }, [setMenus]);
 
     // 선택된 세트의 구성 요소 가져오기
+    // 백엔드에서 이렇게 받는 DTO 참고 swagger
+
     useEffect(() => {
         if (selectedSetId && selectedSetId !== 1) {
             getSetDetail(selectedSetId)
@@ -109,11 +102,6 @@ function CustomPage() {
                     setDrinkOptions(Array.isArray(options.drink) ? options.drink : []);
                     setSideOptions(Array.isArray(options.side) ? options.side : []);
                 })
-                .catch(err => {
-                    setSetComponents(null);
-                    setDrinkOptions([]);
-                    setSideOptions([]);
-                });
         } else {
             setSetComponents(null);
             setDrinkOptions([]);
@@ -123,21 +111,22 @@ function CustomPage() {
         }
     }, [selectedSetId]);
 
-    const handleIngredientClick = (ingredient) => {
+    const handleIngredientClick = (item) => {
         const categoryId = currentCategory.id;
         
         if (categoryId === '세트') {
-            setSelectedSetId(ingredient.setId);
+            setSelectedSetId(item.setId);
             setSelectedIngredients(prev => ({
                 ...prev,
-                [categoryId]: [ingredient.setId]
+                [categoryId]: [item.setId]
             }));
             return;
         }
 
-        const ingredientId = ingredient.ingredientId;
+        const ingredientId = item.ingredientId;
 
         setSelectedIngredients(prev => {
+            console.log(prev)
             const currentSelected = prev[categoryId] || [];
             
             if (currentSelected.includes(ingredientId)) {

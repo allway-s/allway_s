@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/menu/MenuPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/menu/MenuPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/post_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/post_mapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/components/SubwayNearbyModal.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/components/SubwayNearbyModal.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/CartPage/CartPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/CartPage/CartPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/order/CustomPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/order/CustomPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +45,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "265-코드-주석-추가",
+    "git-widget-placeholder": "279-주석",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -84,6 +87,9 @@
       <workItem from="1769991096747" duration="13000" />
       <workItem from="1769994739089" duration="131000" />
       <workItem from="1769995175942" duration="393000" />
+      <workItem from="1770015348324" duration="207000" />
+      <workItem from="1770079416402" duration="7000" />
+      <workItem from="1770081149267" duration="6000" />
     </task>
     <servers />
   </component>
