@@ -91,7 +91,7 @@ jobs:
           docker push ${{env.DOCKER_USERNAME}}/react-app:latest
 
       - name: GCP SSH REMOTE
-        uses: appleboy/ssh-action@1.0.3
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{env.GCP_VM_HOST}}
           username: ${{env.GCP_VM_USERNAME}}
