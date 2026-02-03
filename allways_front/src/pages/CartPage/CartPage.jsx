@@ -8,9 +8,10 @@ import {
     removeFromCart,
     clearCart
 } from '../../utils/cartStore';
-import { createOrder, verifyPayment } from "../../apis/items/orderApi";
+import { cancelOrder, createOrder, verifyPayment } from "../../apis/items/orderApi";
 import { getUserIdFromToken } from "../../utils/getUserId";
 import SubwayNearbyModal from '../../components/SubwayNearbyModal';
+import PortOne from "@portone/browser-sdk/v2";
 
 const CartPage = () => {
     const [cart, setCart] = useState({ orders: [] });
@@ -68,12 +69,11 @@ const CartPage = () => {
         }
 
         setLoading(true);
+        let createdOrderNumber = null;  // 추적용 주문번호
         try {
-            // 첫 번째 메뉴만 표시
             const firstItem = cart.orders[0];
             let displayName = "";
 
-            // 세트 여부 표시
             if (!!firstItem.setId) {
                 const setName = getSetName(firstItem.setId);
                 displayName = `${firstItem.itemName} ${setName}`;
@@ -81,23 +81,21 @@ const CartPage = () => {
                 displayName = firstItem.itemName;
             }
 
-            // [첫 번째 메뉴]외 ~건 표시
             const ordersLength = cart.orders.length;
             const finalPaymentName = ordersLength > 1
                 ? `${displayName} 외 ${ordersLength - 1}건`
                 : displayName;
 
-            // ✅ [수정] order 객체에 address와 detailAddress 포함
             const orderData = {
                 order: {
                     userId: currentUserId,
-                    address: address,             // 사용자가 선택한 주소
-                    detailAddress: detailAddress, // 사용자가 입력한 상세 주소
+                    address: address,
+                    detailAddress: detailAddress,
                     totalPrice: calculateTotalPrice()
                 },
                 orderDetails: cart.orders.map(item => ({
                     productId: item.productId,
-                    itemId: item.itemId,           // 상품 생성을 위해 필수
+                    itemId: item.itemId,
                     ingredientIds: item.ingredientIds,
                     unitPrice: item.price || item.unitPrice,
                     quantity: item.quantity,
@@ -107,49 +105,73 @@ const CartPage = () => {
                 }))
             };
 
-            const response = await createOrder(orderData);
+            // 주문 생성
+            const orderResponse = await createOrder(orderData);
+            const { orderNumber, totalPrice } = orderResponse.data;
 
-            const { orderNumber, totalPrice } = response.data;
+            // 주문 번호 저장
+            createdOrderNumber = orderNumber; 
 
-            const { IMP } = window;
-            IMP.init("imp30286060");
-
-            const paymentParam = {
-                pg: "html5_inicis",
-                pay_method: "card",
-                merchant_uid: orderNumber,
-                name: finalPaymentName,
-                amount: totalPrice,
-            };
-
-            IMP.request_pay(paymentParam, async (rsp) => {
-                if (rsp.success) {
-                    // 결제 성공 시 검증 api 호출
-                    try {
-                        const verifyData = {
-                            impUid: rsp.imp_uid,
-                            orderNumber: orderNumber
-                        };
-
-                        await verifyPayment(verifyData);
-
-                        alert('결제가 완료되었습니다!');
-                        clearCart();
-                        loadCart();
-                        // 성공 페이지로 이동 (state에 주문번호 전달)
-                        navigate('/order/success', { state: { fromPayment: true, orderNumber } });
-                    } catch (verifyErr) {
-                        console.error('검증 실패:', verifyErr);
-                        alert('결제 검증 중 오류가 발생했습니다.');
-                    }
-                } else {
-                    alert(`결제 실패: ${rsp.error_msg}`);
+            // V2 방식으로 결제 요청
+            const paymentResponse = await PortOne.requestPayment({
+                storeId: "store-b92791a0-bdc6-4d76-9331-77b569d37232",
+                channelKey: "channel-key-4293ef39-5e3c-405b-b1f1-640518f9051a",
+                paymentId: `payment-${orderNumber}`,
+                orderName: finalPaymentName,
+                totalAmount: totalPrice,
+                currency: "CURRENCY_KRW",
+                payMethod: "EASY_PAY",
+                easyPay: {
+                    easyPayProvider: "EASY_PAY_PROVIDER_KAKAOPAY"
                 }
             });
 
-        } catch (err) {
-            console.error('❌ 주문 실패:', err);
-            alert(err.response?.data?.message || '주문 중 오류가 발생했습니다.');
+            // 결제 취소/실패 시 주문도 취소
+            if (paymentResponse.code != null) {
+                console.log("결제 취소/실패:", paymentResponse.message);
+                
+                // 주문 상태를 CANCELLED로 변경
+                await cancelOrder(orderNumber);
+                
+                alert(`결제가 취소되었습니다: ${paymentResponse.message}`);
+                return;
+        }
+
+            // 백엔드 검증 요청
+            const verifyDto = {
+                paymentId: paymentResponse.paymentId,
+                orderNumber: orderNumber
+            };
+            
+            const verifyRes = await verifyPayment(verifyDto);
+
+            if (verifyRes.data) {
+                alert("주문과 결제가 모두 완료되었습니다!");
+                clearCart();
+                loadCart();
+                navigate('/order/success', {
+                    state: {
+                        fromPayment: true,
+                        orderNumber: orderNumber
+                    }
+                });
+            } else {
+                alert("결제 금액이 일치하지 않습니다.");
+            }
+
+        } catch (e) {
+            console.error('주문 실패:', e);
+
+            // 에러 발생 시에도 주문 취소
+            if (!!createdOrderNumber) {
+                try {
+                    await cancelOrder(createdOrderNumber);
+                } catch (cancelError) {
+                    console.error('주문 취소 실패:', cancelError);
+                }
+            }
+
+            alert(e.response?.data?.message || '주문이 취소되었습니다.');
         } finally {
             setLoading(false);
         }
