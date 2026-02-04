@@ -1,5 +1,6 @@
 package com.korit.allways_back.service;
 
+import com.korit.allways_back.entity.Post;
 import com.korit.allways_back.entity.Preset;
 import com.korit.allways_back.mapper.PostMapper;
 import com.korit.allways_back.mapper.PresetMapper;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class PresetService {
@@ -16,84 +16,49 @@ public class PresetService {
     private final PresetMapper presetMapper;
     private final PostMapper postMapper;
 
-    private static final int MAX_PRESETS_PER_USER = 10; // 사용자당 최대 프리셋 수
-
     /**
-     * 프리셋 저장
+     * 포스트를 내 프리셋으로 저장
      */
     @Transactional
-    public Preset savePreset(Preset preset) {
-        // 최대 개수 체크
-        int currentCount = presetMapper.countByUserId(preset.getUserId());
-        if (currentCount >= MAX_PRESETS_PER_USER) {
-            throw new IllegalStateException("프리셋은 최대 " + MAX_PRESETS_PER_USER + "개까지 저장할 수 있습니다.");
+    public void savePresetFromPost(int userId, Integer postId) {
+
+        // 1️⃣ postId → productId
+        Integer productId = presetMapper.findProductIdByPostId(postId);
+        if (productId == null) {
+            throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
         }
 
-        // 중복 체크 (같은 상품 프리셋 존재 여부)
-        if (presetMapper.existsByUserIdAndProductId(preset.getUserId(), preset.getProductId())) {
-            throw new IllegalArgumentException("이미 동일한 상품의 프리셋이 존재합니다.");
+        // 2️⃣ postId → 게시글 작성자
+        Integer postedUserId = postMapper.findPostedUserIdByPostId(postId);
+
+        // 3️⃣ 중복 저장 방지
+        if (presetMapper.existsByUserIdProductIdAndPostedUserId(
+                userId, productId, postedUserId)) {
+            throw new IllegalStateException("이미 저장한 포스트입니다.");
         }
 
-        presetMapper.insert(preset);
-        return preset;
-    }
-
-    @Transactional
-    public Preset savePresetFromPost(int userId, Integer postId) {
-
-        // 1. post → productId 조회
-        int productId = postMapper.findProductIdByPostId(postId);
-
-        // 2. 🔥 중복 검사
-        boolean exists =
-                presetMapper.existsByUserIdAndProductId(userId, productId);
-
-        if (exists) {
-            throw new IllegalStateException("이미 해당 레시피를 프리셋으로 보유하고 있습니다.");
+        // 4️⃣ 프리셋 저장
+        int result = presetMapper.insertFromPost(userId, postId);
+        if (result == 0) {
+            throw new IllegalStateException("프리셋 저장에 실패했습니다.");
         }
-
-        // 3. 저장
-        Preset preset = new Preset();
-        preset.setUserId(userId);
-        preset.setPostId(postId);
-
-        presetMapper.insertFromPost(preset);
-        return preset;
     }
 
     /**
-     * 사용자 ID로 프리셋 목록 조회
+     * 사용자 프리셋 목록
      */
-    public List<Preset> getUserPresets(Integer userId) {
+    public List<Preset> findByUserId(int userId) {
         return presetMapper.findByUserId(userId);
     }
 
     /**
-     * 프리셋 ID로 조회
-     */
-    public Preset getPresetById(Integer presetId) {
-        Preset preset = presetMapper.findById(presetId);
-        if (preset == null) {
-            throw new IllegalArgumentException("존재하지 않는 프리셋입니다.");
-        }
-        return preset;
-    }
-
-    /**
-     * 프리셋 삭제
+     * 프리셋 삭제 (본인 것만)
      */
     @Transactional
-    public void deletePreset(Integer presetId, Integer userId) {
+    public void deleteById(int presetId, int userId) {
         int deleted = presetMapper.deleteById(presetId, userId);
         if (deleted == 0) {
-            throw new IllegalArgumentException("삭제할 수 없습니다. 프리셋이 존재하지 않거나 권한이 없습니다.");
+            throw new IllegalArgumentException("삭제할 수 없습니다.");
         }
-    }
-
-    /**
-     * 사용자의 프리셋 개수 조회
-     */
-    public int getUserPresetCount(Integer userId) {
-        return presetMapper.countByUserId(userId);
     }
 }
