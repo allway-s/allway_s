@@ -106,49 +106,27 @@ const handleOrder = async (item) => {
 
 // 5. 공유 핸들러
   const handleShare = async (preset) => {
-    // 프리셋에 연결된 상품 ID 확인
-    const currentProductId = preset.productId || preset.product?.productId;
-    
-    if (!currentProductId) {
-      alert("상품 정보를 찾을 수 없습니다.");
-      return;
-    }
+  if (!window.confirm(`'${preset.presetName}' 레시피를 공유하시겠습니까?`)) return;
 
-    try {
-      // 중복 공유 방지를 위해 전체 게시글 조회
-      const communityRes = await getPosts();
-      const communityPosts = communityRes.data || [];
-      
-      // 이미 같은 상품(레시피)으로 올라온 글이 있는지 체크
-      const isAlreadyShared = communityPosts.some(post => 
-        Number(post.productId) === Number(currentProductId)
-      );
-      
-      if (isAlreadyShared) {
-        alert("이미 커뮤니티에 공유된 레시피입니다.");
-        return;
-      }
+  try {
+    const response = await createPost({
+      userId,
+      presetId: preset.presetId,
+    });
 
-      if (!window.confirm(`'${preset.presetName}' 레시피를 공유하시겠습니까?`)) return;
-      
-      /**
-       * [작동 방식 설명]
-       * 프론트: { presetId: 1 } 만 보냄
-       * 백엔드: 토큰을 통해 PrincipalUser에서 userId를 꺼내 서비스의 createPost(userId, dto) 호출
-       */
-      const response = await createPost({ 
-        presetId: preset.presetId 
-      });
+    // ✅ 백엔드에서 중복이면 message 내려옴
+    if (err.response?.status === 409) {
+      alert(err.response.data.message);
+}
 
-      if (response.status === 200 || response.status === 201) {
-        alert("성공적으로 공유되었습니다!");
-        navigate('/community');
-      }
-    } catch (error) {
-      console.error("공유 에러:", error);
-      alert("공유 처리 중 오류가 발생했습니다.");
-    }
-  };
+    alert("성공적으로 공유되었습니다!");
+    navigate('/community');
+
+  } catch (error) {
+    console.error("공유 에러:", error);
+    alert("공유 처리 중 오류가 발생했습니다.");
+  }
+};
 
   // 6. 삭제 핸들러
   const handleDelete = async (presetId) => {

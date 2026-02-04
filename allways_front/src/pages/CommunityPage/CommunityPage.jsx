@@ -130,13 +130,7 @@ export default function CommunityPage() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [open]);
   
-    const onClickDelete = async (postId) => {
-    try {
-      await deletePost(postId, userId);
-    } catch (err) {
-      console.log('삭제 실패', err);
-    }
-  };
+  
   return (
     <div css={s.page}>
       <div css={s.container}>
