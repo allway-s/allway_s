@@ -70,7 +70,7 @@ public class OrderService {
                     itemPrice = price;
                 }
             } catch (Exception e) {
-                log.error("상품 가격 계산 실패. productId: {}, error: {}", productId, e.getMessage());
+                log.error("상품 가격 계산 실패.  productId: {}, error: {}", productId, e.getMessage());
                 throw new IllegalArgumentException(
                         "상품 가격 계산 실패. productId: " + productId, e
                 );
@@ -90,6 +90,7 @@ public class OrderService {
 
         log.info("주문 생성 완료. orderId: {}, orderNumber: {}, totalPrice: {}",
                 order.getOrderId(), order.getOrderNumber(), order.getTotalPrice());
+
 
         return order;
     }

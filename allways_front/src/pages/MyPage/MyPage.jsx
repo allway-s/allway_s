@@ -118,7 +118,7 @@ export const MyPage = () => {
                 <div key={item.presetId} css={S.presetCard} onClick={() => navigate('/mypreset')} style={{ minHeight: '320px', cursor: 'pointer' }}>
                   <div css={S.imgBox} style={{ height: '180px', backgroundColor: '#f5f5f5', overflow: 'hidden' }}>
                     <img 
-                      src={item.imgUrl || "https://www.subway.co.kr/upload/menu/Veggie-Delite_20211231095658375.png"} 
+                      src={item.imageUrl} 
                       alt={item.presetName} 
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                     />

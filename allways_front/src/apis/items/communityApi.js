@@ -10,7 +10,7 @@ export const getPosts = () => api.get("/api/posts");
 export const toggleLike = (postId) => api.post(`/api/posts/${postId}/like`);
 
 // 프리셋 저장 (body에서 userId 삭제)
-export const savePreset = (postId) => api.post("/api/presets/post", { postId: Number(postId) });
+export const savePreset = (presetReqDto) => api.post("/api/presets/save", presetReqDto);
 
 // 내 프리셋 목록 조회 (params 삭제)
 export const getMyPresets = () => api.get("/api/presets");
