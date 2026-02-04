@@ -15,7 +15,7 @@ spring:
       on-profile: dev
 
 cors:
-  allow-origin: "http://localhost:5173"
+  allow-origin: "http://localhost:5173/"
 ---
 
 spring:
@@ -24,7 +24,7 @@ spring:
       on-profile: minjae-server
 
 cors:
-  allow-origin: "https://allllllllllways.store"
+  allow-origin: "https://allllllllllways.store/"
 ---
 
 spring:
@@ -33,7 +33,7 @@ spring:
       on-profile: jinhyun-server
 
 cors:
-  allow-origin: "https://allwaysfreshmarket.store"
+  allow-origin: "https://allwaysfreshmarket.store/"
 ---
 
 spring:
@@ -51,7 +51,7 @@ spring:
       on-profile: hyeondeok-server
 
 cors:
-  allow-origin: "https://nationalallwayspj.store"
+  allow-origin: "https://nationalallwayspj.store/"
 ---
 spring:
   config:
@@ -63,10 +63,10 @@ springdoc:
     path: doc
 
 mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
+  mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-type-aliases-package: com.korit.allways_back.entity
+  type-aliases-package: com.korit.allways_back.entity
 
 logging:
   level:
@@ -78,4 +78,3 @@ server:
       cookie:
         same-site: lax
         http-only: true
-

@@ -78,6 +78,7 @@
         LEFT JOIN ingredient_tb s ON od.selected_side_id = s.ingredient_id
         WHERE
         o.user_id = #{userId}
+        AND o.status = 'PAID'
         ORDER BY
         o.ordered_at DESC, od.order_detail_id
     </select>
