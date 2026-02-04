@@ -1,4 +1,34 @@
-package com.korit.allways_back.controller;
+    package com.korit.allways_back.controller;
+
+    import com.korit.allways_back.dto.request.LikeRequestDto;
+    import com.korit.allways_back.dto.request.PostCreateRequestDto;
+    import com.korit.allways_back.entity.Post;
+    import com.korit.allways_back.security.PrincipalUser;
+    import com.korit.allways_back.service.PostService;
+    import lombok.RequiredArgsConstructor;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.security.core.annotation.AuthenticationPrincipal;
+    import org.springframework.web.bind.annotation.*;
+
+    import java.util.HashMap;
+    import java.util.List;
+    import java.util.Map;
+
+    @RestController
+    @RequestMapping("/api/posts")
+    @RequiredArgsConstructor
+    public class PostController {
+
+        private final PostService postService;
+
+        @PostMapping
+        public ResponseEntity<Post> createPost(@AuthenticationPrincipal PrincipalUser principalUser,
+                @RequestBody PostCreateRequestDto dto) {
+
+            int userId = principalUser.getUser().getUserId();
+            Post createdPost = postService.createPost(userId, dto);
+            return ResponseEntity.ok(createdPost);
+        }
 
 import com.korit.allways_back.dto.request.PostCreateRequestDto;
 import com.korit.allways_back.entity.Post;
@@ -31,36 +61,10 @@ public class PostController {
             return ResponseEntity.status(401).build(); // 인증되지 않은 경우
         }
 
-        int userId = principalUser.getUser().getUserId();
-        Post createdPost = postService.createPost(userId, dto);
-        return ResponseEntity.ok(createdPost);
-    }
-
-    /**
-     * 전체 게시글 조회
-     * GET /api/posts
-     * 작동 방식: 로그인 상태라면 해당 유저의 '좋아요 여부'를 포함하여 조회하고, 비로그인 시 게시글 목록만 조회합니다.
-     */
-    @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        PrincipalUser principalUser = PrincipalUser.get();
-        // 로그인 안 한 상태에서도 게시글은 볼 수 있어야 하므로 null 허용
-        Integer userId = (principalUser != null) ? principalUser.getUser().getUserId() : null;
-
-        List<Post> posts = postService.getAllPosts(userId);
-        return ResponseEntity.ok(posts);
-    }
-
-    /**
-     * 좋아요 토글
-     * POST /api/posts/{postId}/like
-     * 작동 방식: 사용자가 해당 게시글을 이미 좋아했다면 취소, 아니면 추가를 수행합니다.
-     */
-    @PostMapping("/{postId}/like")
-    public ResponseEntity<Map<String, Boolean>> toggleLike(@PathVariable Integer postId) {
-        PrincipalUser principalUser = PrincipalUser.get();
-        if (principalUser == null) {
-            return ResponseEntity.status(401).build();
+        @DeleteMapping("/{postId}")
+        public ResponseEntity<Void> deleteByPostId(@PathVariable Integer postId) {
+            postService.deleteByPostId(postId);
+            return ResponseEntity.noContent().build();
         }
 
         boolean liked = postService.toggleLike(principalUser.getUser().getUserId(), postId);

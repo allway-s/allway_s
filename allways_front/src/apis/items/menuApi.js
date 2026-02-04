@@ -12,6 +12,7 @@ export const getSets = () => api.get("/api/sets");
 // 특정 세트 상세 정보 (구성품 + 옵션 리스트)
 export const getSetDetail = (setId) => api.get(`/api/sets/${setId}/detail`);
 
+// 썹픽 조회
 export const getSubwayPick = async (itemId) => {
     return await api.get(`/api/products/subway-pick/${itemId}`);
 };

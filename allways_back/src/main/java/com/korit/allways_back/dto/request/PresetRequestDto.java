@@ -6,4 +6,6 @@ import lombok.Data;
 public class PresetRequestDto {
     private Integer userId;
     private Integer postId;
+    private Integer productId;
+    private Integer presetId;
 }

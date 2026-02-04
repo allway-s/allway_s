@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { S } from './MyPresetStyles.js';
 import axios from 'axios';
-import { createPost, getMyPresets, getPosts } from '../../apis/items/communityApi.js';
+import { createPost, deletePreset, getMyPresets, getPosts } from '../../apis/items/communityApi.js';
 import { getItems, getSubwayPick } from "../../apis/items/menuApi"; 
 import { getUserIdFromToken } from '../../utils/getUserId.js';
 
@@ -151,8 +151,8 @@ const handleOrder = async (item) => {
   };
 
   // 6. 삭제 핸들러
-  const handleDelete = async (presetId, postedUserId) => {
-    const isSavedRecipe = Number(userId) !== Number(postedUserId);
+  const handleDelete = async (presetId) => {
+    const isSavedRecipe = Number(userId) !== Number(userId);
     let confirmMsg = isSavedRecipe 
       ? `[저장된 레시피 삭제]\n내 목록에서만 삭제됩니다.` 
       : `[오리지널 레시피 삭제]\n삭제 시 커뮤니티 게시글도 함께 삭제됩니다. 정말 삭제하시겠습니까?`;
@@ -160,16 +160,15 @@ const handleOrder = async (item) => {
     if (!window.confirm(confirmMsg)) return;
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await axios.delete(`/api/presets/${presetId}`, { 
-        params: { userId: userId }, 
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = deletePreset(presetId, userId);
       if (response.status === 200 || response.status === 204) {
         alert("성공적으로 삭제되었습니다.");
-        setPresets(prev => prev.filter(p => p.presetId !== presetId));
+        setPresets(prevPresets =>
+        prevPresets.filter(p => p.presetId !== presetId)
+      );
       }
     } catch (error) {
-      alert("삭제 중 오류가 발생했습니다.");
+      console.log("삭제 중 오류가 발생했습니다.", error);
     }
   };
 
@@ -218,7 +217,7 @@ const handleOrder = async (item) => {
           {isOriginal && <button css={S.btnShare} onClick={() => handleShare(item)}>공유</button>}
           {/* ✅ handleOrder 함수 연결 */}
           <button css={S.btnOrder} onClick={() => handleOrder(item)}>주문하기</button>
-          <button css={S.btnDelete} onClick={() => handleDelete(item.presetId, item.postedUserId)}>삭제</button>
+          <button css={S.btnDelete} onClick={() => handleDelete(item.presetId)}>삭제</button>
         </div>
       </div>
     );

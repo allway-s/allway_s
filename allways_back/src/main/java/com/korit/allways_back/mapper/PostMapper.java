@@ -28,10 +28,12 @@ public interface PostMapper {
 
     int updateLikeCount(@Param("postId") Integer postId);
 
-    int deleteByPresetId(@Param("presetId") Integer presetId);
+    int deleteByPostId(@Param("postId") Integer postId);
 
-    boolean existsByUserIdAndProductId(
-            @Param("userId") Integer userId,
-            @Param("productId") Integer productId
+    boolean existsPostByUserIdAndProductId(
+            @Param("userId") int userId,
+            @Param("productId") int productId
     );
+    Integer findProductIdByPostId(@Param("postId") Integer postId);
+
 }
