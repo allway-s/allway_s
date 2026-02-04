@@ -6,4 +6,5 @@ import lombok.Data;
 public class PostCreateRequestDto {
     private Integer presetId;
     private Integer userId;
+
 }

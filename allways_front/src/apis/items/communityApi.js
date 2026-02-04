@@ -12,8 +12,13 @@ export const toggleLike = (postId) => api.post(`/api/posts/${postId}/like`);
 // 프리셋 저장 (body에서 userId 삭제)
 export const savePreset = (presetReqDto) => api.post("/api/presets/save", presetReqDto);
 
-// 내 프리셋 목록 조회 (params 삭제)
-export const getMyPresets = () => api.get("/api/presets");
+// 게시글 삭제
+export const deletePost = (postId, userId) =>
+  api.delete(`/api/posts/${postId}`, { params: { userId } });
+
+// 프리셋 저장 (커뮤니티 post에서)
+export const savePreset = (postId, userId) =>
+  api.post("/api/presets/post", { userId, postId });
 
 // 프리셋 삭제 (params 삭제)
 export const deletePreset = (presetId) => api.delete(`/api/presets/${presetId}`);

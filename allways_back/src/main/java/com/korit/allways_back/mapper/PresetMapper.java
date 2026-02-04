@@ -26,7 +26,9 @@ public interface PresetMapper {
     int countByUserId(@Param("userId") Integer userId);
 
     boolean existsByUserIdAndProductId(
-            @Param("userId") Integer userId,
-            @Param("productId") Integer productId
+            @Param("userId") int userId,
+            @Param("productId") int productId
     );
+
+    int findProductIdByPresetId(@Param("presetId") Integer presetId);
 }

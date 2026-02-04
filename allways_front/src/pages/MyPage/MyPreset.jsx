@@ -191,7 +191,9 @@ export default function MyPreSet() {
       
       if (response.status === 200 || response.status === 204) {
         alert("성공적으로 삭제되었습니다.");
-        setPresets(prev => prev.filter(p => p.presetId !== presetId));
+        setPresets(prevPresets =>
+        prevPresets.filter(p => p.presetId !== presetId)
+      );
       }
     } catch (error) {
       console.error("삭제 실패:", error);
@@ -258,7 +260,7 @@ export default function MyPreSet() {
         <div css={S.buttonGroup} style={{ marginTop: 'auto' }}>
           {isOriginal && <button css={S.btnShare} onClick={() => handleShare(item)}>공유</button>}
           <button css={S.btnOrder} onClick={() => handleOrder(item)}>주문하기</button>
-          <button css={S.btnDelete} onClick={() => handleDelete(item.presetId, item.postedUserId)}>삭제</button>
+          <button css={S.btnDelete} onClick={() => handleDelete(item.presetId)}>삭제</button>
         </div>
       </div>
     );
