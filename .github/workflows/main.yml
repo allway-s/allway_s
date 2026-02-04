@@ -23,6 +23,7 @@ jobs:
             echo "DOCKER_PASSWORD=${{secrets.DOCKER_PASSWORD_MINJAE}}" >> $GITHUB_ENV
             echo "APPLICATION_SECRET=${{secrets.APPLICATION_SECRET_MINJAE}}" >> $GITHUB_ENV
             echo "REACT_ENV=${{secrets.REACT_ENV_MINJAE}}" >> $GITHUB_ENV
+            echo "ACTIVE_PROFILE=minjae" >> $GITHUB_ENV
 
           elif [ ${{github.ref}} == 'refs/heads/deploy-qorrbs' ]; then
           
@@ -76,7 +77,7 @@ jobs:
           cd allways_back
           echo ${{env.APPLICATION_SECRET}} | base64 --decode > ./src/main/resources/application-secret-prod.yml
           chmod 777 ./mvnw
-          ./mvnw clean package -Dtestskip
+          ./mvnw clean package -DskipTests -Dactive.profile=${{env.ACTIVE_PROFILE}}
 
       - name: Springboot Docker image build
         run: |
