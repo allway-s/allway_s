@@ -107,7 +107,7 @@ export const S = {
   `,
   imageArea: css`
     
-    width: 240px;
+    width: 280px;
     height: 200px;
     background-color: #fcfcfc;
     display: flex;

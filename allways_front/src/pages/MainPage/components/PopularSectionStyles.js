@@ -57,56 +57,65 @@ export const S = {
     background: white;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     margin-left: 1rem;
 
     &:hover {
       background: #000;
-      color: #fff;
+      svg {
+        stroke: #fff;
+      }
       transform: scale(1.05);
     }
   `,
 
+  // ✅ 핵심 수정: 카드 3개를 가운데 정렬
   grid: css`
-    display: flex !important;
-    justify-content: start;
-    gap: 4rem;
+    display: flex;
+    justify-content: center; /* ✅ start → center 변경 */
+    gap: 2.5rem; /* ✅ 4rem → 2.5rem (간격 좁힘) */
     width: 100%;
     flex-wrap: wrap;
-    position: relative; /* ✅ 메시지 배치를 위한 기준점 */
+    position: relative;
+    
+    /* ✅ 최대 3개만 표시되도록 제한 */
+    max-width: 1100px;
+    margin: 0 auto;
   `,
 
-  // ✅ 블러 상태를 인자로 받는 함수형 스타일
   cardWrapper: (isBlur) => css`
-    display: flex;
-    justify-content: start;
-    flex: 0 1 320px;
-    min-width: 280px;
+    flex: 0 0 320px; /* ✅ flex-grow 0으로 고정 크기 유지 */
+    max-width: 320px; /* ✅ 최대 크기 제한 */
+    position: relative;
     transition: all 0.3s ease;
 
     ${isBlur && css`
-      filter: blur(8px);      /* ✅ 흐림 효과 */
-      pointer-events: none;   /* ✅ 클릭 방지 */
-      user-select: none;      /* ✅ 드래그 방지 */
-      opacity: 0.6;           /* ✅ 투명도 조절 */
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.6;
     `}
 
-    @media (max-width: 640px) {
-      flex: 1 1 100%;
+    @media (max-width: 1100px) {
+      flex: 0 0 calc(50% - 1.25rem); /* ✅ 2개씩 배치 */
+      max-width: calc(50% - 1.25rem);
+    }
+
+    @media (max-width: 768px) {
+      flex: 0 0 100%; /* ✅ 1개씩 배치 */
       max-width: 400px;
     }
   `,
 
-  // ✅ 블러된 영역 중앙에 띄울 안내 문구 스타일
   blurMessage: css`
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 20;
-    background: #ffe41a; /* 서브웨이 메인 그린 컬러 */
+    background: #009223;
     color: white;
     padding: 1.2rem 2.5rem;
     border-radius: 50px;
@@ -119,7 +128,7 @@ export const S = {
     border: none;
 
     &:hover {
-      background: #ffc812;
+      background: #007a1c;
       transform: translate(-50%, -50%) scale(1.05);
     }
   `,
@@ -136,6 +145,8 @@ export const S = {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
     z-index: 10;
     border: 3px solid white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

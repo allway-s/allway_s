@@ -1,11 +1,12 @@
 spring:
- profiles:
-   active: dev
-   group:
-     dev: dev, common, secret-dev
-     minjae: minjae-server, common, secret-prod
-     jinhyun: jinhyun-server, common, secret-prod
-
+  profiles:
+    active: dev
+    group:
+      dev: dev, common, secret-dev
+      minjae: minjae-server, common, secret-prod
+      jinhyun: jinhyun-server, common, secret-prod
+      qorrbs: qorrbs-server, common, secret-prod
+      hyeondeok: hyeondeok-server, common, secret-prod
 ---
 
 spring:
@@ -13,6 +14,8 @@ spring:
     activate:
       on-profile: dev
 
+cors:
+  allow-origin: "http://localhost:5173"
 ---
 
 spring:
@@ -20,18 +23,40 @@ spring:
     activate:
       on-profile: minjae-server
 
+cors:
+  allow-origin: "https://allllllllllways.store"
 ---
 
 spring:
   config:
     activate:
       on-profile: jinhyun-server
-      
+
+cors:
+  allow-origin: "https://allwaysfreshmarket.store"
+---
+
+spring:
+  config:
+    activate:
+      on-profile: qorrbs-server
+
+cors:
+  allow-origin: "https://allwayyys/store"
+---
+
+spring:
+  config:
+    activate:
+      on-profile: hyeondeok-server
+
+cors:
+  allow-origin: "https://nationalallwayspj.store"
 ---
 spring:
   config:
     activate:
-      on-profile: common # 'local'이 활성화될 때 이 아래 설정을 읽으라고 명시!
+      on-profile: common
 
 springdoc:
   swagger-ui:
@@ -41,7 +66,7 @@ mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
-  type-aliases-package: com.korit.allways_back.entity
+type-aliases-package: com.korit.allways_back.entity
 
 logging:
   level:
@@ -53,3 +78,4 @@ server:
       cookie:
         same-site: lax
         http-only: true
+
