@@ -114,8 +114,8 @@ const CartPage = () => {
 
             // V2 방식으로 결제 요청
             const paymentResponse = await PortOne.requestPayment({
-                storeId: "store-96e0894b-1cb9-4532-a090-ec0151e65f7d",
-                channelKey: "channel-key-47d76a2f-04f1-4cad-8657-425a10b7e85e",
+                storeId: "store-a8f43d7f-9541-401d-a6c0-10810e07fbab",
+                channelKey: "channel-key-b5dfeee5-44ea-4b46-8fdd-45b4da8746d1",
                 paymentId: `payment-${orderNumber}`,
                 orderName: finalPaymentName,
                 totalAmount: totalPrice,
