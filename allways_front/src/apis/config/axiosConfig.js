@@ -29,15 +29,12 @@ export const ResponseInterceptor = (navigate, setIsLoggedIn) => {
                     case 401:
                         localStorage.removeItem("accessToken");
                         setIsLoggedIn(false);
-                        alert(message || "세션이 만료되었습니다.");
                         navigate("/login", { replace: true });  
                         break;
                     case 403: 
-                        alert(message || "접근 권한이 없습니다.");
                         navigate("/", { replace: true });
                         break;
                     case 500:
-                        alert("서버 오류입니다.")
                         break;
                 }
             }

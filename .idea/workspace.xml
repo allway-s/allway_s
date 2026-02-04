@@ -4,7 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="" />
+    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/apis/config/axiosConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/apis/config/axiosConfig.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/apis/items/orderApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/apis/items/orderApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/AuthPage/LoginPageStyles.js" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/AuthPage/LoginPageStyles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/CartPage/CartPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/CartPage/CartPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/CartPage/cartPageStyles.js" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/CartPage/cartPageStyles.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/MainPage/components/PopularSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/MainPage/components/PopularSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/MyPage/RecentOrder.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/MyPage/RecentOrder.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/menu/MenuPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/menu/MenuPage.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,21 +46,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;279-주석&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "293-주석달고-계속수정",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -85,6 +97,7 @@
       <workItem from="1770079416402" duration="7000" />
       <workItem from="1770081149267" duration="6000" />
       <workItem from="1770083820930" duration="141000" />
+      <workItem from="1770101970505" duration="240000" />
     </task>
     <servers />
   </component>

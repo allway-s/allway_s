@@ -3,30 +3,13 @@ import { css } from '@emotion/react';
 
 export const S = {
   container: css`
-    min-height: 100vh;
+    min-height: 90vh;
     background-color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 120px;
   `,
-
-  // header: css`
-  //   width: 100%;
-  //   padding: 1.2rem 0;
-  //   display: flex;
-  //   justify-content: center;
-  //   align-items: center;
-  //   margin-bottom: 5rem;
-  // `,
-
-  // logo: css`
-  //   color: #009223;
-  //   font-weight: 900;
-  //   font-size: 1.6rem;
-  //   letter-spacing: -0.05em;
-  //   span { color: #ffc608; }
-  // `,
 
   card: css`
     width: 100%;

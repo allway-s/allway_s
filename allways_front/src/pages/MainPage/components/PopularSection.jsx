@@ -13,8 +13,6 @@ export function PopularSection({ user }) {
   const [posts, setPosts] = useState([]);
   const userId = useMemo(() => getUserIdFromToken(), []);
 
-  console.log(user);
-
   // 로그인 여부 판단
   const isLoggedInUser =
     user && (user.id || user.name || Object.keys(user).length > 0);
@@ -57,7 +55,6 @@ export function PopularSection({ user }) {
   };
   useEffect(() => {
     if (posts.length > 0) {
-      console.log('PopularSection item:', posts[0]);
     }
   }, [posts]);
 

@@ -242,7 +242,8 @@ function CustomPage() {
 
         // 장바구니에 넘길 객체 구성
         const orderItem = {
-            productId: isSubwayPick ? subwayPickData.productId : parseInt(itemId),
+            // ✅ 커스텀 모드일 때는 productId를 null로 전송 (백엔드에서 새로 생성하도록)
+            productId: isSubwayPick ? subwayPickData.productId : null,
             itemId: parseInt(itemId),
             itemName: selectedItem?.itemName,
             imgUrl: selectedItem?.imageUrl || selectedItem?.imgUrl,
@@ -264,16 +265,6 @@ function CustomPage() {
             drinkPrice: drinkPrice,
             sidePrice: sidePrice,
         };
-
-        console.log("✅ 장바구니 추가 - 최종 금액:", {
-            모드: isSubwayPick ? '썹픽' : '커스텀',
-            기본가격: basePrice,
-            재료추가: ingredientExtraPrice,
-            음료가격: drinkPrice,
-            사이드가격: sidePrice,
-            세트합계: setAddPrice,
-            합계: finalUnitPrice
-        });
 
         addToCart(orderItem);
         alert('장바구니에 추가되었습니다!');

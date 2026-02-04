@@ -14,6 +14,8 @@ export const savePreset = (postId, userId) =>
 // 좋아요 토글
 export const toggleLike = (postId, userId) => 
   api.post(`/api/posts/${postId}/like`, { userId });
+// 프리셋 저장 (body에서 userId 삭제)
+export const savePreset = (presetReqDto) => api.post("/api/presets/save", presetReqDto);
 
 // 내 프리셋 목록 조회
 export const getMyPresets = () => 

@@ -4,9 +4,11 @@ import com.korit.allways_back.entity.Ingredient;
 import com.korit.allways_back.entity.Product;
 import com.korit.allways_back.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,7 @@ import java.util.Map;
  * - 상품 생성은 @Transactional로 원자성 보장
  * - 생성 실패 시 모든 작업 롤백
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -66,23 +69,28 @@ public class ProductService {
     @Transactional
     public Integer createOrFindProduct(Integer itemId, List<Integer> ingredientIds, Boolean isSystem) {
 
-        // 1. 기존 상품 찾기 (동일한 조합이 있는지 확인)
-        if (ingredientIds != null && !ingredientIds.isEmpty()) {
-            Integer existingProductId = productMapper.findExistingProduct(
-                    itemId,
-                    ingredientIds,
-                    ingredientIds.size()
-            );
 
-            // 이미 존재하면 기존 product_id 반환
-            if (existingProductId != null) {
-                return existingProductId;
-            }
+        // 1. 기존 상품 찾기 (동일한 조합이 있는지 확인)
+        List<Integer> ids = (ingredientIds != null) ? ingredientIds : new ArrayList<>();
+
+        log.info("findExistingProduct 호출 - itemId: {}, ingredientIds: {}, count: {}",
+                itemId, ids, ids.size());
+
+        Integer existingProductId = productMapper.findExistingProduct(
+                itemId,
+                ids,
+                ids.size()
+        );
+
+        log.info("결과 productId: {}", existingProductId);
+
+        if (existingProductId != null) {
+            return existingProductId; // 이제 재료가 없어도 기존 ID를 반환함
         }
 
         // 2. 새 상품 생성
         Product product = Product.builder()
-                .isSystem(false)  // 사용자 커스텀 (시스템 레시피가 아님)
+                .isSystem(isSystem)  // 사용자 커스텀 (시스템 레시피가 아님)
                 .build();
         productMapper.insertProduct(product);
         // → product.getProductId()에 자동 생성된 ID가 들어감 (예: 69)

@@ -82,28 +82,6 @@ public class OrderController {
         return ResponseEntity.ok(details);
     }
 
-    // Helper methods
-    private Order mapToOrder(Object obj) {
-        Map<String, Object> map = (Map<String, Object>) obj;
-        return Order.builder()
-                .userId((Integer) map.get("userId"))
-                .address((String) map.get("address"))
-                .detailAddress((String) map.get("detailAddress"))
-                .build();
-    }
-
-    private List<OrderDetail> mapToOrderDetails(Object obj) {
-        List<Map<String, Object>> list = (List<Map<String, Object>>) obj;
-        return list.stream().map(map -> OrderDetail.builder()
-                .productId((Integer) map.get("productId"))
-                .quantity((Integer) map.get("quantity"))
-                .setId((Integer) map.get("setId"))
-                .selectedDrinkId((Integer) map.get("selectedDrinkId"))
-                .selectedSideId((Integer) map.get("selectedSideId"))
-                .build()
-        ).toList();
-    }
-
     @PutMapping("/{orderNumber}/cancel")
     public ResponseEntity<?> cancelOrder(@PathVariable String orderNumber) {
         try {

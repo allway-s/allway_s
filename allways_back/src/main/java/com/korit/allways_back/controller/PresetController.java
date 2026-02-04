@@ -41,6 +41,41 @@ public class PresetController {
 
         return ResponseEntity.ok().build();
     }
+     * 프리셋 저장
+     * - 주문 내역에서 "내 프리셋에 저장" 버튼 클릭 시 호출
+     * - 보안: 토큰의 userId를 사용 (클라이언트에서 받은 userId 무시)
+     */
+    @PostMapping("/save")
+    public ResponseEntity<?> savePreset(@RequestBody PresetRequestDto dto) {
+        // ✅ 보안: 토큰에서 userId 추출
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        // ✅ 토큰의 userId 사용 (클라이언트에서 보낸 userId는 무시)
+        Preset preset = Preset.builder()
+                .productId(dto.getProductId())
+                .userId(principalUser.getUser().getUserId())  // 토큰에서 추출
+                .presetName(dto.getPresetName())
+                .postedUserId(principalUser.getUser().getUserId())
+                .build();
+
+        try {
+            presetService.savePreset(preset);
+            return ResponseEntity.ok().build();
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * 내 프리셋 목록 조회
+     */
+    @GetMapping
+    public ResponseEntity<List<Preset>> getUserPresets() {
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) return ResponseEntity.status(401).build();
 
     /**
      * 내 프리셋 목록 조회
@@ -55,20 +90,29 @@ public class PresetController {
 
     /**
      * 프리셋 삭제
-     * DELETE /api/presets/{presetId}?userId=1
      */
     @DeleteMapping("/{presetId}")
-    public ResponseEntity<Void> deleteById(
-            @PathVariable Integer presetId,
-            @RequestParam Integer userId) {
-        presetService.deleteById(presetId, userId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deletePreset(@PathVariable Integer presetId) {
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) return ResponseEntity.status(401).build();
+
+        try {
+            presetService.deletePreset(presetId, principalUser.getUser().getUserId());
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException e) {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", e.getMessage());
-        return ResponseEntity.status(409).body(response); // ❗ 200 ❌
+    /**
+     * 내 프리셋 개수 조회
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getUserPresetCount() {
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) return ResponseEntity.status(401).build();
+
+        int count = presetService.getUserPresetCount(principalUser.getUser().getUserId());
+        return ResponseEntity.ok(count);
     }
 }
