@@ -3,111 +3,142 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { S } from './MyPresetStyles.js';
 import axios from 'axios';
-import { createPost, deletePreset, getMyPresets, getPosts } from '../../apis/items/communityApi.js';
-import { getItems, getSubwayPick } from "../../apis/items/menuApi"; 
+import { createPost, getMyPresets, getPosts } from '../../apis/items/communityApi.js';
+import { productIngredient } from '../../apis/items/orderApi.js';
 import { getUserIdFromToken } from '../../utils/getUserId.js';
 
 export default function MyPreSet() {
   const navigate = useNavigate();
   const [presets, setPresets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const userId = getUserIdFromToken();
 
-  // 2. 프리셋 목록 조회 (수정본)
-useEffect(() => {
-  const fetchData = async () => {
-    if (!userId) return;
-    try {
-      const [presetRes, postRes] = await Promise.all([
-        getMyPresets(userId),
-        getPosts()
-      ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!userId) {
+        navigate('/login');
+        return;
+      }
 
-      const presetData = presetRes.data || [];
-      const communityPosts = postRes.data || [];
+      try {
+        setLoading(true);
+        const [presetRes, postRes] = await Promise.all([
+          getMyPresets(),
+          getPosts()
+        ]);
 
-      // 🔥 [핵심 추가] 각 프리셋의 상세 재료 정보를 서버에서 가져와서 합치기
-      const enrichedWithIngredients = await Promise.all(
-        presetData.map(async (preset) => {
-          try {
-            // 프리셋의 productId를 이용해 실제 재료 구성을 가져옴
-            const detailRes = await getSubwayPick(preset.productId);
-            const matchPost = communityPosts.find(post => Number(post.userId) === Number(preset.postedUserId));
-            
-            return {
-              ...preset,
-              // 서버에서 가져온 실제 재료 리스트를 주입
-              ingredients: detailRes.data.ingredients, 
-              authorNickname: matchPost ? matchPost.nickname : 
-                              (Number(preset.postedUserId) === Number(userId) ? "나" : `User ${preset.postedUserId}`)
-            };
-          } catch (e) {
-            return preset; // 에러 시 기본 데이터 유지
-          }
-        })
-      );
-      
-      setPresets(enrichedWithIngredients);
-    } catch (error) {
-      console.error("데이터 로드 실패:", error);
-    }
-  };
-  fetchData();
-}, [userId]);
+        const presetData = presetRes.data || [];
+        const communityPosts = postRes.data || [];
 
-  // 3. 분류 로직
+        console.log('📦 받은 프리셋 데이터:', presetData);
+
+        // ✅ 각 프리셋의 상세 재료 정보 가져오기
+        const enrichedWithIngredients = await Promise.all(
+          presetData.map(async (preset) => {
+            try {
+              const detailRes = await productIngredient(preset.productId);
+              const matchPost = communityPosts.find(
+                post => Number(post.userId) === Number(preset.postedUserId)
+              );
+              
+              console.log(`✅ 프리셋 ${preset.presetId} 재료:`, detailRes.data);
+
+              const ingredients = detailRes.data.ingredients || [];
+              
+              // ✅ 실제 주문 가격 = 샌드위치 기본가 + 추가 재료
+              const additionalPrice = ingredients.reduce((sum, ing) => {
+                return sum + (ing.price > 0 ? ing.price : 0);
+              }, 0);
+              
+              const basePrice = preset.itemPrice || 0;  // DB에서 가져온 item 가격
+              const totalPrice = basePrice + additionalPrice;
+
+              const displayImage = preset.imageUrl || "/default-subway.png";
+
+              return {
+                ...preset,
+                ingredients: ingredients,
+                imgUrl: displayImage,
+                totalPrice: totalPrice,  // ✅ 기본가 + 추가재료
+                itemId: detailRes.data.itemId,
+                authorNickname: matchPost 
+                  ? matchPost.nickname 
+                  : (Number(preset.postedUserId) === Number(userId) ? "나" : preset.nickname || `User ${preset.postedUserId}`)
+              };
+            } catch (e) {
+              console.error(`❌ 프리셋 ${preset.presetId} 조회 실패:`, e);
+              return {
+                ...preset,
+                ingredients: [],
+                imgUrl: preset.imageUrl || "/default-subway.png",
+                totalPrice: preset.itemPrice || 0,
+                itemId: null,
+                authorNickname: Number(preset.postedUserId) === Number(userId) ? "나" : preset.nickname || `User ${preset.postedUserId}`
+              };
+            }
+          })
+        );
+        
+        console.log('✨ 최종 프리셋 데이터:', enrichedWithIngredients);
+        setPresets(enrichedWithIngredients);
+      } catch (error) {
+        console.error("❌ 데이터 로드 실패:", error);
+        alert('프리셋을 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [userId, navigate]);
+
+  // 분류 로직
   const myOriginals = useMemo(() => {
     return presets.filter(p => Number(p.userId) === Number(p.postedUserId)); 
-  }, [presets, userId]);
+  }, [presets]);
 
   const savedPresets = useMemo(() => {
     return presets.filter(p => Number(p.userId) !== Number(p.postedUserId)); 
-  }, [presets, userId]);
+  }, [presets]);
 
-// MyPreSet.js 내부의 handleOrder 함수를 아래와 같이 변경하세요.
-// MenuPage의 getSubwayPick 로직을 그대로 가져와 연동합니다.
-const handleOrder = async (item) => {
+  // ✅ 주문하기 핸들러
+  const handleOrder = async (item) => {
     try {
-        // 1. 프리셋의 기반이 되는 상품 ID 추출
-        const baseProductId = item.productId || item.product?.productId;
-        
-        if (!baseProductId) {
-            alert("상품 정보를 불러올 수 없습니다.");
-            return;
+      if (!item.productId) {
+        alert("상품 정보를 불러올 수 없습니다.");
+        return;
+      }
+
+      console.log('📦 프리셋 주문하기:', item);
+
+      const targetItemId = item.itemId || item.productId;
+
+      navigate(`/custom/${targetItemId}`, {
+        state: {
+          category: "샌드위치",
+          item: {
+            itemId: targetItemId,
+            itemName: item.presetName,
+            imageUrl: item.imgUrl
+          },
+          isSubwayPick: true,
+          subwayPickData: {
+            productId: item.productId,
+            ingredients: item.ingredients || [],
+            ingredientIds: (item.ingredients || []).map(i => i.ingredientId),
+            ingredientNames: (item.ingredients || []).map(i => i.ingredientName),
+            basePrice: item.totalPrice || 0,
+          }
         }
-
-        // 2. MenuPage처럼 서버에서 해당 구성의 상세 데이터(재료/가격)를 가져옴
-        // 프리셋 상세 조회 API가 있다면 그것을 사용하고, 
-        // 없다면 기반 상품의 기본 구성을 가져오는 getSubwayPick을 활용합니다.
-        const response = await getSubwayPick(baseProductId); 
-        const pickData = response.data;
-
-        console.log('📦 프리셋 연동 데이터 확보:', pickData);
-
-        // 3. CustomPage로 데이터 주입 (MenuPage와 동일 규격)
-        navigate(`/custom/${baseProductId}`, {
-            state: {
-                category: item.product?.categoryName || "샌드위치",
-                item: item.product || { itemId: baseProductId },
-                isSubwayPick: true,
-                subwayPickData: {
-                    productId: pickData.productId,
-                    ingredients: pickData.ingredients, // 이제 Array(0)이 아닌 데이터가 들어감
-                    ingredientIds: pickData.ingredients.map(i => i.ingredientId),
-                    ingredientNames: pickData.ingredients.map(i => i.ingredientName),
-                    basePrice: pickData.totalPrice, // 합산 가격 전달 (0원 방지)
-                }
-            }
-        });
+      });
     } catch (error) {
-        console.error("❌ 프리셋 상세 데이터 로드 실패:", error);
-        alert("레시피 정보를 불러오는 중 오류가 발생했습니다.");
+      console.error("❌ 프리셋 주문 처리 실패:", error);
+      alert("주문 처리 중 오류가 발생했습니다.");
     }
-};
+  };
 
-// 5. 공유 핸들러
+  // 공유 핸들러
   const handleShare = async (preset) => {
-    // 프리셋에 연결된 상품 ID 확인
-    const currentProductId = preset.productId || preset.product?.productId;
+    const currentProductId = preset.productId;
     
     if (!currentProductId) {
       alert("상품 정보를 찾을 수 없습니다.");
@@ -115,11 +146,9 @@ const handleOrder = async (item) => {
     }
 
     try {
-      // 중복 공유 방지를 위해 전체 게시글 조회
       const communityRes = await getPosts();
       const communityPosts = communityRes.data || [];
       
-      // 이미 같은 상품(레시피)으로 올라온 글이 있는지 체크
       const isAlreadyShared = communityPosts.some(post => 
         Number(post.productId) === Number(currentProductId)
       );
@@ -131,11 +160,6 @@ const handleOrder = async (item) => {
 
       if (!window.confirm(`'${preset.presetName}' 레시피를 공유하시겠습니까?`)) return;
       
-      /**
-       * [작동 방식 설명]
-       * 프론트: { presetId: 1 } 만 보냄
-       * 백엔드: 토큰을 통해 PrincipalUser에서 userId를 꺼내 서비스의 createPost(userId, dto) 호출
-       */
       const response = await createPost({ 
         presetId: preset.presetId 
       });
@@ -150,17 +174,21 @@ const handleOrder = async (item) => {
     }
   };
 
-  // 6. 삭제 핸들러
-  const handleDelete = async (presetId) => {
-    const isSavedRecipe = Number(userId) !== Number(userId);
+  // 삭제 핸들러
+  const handleDelete = async (presetId, postedUserId) => {
+    const isSavedRecipe = Number(userId) !== Number(postedUserId);
     let confirmMsg = isSavedRecipe 
       ? `[저장된 레시피 삭제]\n내 목록에서만 삭제됩니다.` 
       : `[오리지널 레시피 삭제]\n삭제 시 커뮤니티 게시글도 함께 삭제됩니다. 정말 삭제하시겠습니까?`;
     
     if (!window.confirm(confirmMsg)) return;
+    
     try {
       const token = localStorage.getItem("accessToken");
-      const response = deletePreset(presetId, userId);
+      const response = await axios.delete(`/api/presets/${presetId}`, { 
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
       if (response.status === 200 || response.status === 204) {
         alert("성공적으로 삭제되었습니다.");
         setPresets(prevPresets =>
@@ -168,24 +196,33 @@ const handleOrder = async (item) => {
       );
       }
     } catch (error) {
-      console.log("삭제 중 오류가 발생했습니다.", error);
+      console.error("삭제 실패:", error);
+      alert("삭제 중 오류가 발생했습니다.");
     }
   };
 
-  // 7. 카드 렌더링
+  // 카드 렌더링
   const renderCard = (item, isSaved) => {
-    const ingredients = item.ingredients || item.product?.ingredients || item.presetIngredients || [];
+    const ingredients = item.ingredients || [];
     const ingredientText = ingredients.length > 0 
       ? ingredients.map(i => i.ingredientName).join(", ") 
       : "선택된 재료가 없습니다.";
 
     const isOriginal = !isSaved;
-    const displayImg = item.imgUrl || item.product?.imageUrl || "/default-subway.png";
+    const displayImg = item.imgUrl || "/default-subway.png";
 
     return (
       <div key={item.presetId} css={S.card} style={{ padding: '20px' }}>
         <div css={S.imageArea} style={{ marginBottom: '15px' }}>
-          <img src={displayImg} alt={item.presetName} style={{ width: '100%', borderRadius: '8px' }} />
+          <img 
+            src={displayImg} 
+            alt={item.presetName} 
+            style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }} 
+            onError={(e) => {
+              console.error(`이미지 로드 실패: ${displayImg}`);
+              e.target.src = '/default-subway.png';
+            }}
+          />
         </div>
         
         <div style={{ textAlign: 'left', marginBottom: '10px' }}>
@@ -195,6 +232,12 @@ const handleOrder = async (item) => {
           {!isOriginal && (
             <p style={{ fontSize: '13px', color: '#888', margin: '0 0 10px 0' }}>
               작성자: <span style={{ color: '#009223', fontWeight: 'bold' }}>{item.authorNickname}</span>
+            </p>
+          )}
+          {/* ✅ 실제 주문 가격 표시 */}
+          {item.totalPrice > 0 && (
+            <p style={{ fontSize: '15px', fontWeight: 'bold', color: '#009223', margin: '5px 0' }}>
+              총 {item.totalPrice.toLocaleString()}원
             </p>
           )}
         </div>
@@ -207,7 +250,8 @@ const handleOrder = async (item) => {
           lineHeight: '1.5',
           color: '#444',
           marginBottom: '15px',
-          textAlign: 'left'
+          textAlign: 'left',
+          minHeight: '80px'
         }}>
           <strong style={{ color: '#009223', display: 'block', marginBottom: '4px' }}>재료 조합:</strong>
           {ingredientText}
@@ -215,13 +259,22 @@ const handleOrder = async (item) => {
 
         <div css={S.buttonGroup} style={{ marginTop: 'auto' }}>
           {isOriginal && <button css={S.btnShare} onClick={() => handleShare(item)}>공유</button>}
-          {/* ✅ handleOrder 함수 연결 */}
           <button css={S.btnOrder} onClick={() => handleOrder(item)}>주문하기</button>
           <button css={S.btnDelete} onClick={() => handleDelete(item.presetId)}>삭제</button>
         </div>
       </div>
     );
   };
+
+  if (loading) {
+    return (
+      <div css={S.wrapper}>
+        <div style={{ textAlign: 'center', padding: '100px', color: '#888' }}>
+          프리셋을 불러오는 중...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div css={S.wrapper}>
@@ -233,7 +286,7 @@ const handleOrder = async (item) => {
 
       <main css={S.container}>
         <div css={S.sectionHeader} style={{ marginBottom: '20px' }}>
-          <h2 >🛠️ 회원님의 오리지널 레시피</h2>
+          <h2>🛠️ 회원님의 오리지널 레시피</h2>
           <span>직접 주문하여 저장된 나만의 조합입니다.</span>
         </div>
         <div css={S.grid} style={{ marginBottom: '60px' }}>

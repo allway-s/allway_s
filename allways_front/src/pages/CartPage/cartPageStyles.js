@@ -47,6 +47,10 @@ export const itemInfoStyle = css`
             font-weight: normal; }} 
 `;
 
+export const setInfoStyle = css`
+    font-size: 13px;
+`;
+
 export const ingredientListStyle = css` 
     font-size: 13px; 
     color: #777; 

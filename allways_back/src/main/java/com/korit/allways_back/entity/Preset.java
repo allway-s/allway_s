@@ -19,7 +19,9 @@ public class Preset {
     private String presetName;
     private Integer postId;
     private Integer postedUserId;
-    // 조인용 필드 (필요시)
-    private User user;
-    private Product product;
+
+    // ✅ 조인용 필드
+    private String nickname;      // user_tb.nickname
+    private String imageUrl;      // item_tb -> image_tb.img_url
+    private Integer itemPrice;    // item_tb.price (샌드위치 기본 가격)
 }

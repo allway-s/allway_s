@@ -12,17 +12,8 @@ import { cancelOrder, createOrder, verifyPayment } from "../../apis/items/orderA
 import { getUserIdFromToken } from "../../utils/getUserId";
 import SubwayNearbyModal from '../../components/SubwayNearbyModal';
 import PortOne from "@portone/browser-sdk/v2";
+import { GetIngredientByCategory } from "../../utils/getIngreByCate.js";
 
-// ✅ [추가] ID 범위를 기반으로 재료 이름을 찾아주는 헬퍼 함수
-const getIngredientByCategory = (item, rangeStart) => {
-    if (!item.ingredientIds || !item.ingredientName) return "선택 안함";
-    
-    const names = item.ingredientIds
-        .map((id, index) => (id >= rangeStart && id < rangeStart + 100 ? item.ingredientName[index] : null))
-        .filter(Boolean);
-
-    return names.length > 0 ? names.join(", ") : "선택 안함";
-};
 
 const CartPage = () => {
     const [cart, setCart] = useState({ orders: [] });
@@ -93,7 +84,6 @@ const CartPage = () => {
             const finalPaymentName = ordersLength > 1
                 ? `${displayName} 외 ${ordersLength - 1}건`
                 : displayName;
-
             const orderData = {
                 order: {
                     userId: currentUserId,
@@ -111,10 +101,12 @@ const CartPage = () => {
                     selectedDrinkId: item.selectedDrinkId || null,
                     selectedSideId: item.selectedSideId || null
                 }))
+                
             };
 
             // 주문 생성
             const orderResponse = await createOrder(orderData);
+            console.log(orderData)
             const { orderNumber, totalPrice } = orderResponse.data;
 
             // 주문 번호 저장
@@ -122,8 +114,8 @@ const CartPage = () => {
 
             // V2 방식으로 결제 요청
             const paymentResponse = await PortOne.requestPayment({
-                storeId: "store-b92791a0-bdc6-4d76-9331-77b569d37232",
-                channelKey: "channel-key-4293ef39-5e3c-405b-b1f1-640518f9051a",
+                storeId: "store-96e0894b-1cb9-4532-a090-ec0151e65f7d",
+                channelKey: "channel-key-47d76a2f-04f1-4cad-8657-425a10b7e85e",
                 paymentId: `payment-${orderNumber}`,
                 orderName: finalPaymentName,
                 totalAmount: totalPrice,
@@ -225,10 +217,11 @@ const CartPage = () => {
 
                                         {/* ✅ [수정된 부분] 커뮤니티 페이지처럼 분류해서 보여주기 */}
                                         <div css={s.ingredientListStyle} style={{ fontSize: '13px', color: '#555', marginTop: '8px' }}>
-                                            <div><strong>빵:</strong> {getIngredientByCategory(item, 100)}</div>
-                                            <div><strong>치즈:</strong> {getIngredientByCategory(item, 200)}</div>
-                                            <div><strong>야채:</strong> {getIngredientByCategory(item, 300)}</div>
-                                            <div><strong>소스:</strong> {getIngredientByCategory(item, 400)}</div>
+                                            <div><strong>빵:</strong> {GetIngredientByCategory(item, 100)}</div>
+                                            <div><strong>치즈:</strong> {GetIngredientByCategory(item, 200)}</div>
+                                            <div><strong>야채:</strong> {GetIngredientByCategory(item, 300)}</div>
+                                            <div><strong>소스:</strong> {GetIngredientByCategory(item, 400)}</div>
+                                            <div><strong>추가:</strong> {GetIngredientByCategory(item, 500)}</div>
                                         </div>
 
                                         <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
