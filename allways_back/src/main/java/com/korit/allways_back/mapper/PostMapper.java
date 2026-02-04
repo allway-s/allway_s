@@ -1,6 +1,5 @@
 package com.korit.allways_back.mapper;
 
-import com.korit.allways_back.dto.request.PostCreateRequestDto;
 import com.korit.allways_back.entity.Post;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,30 +9,30 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
+    /** 게시글 생성 */
     int insert(Post post);
 
-    List<Post> findAll(
-            @Param("userId") Integer currentUserId
-    );
+    /** 게시글 전체 조회 */
+    List<Post> findAll(@Param("userId") Integer userId);
 
-    int insertLike(
-            @Param("userId") Integer userId,
-            @Param("postId") Integer postId
-    );
+    /** preset 기준 중복 게시글 체크 */
+    boolean existsByPresetId(@Param("presetId") Integer presetId);
 
-    int deleteLike(
-            @Param("userId") Integer userId,
-            @Param("postId") Integer postId
-    );
+    /** 좋아요 추가 */
+    int insertLike(@Param("userId") Integer userId,
+                   @Param("postId") Integer postId);
 
+    /** 좋아요 삭제 */
+    int deleteLike(@Param("userId") Integer userId,
+                   @Param("postId") Integer postId);
+
+    /** 좋아요 수 갱신 */
     int updateLikeCount(@Param("postId") Integer postId);
 
-    int deleteByPostId(@Param("postId") Integer postId);
+    /** 게시글 삭제 (작성자만) */
+    int deleteById(@Param("postId") Integer postId,
+                       @Param("userId") Integer userId);
 
-    boolean existsPostByUserIdAndProductId(
-            @Param("userId") int userId,
-            @Param("productId") int productId
-    );
-    Integer findProductIdByPostId(@Param("postId") Integer postId);
-
+    /** 게시글 작성자 조회 (프리셋 저장용) */
+    Integer findPostedUserIdByPostId(@Param("postId") Integer postId);
 }

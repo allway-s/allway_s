@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,69 +18,69 @@ public class PostService {
     private final PostMapper postMapper;
     private final PresetMapper presetMapper;
 
+    /**
+     * 게시글 생성
+     */
     @Transactional
     public Post createPost(int userId, PostCreateRequestDto dto) {
 
-        // 1️⃣ preset → productId 조회
-        int productId =
-                presetMapper.findProductIdByPresetId(dto.getPresetId());
+        Integer presetId = dto.getPresetId();
 
-        // 2️⃣ 중복 게시 검사 (userId + productId)
-        boolean exists =
-                postMapper.existsPostByUserIdAndProductId(userId, productId);
-
-        if (exists) {
-            throw new IllegalArgumentException("이미 동일한 상품으로 게시한 글이 있습니다.");
+        // 3️⃣ 중복 게시글 체크 (preset 기준)
+        if (postMapper.existsByPresetId(presetId)) {
+            throw new IllegalStateException("이미 게시된 프리셋입니다.");
         }
 
-        // 3️⃣ post 생성
+        // 4️⃣ 게시글 생성
         Post post = Post.builder()
+                .presetId(presetId)
                 .userId(userId)
-                .presetId(dto.getPresetId())
-                .postedAt(java.time.LocalDateTime.now())
+                .postedAt(LocalDateTime.now())
                 .likeCount(0)
                 .build();
 
         postMapper.insert(post);
-
         return post;
     }
 
+    /**
+     * 게시글 전체 조회
+     */
     public List<Post> getAllPosts(Integer userId) {
         return postMapper.findAll(userId);
     }
 
     /**
-     * 좋아요 토글 (좋아요 추가/삭제)
-     * @return true: 좋아요 추가, false: 좋아요 취소
+     * 좋아요 토글
      */
     @Transactional
     public boolean toggleLike(Integer userId, Integer postId) {
-        // 좋아요 추가 시도
+
         int inserted = postMapper.insertLike(userId, postId);
 
         boolean liked;
         if (inserted > 0) {
-            // 좋아요 추가 성공
             liked = true;
         } else {
-            // 이미 좋아요가 있음 → 삭제
             postMapper.deleteLike(userId, postId);
             liked = false;
         }
 
-        // 좋아요 수 업데이트
         postMapper.updateLikeCount(postId);
-
         return liked;
     }
 
     /**
-     * 프리셋 ID로 게시글 삭제 (프리셋 삭제 시 호출)
+     * 게시글 삭제 (작성자만)
      */
     @Transactional
-    public void deleteByPostId(Integer postId) {
-        postMapper.deleteByPostId(postId);
+    public void deletePost(Integer postId, Integer userId) {
+        // userId를 받아서 본인 게시글만 삭제
+        int deleted = postMapper.deleteById(postId, userId);
+        if (deleted == 0) {
+            throw new IllegalArgumentException(
+                    "삭제할 수 없습니다. 게시글이 존재하지 않거나 권한이 없습니다."
+            );
+        }
     }
-
 }

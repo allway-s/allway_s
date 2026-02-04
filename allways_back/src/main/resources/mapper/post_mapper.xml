@@ -2,7 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.korit.allways_back.mapper.PostMapper">
+
     <!-- 게시글 생성 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post_tb (
@@ -10,8 +12,7 @@
         user_id,
         posted_at,
         like_count
-        )
-        VALUES (
+        ) VALUES (
         #{presetId},
         #{userId},
         NOW(),
@@ -19,30 +20,33 @@
         )
     </insert>
 
-    <!-- 전체 게시글 조회 (최신순/좋아요순) -->
-    <resultMap id="PostWithIngredientsMap" type="com.korit.allways_back.entity.Post">
-        <id     property="postId"     column="post_id"/>
-        <result property="userId"     column="user_id"/>
-        <result property="postedAt"   column="posted_at"/>
-        <result property="likeCount"  column="like_count"/>
-        <result property="imgUrl"     column="img_url"/>
+    <!-- 게시글 + 재료 + 좋아요 여부 -->
+    <resultMap id="PostWithIngredientsMap"
+               type="com.korit.allways_back.entity.Post">
+
+        <id     property="postId"    column="post_id"/>
+        <result property="userId"    column="user_id"/>
+        <result property="postedAt"  column="posted_at"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="imgUrl"    column="img_url"/>
 
         <result property="presetName" column="preset_name"/>
         <result property="itemName"   column="item_name"/>
         <result property="nickname"   column="nickname"/>
-
-        <!-- liked: 0/1 -->
         <result property="liked"      column="liked"/>
 
-        <collection property="ingredients" ofType="com.korit.allways_back.entity.Ingredient">
+        <collection property="ingredients"
+                    ofType="com.korit.allways_back.entity.Ingredient">
             <result property="ingredientName" column="ingredient_name"/>
-            <result property="categoryId" column="category_id"/>
+            <result property="categoryId"     column="category_id"/>
         </collection>
     </resultMap>
 
+    <!-- 게시글 전체 조회 -->
+    <select id="findAll"
+            resultMap="PostWithIngredientsMap"
+            parameterType="java.lang.Integer">
 
-
-    <select id="findAll" resultMap="PostWithIngredientsMap" parameterType="java.lang.Integer">
         SELECT
         p.post_id,
         p.user_id,
@@ -74,32 +78,47 @@
         JOIN product_item_tb pdi ON pdi.product_id = pr.product_id
         JOIN item_tb it ON it.item_id = pdi.item_id
         JOIN image_tb imt ON imt.image_id = it.image_id
-
         LEFT JOIN product_ingredient_tb pit ON pit.product_id = pr.product_id
         LEFT JOIN ingredient_tb igt ON igt.ingredient_id = pit.ingredient_id
-        ORDER BY p.like_count DESC, p.posted_at DESC;
+
+        ORDER BY p.like_count DESC, p.posted_at DESC
     </select>
 
-    <!-- 좋아요 토글 -->
+    <!-- 게시글 작성자 조회 -->
+    <select id="findPostedUserIdByPostId" resultType="int">
+        SELECT user_id
+        FROM post_tb
+        WHERE post_id = #{postId}
+    </select>
+
+    <!-- 게시글 삭제 (작성자만) -->
+    <delete id="deleteById">
+        DELETE FROM post_tb
+        WHERE post_id = #{postId}
+        AND user_id = #{userId}
+    </delete>
+
+    <!-- 좋아요 추가 -->
     <insert id="insertLike">
         INSERT IGNORE INTO like_tb (
         user_id,
         post_id,
         liked_at
-        )
-        VALUES (
+        ) VALUES (
         #{userId},
         #{postId},
         NOW()
         )
     </insert>
 
+    <!-- 좋아요 삭제 -->
     <delete id="deleteLike">
         DELETE FROM like_tb
-        WHERE user_id = #{userId} AND post_id = #{postId}
+        WHERE user_id = #{userId}
+        AND post_id = #{postId}
     </delete>
 
-    <!-- 좋아요 수 업데이트 -->
+    <!-- 좋아요 수 갱신 -->
     <update id="updateLikeCount">
         UPDATE post_tb
         SET like_count = (
@@ -108,27 +127,13 @@
         WHERE post_id = #{postId}
     </update>
 
-    <!-- postID로 게시글 삭제 -->
-    <delete id="deleteByPostId">
-        DELETE FROM post_tb
-        WHERE post_id= #{postId}
-    </delete>
-
-    <!-- 중복 게시글 체크 -->
-    <select id="existsPostByUserIdAndProductId" resultType="boolean">
+    <!-- preset 기준 중복 게시글 체크 -->
+    <select id="existsByPresetId" resultType="boolean">
         SELECT EXISTS (
         SELECT 1
-        FROM post_tb p
-        JOIN preset_tb pr ON p.preset_id = pr.preset_id
-        WHERE p.user_id = #{userId}
-        AND pr.product_id = #{productId}
+        FROM post_tb
+        WHERE preset_id = #{presetId}
         )
     </select>
 
-    <select id="findProductIdByPostId" resultType="int">
-        SELECT pr.product_id
-        FROM post_tb p
-        JOIN preset_tb pr ON p.preset_id = pr.preset_id
-        WHERE p.post_id = #{postId}
-    </select>
 </mapper>

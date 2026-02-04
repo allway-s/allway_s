@@ -105,13 +105,55 @@
     </delete>
 
     <select id="countByUserId" resultType="int">
-        SELECT COUNT(*) FROM preset_tb WHERE user_id = #{userId}
+        SELECT COUNT(*)
+        FROM preset_tb
+        WHERE user_id = #{userId}
+        AND is_deleted = 0
     </select>
 
+    <!-- 동일 상품 프리셋 존재 여부 -->
     <select id="existsByUserIdAndProductId" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM preset_tb
-        WHERE user_id = #{userId} AND product_id = #{productId}
+        WHERE user_id = #{userId}
+        AND product_id = #{productId}
+        AND is_deleted = 0
     </select>
+
+    <!-- 동일 포스트 프리셋 존재 여부 (같은 포스트는 한 번만 저장) -->
+    <select id="existsByUserIdProductIdAndPostedUserId" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM preset_tb
+        WHERE user_id = #{userId}
+        AND product_id = #{productId}
+        AND posted_user_id = #{postedUserId}
+        AND is_deleted = 0
+    </select>
+
+    <!-- presetId로 productId 조회 -->
+    <select id="findProductIdByPresetId" resultType="int">
+        SELECT product_id
+        FROM preset_tb
+        WHERE preset_id = #{presetId}
+        AND is_deleted = 0
+    </select>
+
+    <!-- presetId로 userId 조회 (프리셋 소유자 확인용) -->
+    <select id="findUserIdByPresetId" resultType="int">
+        SELECT user_id
+        FROM preset_tb
+        WHERE preset_id = #{presetId}
+        AND is_deleted = 0
+    </select>
+
+    <select id="findProductIdByPostId"
+            parameterType="int"
+            resultType="int">
+        SELECT pr.product_id
+        FROM post_tb p
+        JOIN preset_tb pr ON p.preset_id = pr.preset_id
+        WHERE p.post_id = #{postId}
+    </select>
+
 
 </mapper>
