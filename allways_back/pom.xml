@@ -125,13 +125,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
-        <!-- 포트원 결제 -->
-        <dependency>
-            <groupId>com.github.iamport</groupId>
-            <artifactId>iamport-rest-client-java</artifactId>
-            <version>0.2.23</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>

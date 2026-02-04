@@ -7,7 +7,6 @@ export const styles = {
     background-color: #f8fbf8;
   `,
 
-
   header: css`
     width: 100%;
     min-width: 1100px;
@@ -54,6 +53,7 @@ export const styles = {
       color: #374151;
       font-weight: 700;
       font-size: 1rem;
+      transition: color 0.2s ease; /* ✅ 트랜지션 추가 */
       
       &:hover {
         color: #009223;
@@ -71,13 +71,11 @@ export const styles = {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    /* 🌟 버튼을 오른쪽 끝으로 밀기 위해 items를 flex-end로 설정 */
     align-items: center; 
   `,
 
   heroTitle: css`
     width: 100%;
-    /* 🌟 글자는 다시 중앙 정렬 */
     text-align: center; 
     font-size: 4.5rem;
     font-weight: 900;
@@ -96,11 +94,11 @@ export const styles = {
   `,
 
   heroTitleBlack: css`
-    color: rgb(0, 0, 0);
+    color: #000; /* ✅ rgb(0, 0, 0) → #000 통일 */
   `,
 
   heroTitleYellow: css`
-    color: #f5c835ff;
+    color: #ffc608; /* ✅ #f5c835ff → #ffc608 (서브웨이 노란색 통일) */
   `,
 
   orderButton: css`
@@ -115,20 +113,32 @@ export const styles = {
     align-items: center;
     gap: 10px;
     font-size: 1.2rem;
-    transition: all 0.2s;
-    
-    /* 🌟 부모가 flex-end이므로 자동으로 오른쪽 배치됨. 우측 여백만 시안에 맞춰 조정 */
-    /* margin-right: 30.5rem;  */
+    transition: all 0.2s ease; /* ✅ ease-in-out → ease로 통일 */
+    box-shadow: 0 4px 12px rgba(0, 146, 35, 0.2); /* ✅ 그림자 추가 */
 
     &:hover {
-      background: #1e6a1a;
-      color: #fff;
+      background: #007a1c; /* ✅ #1e6a1a → #007a1c (더 일관된 색상) */
       transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 146, 35, 0.3); /* ✅ 호버시 그림자 강화 */
+    }
+
+    &:active {
+      transform: scale(0.98); /* ✅ 클릭시 살짝 눌림 효과 */
+    }
+
+    /* ✅ 아이콘 스타일 추가 */
+    svg {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover svg {
+      transform: translateX(4px); /* ✅ 호버시 화살표 살짝 이동 */
     }
 
     @media (max-width: 768px) {
-      margin-right: 0;
-      align-self: center; // 모바일은 중앙
+      align-self: center;
+      padding: 1rem 2rem;
+      font-size: 1rem;
     }
   `,
 };

@@ -9,30 +9,41 @@ import java.util.List;
 @Mapper
 public interface PresetMapper {
 
-    /** 사용자 프리셋 목록 */
-    List<Preset> findByUserId(@Param("userId") int userId);
+    /** 프리셋 생성 */
+    int insert(Preset preset);
 
-    /** 프리셋 삭제 (본인 것만) */
-    int deleteById(@Param("presetId") int presetId,
-                   @Param("userId") int userId);
+    /** 포스트에서 프리셋 생성 */
+    int insertFromPost(Preset preset);
 
-    /** presetId → preset 소유자(userId) */
-    Integer findUserIdByPresetId(@Param("presetId") Integer presetId);
+    /** 사용자 ID로 프리셋 목록 조회 */
+    List<Preset> findByUserId(@Param("userId") Integer userId);
 
-    /** presetId → productId */
+    /** 프리셋 ID로 조회 */
+    Preset findById(@Param("presetId") Integer presetId);
+
+    /** ✅ Soft Delete (is_deleted = 1) */
+    int deleteById(@Param("presetId") Integer presetId,
+                   @Param("userId") Integer userId);
+
+    /** 사용자의 프리셋 개수 조회 */
+    int countByUserId(@Param("userId") Integer userId);
+
+    /** 동일 상품 프리셋 존재 여부 */
+    boolean existsByUserIdAndProductId(@Param("userId") Integer userId,
+                                       @Param("productId") Integer productId);
+
+    /** 동일 포스트 프리셋 존재 여부 */
+    boolean existsByUserIdProductIdAndPostedUserId(
+            @Param("userId") Integer userId,
+            @Param("productId") Integer productId,
+            @Param("postedUserId") Integer postedUserId);
+
+    /** presetId로 productId 조회 */
     Integer findProductIdByPresetId(@Param("presetId") Integer presetId);
 
-    /** postId → productId (프리셋 저장용) */
+    /** ✅ presetId로 userId 조회 (소유자 확인용) */
+    Integer findUserIdByPresetId(@Param("presetId") Integer presetId);
+
+    /** postId로 productId 조회 */
     Integer findProductIdByPostId(@Param("postId") Integer postId);
-
-    /** 중복 저장 체크 */
-    boolean existsByUserIdProductIdAndPostedUserId(
-            @Param("userId") int userId,
-            @Param("productId") int productId,
-            @Param("postedUserId") int postedUserId
-    );
-
-    /** 포스트 → 프리셋 저장 */
-    int insertFromPost(@Param("userId") int userId,
-                       @Param("postId") int postId);
 }

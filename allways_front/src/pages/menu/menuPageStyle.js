@@ -123,7 +123,7 @@ export const imageWrapperStyle = css`
 `;
 
 export const menuImageStyle = css`
-    width: 340px;
+    width: 326.67px;
     height: 100%;
     object-fit: cover;
 `;

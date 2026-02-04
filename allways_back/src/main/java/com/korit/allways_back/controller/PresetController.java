@@ -6,12 +6,9 @@ import com.korit.allways_back.security.PrincipalUser;
 import com.korit.allways_back.service.PresetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/presets")
@@ -21,26 +18,6 @@ public class PresetController {
     private final PresetService presetService;
 
     /**
-     * 포스트를 내 프리셋으로 저장
-     */
-    @PostMapping("/posts")
-    public ResponseEntity<?> savePresetFromPost(
-            @RequestBody PresetRequestDto dto
-    ) {
-        if (dto.getUserId() == null) {
-            throw new IllegalArgumentException("userId는 필수입니다.");
-        }
-        if (dto.getPostId() == null) {
-            throw new IllegalArgumentException("postId는 필수입니다.");
-        }
-
-        presetService.savePresetFromPost(
-                dto.getUserId(),
-                dto.getPostId()
-        );
-
-        return ResponseEntity.ok().build();
-    }
      * 프리셋 저장
      * - 주문 내역에서 "내 프리셋에 저장" 버튼 클릭 시 호출
      * - 보안: 토큰의 userId를 사용 (클라이언트에서 받은 userId 무시)
@@ -77,14 +54,7 @@ public class PresetController {
         PrincipalUser principalUser = PrincipalUser.get();
         if (principalUser == null) return ResponseEntity.status(401).build();
 
-    /**
-     * 내 프리셋 목록 조회
-     * GET /api/presets?userId=1
-     */
-    @GetMapping
-    public ResponseEntity<List<Preset>> findByUserId(
-            @RequestParam Integer userId) {
-        List<Preset> presets = presetService.findByUserId(userId);
+        List<Preset> presets = presetService.getUserPresets(principalUser.getUser().getUserId());
         return ResponseEntity.ok(presets);
     }
 
@@ -115,4 +85,5 @@ public class PresetController {
         int count = presetService.getUserPresetCount(principalUser.getUser().getUserId());
         return ResponseEntity.ok(count);
     }
+
 }

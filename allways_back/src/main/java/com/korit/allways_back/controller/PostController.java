@@ -2,6 +2,7 @@ package com.korit.allways_back.controller;
 
 import com.korit.allways_back.dto.request.PostCreateRequestDto;
 import com.korit.allways_back.entity.Post;
+import com.korit.allways_back.security.PrincipalUser;
 import com.korit.allways_back.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,28 +24,45 @@ public class PostController {
      * POST /api/posts
      */
     @PostMapping
-    public ResponseEntity<?> createPost(
-            @RequestBody PostCreateRequestDto dto
-    ) {
-        if (dto.getUserId() == null) {
-            throw new IllegalArgumentException("userId는 필수입니다.");
-        }
-        if (dto.getPresetId() == null) {
-            throw new IllegalArgumentException("presetId는 필수입니다.");
+    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto dto) {
+        // ✅ 토큰에서 userId 추출
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
 
-        Post createdPost = postService.createPost(dto.getUserId(), dto);
-        return ResponseEntity.ok(createdPost);
+        if (dto.getPresetId() == null) {
+            return ResponseEntity.badRequest().body("presetId는 필수입니다.");
+        }
+
+        try {
+            // ✅ 토큰의 userId 사용
+            Post createdPost = postService.createPost(
+                    principalUser.getUser().getUserId(),
+                    dto
+            );
+            return ResponseEntity.ok(createdPost);
+        } catch (IllegalStateException e) {
+            // 중복 게시글 에러
+            return ResponseEntity.status(409).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     /**
      * 전체 게시글 조회
-     * GET /api/posts?userId=1
+     * GET /api/posts
      */
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts(
-            @RequestParam(required = false) Integer userId) {
-        List<Post> posts = postService.getAllPosts(userId);
+    public ResponseEntity<?> getAllPosts() {
+        // ✅ 로그인한 사용자만 조회 가능
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        List<Post> posts = postService.getAllPosts(principalUser.getUser().getUserId());
         return ResponseEntity.ok(posts);
     }
 
@@ -53,37 +71,40 @@ public class PostController {
      * POST /api/posts/{postId}/like
      */
     @PostMapping("/{postId}/like")
-    public ResponseEntity<Map<String, Boolean>> toggleLike(
-            @PathVariable Integer postId,
-            @RequestBody Map<String, Integer> request) {
-        Integer userId = request.get("userId");
-        if (userId == null) {
-            throw new IllegalArgumentException("userId는 필수입니다.");
+    public ResponseEntity<?> toggleLike(@PathVariable Integer postId) {
+        // ✅ 토큰에서 userId 추출
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
 
-        boolean liked = postService.toggleLike(userId, postId);
-
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("liked", liked);
-        return ResponseEntity.ok(response);
+        try {
+            boolean liked = postService.toggleLike(principalUser.getUser().getUserId(), postId);
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("liked", liked);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     /**
      * 게시글 삭제
-     * DELETE /api/posts/{postId}?userId=1
+     * DELETE /api/posts/{postId}
      */
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(
-            @PathVariable Integer postId,
-            @RequestParam Integer userId) {
-        postService.deletePost(postId, userId);
-        return ResponseEntity.noContent().build();
-    }
+    public ResponseEntity<?> deletePost(@PathVariable Integer postId) {
+        // ✅ 토큰에서 userId 추출
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException e) {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", e.getMessage());
-        return ResponseEntity.ok(response); // ⭐ 200으로 내려보냄
+        try {
+            postService.deletePost(postId, principalUser.getUser().getUserId());
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

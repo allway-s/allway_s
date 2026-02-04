@@ -16,7 +16,6 @@ export const MyPage = () => {
 
   useEffect(() => {
     const fetchMyPageData = async () => {
-      // 1. 클라이언트 측에서 1차 로그인 체크 (토큰 존재 여부)
       const userId = getUserIdFromToken();
       if (!userId) {
         navigate('/login');
@@ -24,8 +23,6 @@ export const MyPage = () => {
       }
 
       try {
-        // 2. 모든 데이터를 병렬로 요청
-        // getUserMe는 이제 인자 없이 호출하며, 백엔드 UserRespDto 구조를 가져옵니다.
         const [userRes, presetRes, orderRes, postRes] = await Promise.all([
           getUserMe(),
           getMyPresets(),
@@ -33,20 +30,18 @@ export const MyPage = () => {
           getPosts().catch(() => ({ data: [] })) 
         ]);
 
-        // 디버깅을 위한 로그
         console.log("유저 정보 상세:", userRes.data);
+        console.log("주문 내역 원본:", orderRes.data); // ✅ 디버깅
 
         const communityPosts = postRes.data || [];
         const rawPresets = presetRes.data || [];
-        const orderData = orderRes.data || [];
+        const rawOrders = orderRes.data || [];
 
-        // 3. 프리셋 데이터 가공 로직
+        // 프리셋 데이터 가공
         const enrichedPresets = rawPresets.map(preset => {
-          // 본인이 작성한 경우
           if (Number(userId) === Number(preset.userId)) {
             return { ...preset, authorName: userRes.data.nickname || "나" }; 
           }
-          // 커뮤니티 게시글에서 작성자 닉네임 매칭
           const match = communityPosts.find(p => Number(p.userId) === Number(preset.postedUserId));
           return {
             ...preset,
@@ -54,12 +49,41 @@ export const MyPage = () => {
           };
         });
 
-        // 4. 상태 업데이트
-        setPresets(enrichedPresets.slice(0, 3));
-        setOrders(orderData.slice(0, 2));
+        // ✅ 주문 내역 가공 (RecentOrder 구조에 맞춤)
+        const groupedByOrderId = rawOrders.reduce((acc, detail) => {
+          const orderId = detail.orderId;
+          
+          if (!acc[orderId]) {
+            acc[orderId] = {
+              orderId: orderId,
+              orderNumber: detail.orderNumber || `ORDER-${orderId}`,
+              orderedAt: detail.orderedAt,
+              productName: detail.itemName, // ✅ 첫 상품명
+              totalPrice: 0,
+              items: []
+            };
+          }
 
-        // 백엔드 UserRespDto 필드에 맞춰 userInfo 저장
-        console.log(userRes.data)
+          acc[orderId].items.push(detail);
+          acc[orderId].totalPrice += (detail.unitPrice || 0) * (detail.quantity || 1);
+
+          return acc;
+        }, {});
+
+        const processedOrders = Object.values(groupedByOrderId).map(order => ({
+          ...order,
+          // ✅ 여러 상품이면 "상품명 외 N개" 형식
+          productName: order.items.length > 1 
+            ? `${order.items[0].itemName} 외 ${order.items.length - 1}개`
+            : order.items[0].itemName,
+          ingredients: order.items.map(item => item.itemName).join(', ')
+        }));
+
+        console.log("가공된 주문 내역:", processedOrders); // ✅ 디버깅
+
+        setPresets(enrichedPresets.slice(0, 3));
+        setOrders(processedOrders.slice(0, 2)); // ✅ 최신 2개만
+
         setUserInfo({
           nickname: userRes.data.nickname,
           name: userRes.data.name,
@@ -69,7 +93,6 @@ export const MyPage = () => {
 
       } catch (error) {
         console.error("데이터 로드 중 에러 발생:", error);
-        // 토큰이 만료되었거나 유효하지 않을 경우 처리
         if (error.response?.status === 401) {
           alert("세션이 만료되었습니다. 다시 로그인해주세요.");
           navigate('/login');
@@ -155,12 +178,18 @@ export const MyPage = () => {
               orders.map((order, idx) => (
                 <div key={idx} css={S.orderItem}>
                   <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    <span style={{ fontSize: '0.8rem', color: '#888', marginBottom: '4px' }}>{order.orderedAt?.split('T')[0]}</span>
+                    <span style={{ fontSize: '0.8rem', color: '#888', marginBottom: '4px' }}>
+                      {order.orderedAt?.split(' ')[0] || order.orderedAt}
+                    </span>
                     <span style={{ fontWeight: 'bold' }}>{order.productName}</span>
-                    <span css={S.orderText}>{order.ingredients}</span>
+                    <span css={S.orderText} style={{ fontSize: '0.9rem', color: '#666', marginTop: '4px' }}>
+                      {order.ingredients}
+                    </span>
                   </div>
                   <div style={{ textAlign: 'right', marginLeft: '20px' }}>
-                    <span style={{ fontWeight: 'bold', display: 'block' }}>{order.totalPrice?.toLocaleString()}원</span>
+                    <span style={{ fontWeight: 'bold', display: 'block', fontSize: '1.1rem', color: '#009223' }}>
+                      {order.totalPrice?.toLocaleString()}원
+                    </span>
                   </div>
                 </div>
               ))

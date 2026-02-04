@@ -36,7 +36,6 @@
         WHERE p.post_id = #{postId};
     </insert>
 
-    <!-- ✅ item 가격도 함께 조회 -->
     <select id="findByUserId" resultType="Preset">
         SELECT
         p.preset_id,
@@ -65,6 +64,7 @@
         INNER JOIN user_tb u ON p.user_id = u.user_id
         WHERE
         p.user_id = #{userId}
+        AND p.is_deleted = 0
         ORDER BY
         p.preset_id DESC
     </select>
@@ -97,12 +97,17 @@
         INNER JOIN user_tb u ON p.user_id = u.user_id
         WHERE
         p.preset_id = #{presetId}
+        AND p.is_deleted = 0
     </select>
 
-    <delete id="deleteById">
-        DELETE FROM preset_tb
-        WHERE preset_id = #{presetId} AND user_id = #{userId}
-    </delete>
+    <!-- ✅ DELETE → UPDATE로 변경 (Soft Delete) -->
+    <update id="deleteById">
+        UPDATE preset_tb
+        SET is_deleted = 1
+        WHERE preset_id = #{presetId}
+        AND user_id = #{userId}
+        AND is_deleted = 0
+    </update>
 
     <select id="countByUserId" resultType="int">
         SELECT COUNT(*)
@@ -111,7 +116,6 @@
         AND is_deleted = 0
     </select>
 
-    <!-- 동일 상품 프리셋 존재 여부 -->
     <select id="existsByUserIdAndProductId" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM preset_tb
@@ -120,7 +124,6 @@
         AND is_deleted = 0
     </select>
 
-    <!-- 동일 포스트 프리셋 존재 여부 (같은 포스트는 한 번만 저장) -->
     <select id="existsByUserIdProductIdAndPostedUserId" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM preset_tb
@@ -130,7 +133,6 @@
         AND is_deleted = 0
     </select>
 
-    <!-- presetId로 productId 조회 -->
     <select id="findProductIdByPresetId" resultType="int">
         SELECT product_id
         FROM preset_tb
@@ -138,7 +140,6 @@
         AND is_deleted = 0
     </select>
 
-    <!-- presetId로 userId 조회 (프리셋 소유자 확인용) -->
     <select id="findUserIdByPresetId" resultType="int">
         SELECT user_id
         FROM preset_tb
@@ -153,7 +154,7 @@
         FROM post_tb p
         JOIN preset_tb pr ON p.preset_id = pr.preset_id
         WHERE p.post_id = #{postId}
+        AND pr.is_deleted = 0
     </select>
-
 
 </mapper>
