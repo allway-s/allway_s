@@ -110,18 +110,27 @@
         WHERE post_id = #{postId}
     </update>
 
-    <!-- 프리셋 ID로 게시글 삭제 (프리셋 삭제 시 연쇄) -->
-    <delete id="deleteByPresetId">
+    <!-- postID로 게시글 삭제 -->
+    <delete id="deleteByPostId">
         DELETE FROM post_tb
-        WHERE preset_id = #{presetId}
+        WHERE post_id= #{postId}
     </delete>
 
     <!-- 중복 게시글 체크 -->
-    <select id="existsByUserIdAndProductId" resultType="boolean">
-        SELECT COUNT(*) > 0
+    <select id="existsPostByUserIdAndProductId" resultType="boolean">
+        SELECT EXISTS (
+        SELECT 1
         FROM post_tb p
-        INNER JOIN preset_tb pr ON p.preset_id = pr.preset_id
-        WHERE pr.user_id = #{userId}
+        JOIN preset_tb pr ON p.preset_id = pr.preset_id
+        WHERE p.user_id = #{userId}
         AND pr.product_id = #{productId}
+        )
+    </select>
+
+    <select id="findProductIdByPostId" resultType="int">
+        SELECT pr.product_id
+        FROM post_tb p
+        JOIN preset_tb pr ON p.preset_id = pr.preset_id
+        WHERE p.post_id = #{postId}
     </select>
 </mapper>

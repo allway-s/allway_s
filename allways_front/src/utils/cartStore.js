@@ -21,14 +21,14 @@ export const saveCart = (cart) => {
 };
 
 /**
- * ✅ [개선] 장바구니에 상품 추가
+ * [개선] 장바구니에 상품 추가
  * - 중복 체크: itemId, setId, ingredientIds 기반
  * - 중복이면 수량만 증가
  * - 새 상품이면 전체 정보 저장
  * - 가격 정보 필수 검증
  */
 export const addToCart = (orderItem) => {
-    // ✅ [검증] 필수 정보 확인
+    //  [검증] 필수 정보 확인
     if (!orderItem.itemId || orderItem.price === undefined) {
         console.error('❌ 필수 정보 누락:', orderItem);
         alert('상품 정보가 불완전합니다. 다시 시도해주세요.');
@@ -46,13 +46,13 @@ export const addToCart = (orderItem) => {
     );
 
     if (existingIndex !== -1) {
-        // ✅ [기존 상품] 수량만 증가, 가격은 유지
+        // [기존 상품] 수량만 증가, 가격은 유지
         const oldQuantity = cart.orders[existingIndex].quantity || 1;
         cart.orders[existingIndex].quantity = oldQuantity + (orderItem.quantity || 1);
         
         console.log(`📦 상품 수량 증가: ${orderItem.itemName} (${oldQuantity} → ${cart.orders[existingIndex].quantity})`);
     } else {
-        // ✅ [새 상품] 모든 정보 저장
+        // [새 상품] 모든 정보 저장
         const newItem = {
             ...orderItem,
             quantity: orderItem.quantity || 1,
@@ -63,7 +63,7 @@ export const addToCart = (orderItem) => {
         
         cart.orders.push(newItem);
         
-        console.log(`✅ 신규 상품 추가:`, {
+        console.log(`신규 상품 추가:`, {
             상품명: newItem.itemName,
             기본가격: newItem.basePrice,
             재료가격: newItem.ingredientPrice,
@@ -80,7 +80,7 @@ export const addToCart = (orderItem) => {
 };
 
 /**
- * ✅ [개선] 장바구니 항목 수량 변경
+ * [개선] 장바구니 항목 수량 변경
  */
 export const updateCartItemQuantity = (index, quantity) => {
     const cart = getCart();
@@ -98,7 +98,7 @@ export const updateCartItemQuantity = (index, quantity) => {
 };
 
 /**
- * ✅ 단일 항목 삭제
+ * 단일 항목 삭제
  */
 export const removeFromCart = (index) => {
     const cart = getCart();
@@ -116,7 +116,7 @@ export const removeFromCart = (index) => {
 };
 
 /**
- * ✅ 장바구니 전체 비우기
+ * 장바구니 전체 비우기
  */
 export const clearCart = () => {
     const emptyCart = { orders: [] };
@@ -126,7 +126,7 @@ export const clearCart = () => {
 };
 
 /**
- * ✅ [추가] 장바구니 총 가격 계산 (컴포넌트 외부에서도 사용 가능)
+ * [추가] 장바구니 총 가격 계산 (컴포넌트 외부에서도 사용 가능)
  */
 export const calculateCartTotal = () => {
     const cart = getCart();
@@ -137,7 +137,7 @@ export const calculateCartTotal = () => {
 };
 
 /**
- * ✅ [추가] 디버그: 현재 장바구니 상태 로그
+ * [추가] 디버그: 현재 장바구니 상태 로그
  */
 export const debugCart = () => {
     const cart = getCart();

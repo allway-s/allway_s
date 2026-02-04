@@ -1,6 +1,7 @@
 package com.korit.allways_back.service;
 
 import com.korit.allways_back.entity.Preset;
+import com.korit.allways_back.mapper.PostMapper;
 import com.korit.allways_back.mapper.PresetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 public class PresetService {
 
     private final PresetMapper presetMapper;
+    private final PostMapper postMapper;
 
     private static final int MAX_PRESETS_PER_USER = 10; // 사용자당 최대 프리셋 수
 
@@ -39,6 +41,18 @@ public class PresetService {
     @Transactional
     public Preset savePresetFromPost(int userId, Integer postId) {
 
+        // 1. post → productId 조회
+        int productId = postMapper.findProductIdByPostId(postId);
+
+        // 2. 🔥 중복 검사
+        boolean exists =
+                presetMapper.existsByUserIdAndProductId(userId, productId);
+
+        if (exists) {
+            throw new IllegalStateException("이미 해당 레시피를 프리셋으로 보유하고 있습니다.");
+        }
+
+        // 3. 저장
         Preset preset = new Preset();
         preset.setUserId(userId);
         preset.setPostId(postId);

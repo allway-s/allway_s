@@ -24,6 +24,7 @@
         @PostMapping
         public ResponseEntity<Post> createPost(@AuthenticationPrincipal PrincipalUser principalUser,
                 @RequestBody PostCreateRequestDto dto) {
+
             int userId = principalUser.getUser().getUserId();
             Post createdPost = postService.createPost(userId, dto);
             return ResponseEntity.ok(createdPost);
@@ -54,9 +55,9 @@
             return ResponseEntity.ok(response);
         }
 
-        @DeleteMapping("/preset/{presetId}")
-        public ResponseEntity<Void> deleteByPresetId(@PathVariable Integer presetId) {
-            postService.deleteByPresetId(presetId);
+        @DeleteMapping("/{postId}")
+        public ResponseEntity<Void> deleteByPostId(@PathVariable Integer postId) {
+            postService.deleteByPostId(postId);
             return ResponseEntity.noContent().build();
         }
     }

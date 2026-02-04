@@ -3,6 +3,7 @@ package com.korit.allways_back.service;
 import com.korit.allways_back.dto.request.PostCreateRequestDto;
 import com.korit.allways_back.entity.Post;
 import com.korit.allways_back.mapper.PostMapper;
+import com.korit.allways_back.mapper.PresetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +15,27 @@ import java.util.List;
 public class PostService {
 
     private final PostMapper postMapper;
+    private final PresetMapper presetMapper;
 
     @Transactional
     public Post createPost(int userId, PostCreateRequestDto dto) {
 
+        // 1️⃣ preset → productId 조회
+        int productId =
+                presetMapper.findProductIdByPresetId(dto.getPresetId());
+
+        // 2️⃣ 중복 게시 검사 (userId + productId)
+        boolean exists =
+                postMapper.existsPostByUserIdAndProductId(userId, productId);
+
+        if (exists) {
+            throw new IllegalArgumentException("이미 동일한 상품으로 게시한 글이 있습니다.");
+        }
+
+        // 3️⃣ post 생성
         Post post = Post.builder()
                 .userId(userId)
+                .presetId(dto.getPresetId())
                 .postedAt(java.time.LocalDateTime.now())
                 .likeCount(0)
                 .build();
@@ -62,8 +78,8 @@ public class PostService {
      * 프리셋 ID로 게시글 삭제 (프리셋 삭제 시 호출)
      */
     @Transactional
-    public void deleteByPresetId(Integer presetId) {
-        postMapper.deleteByPresetId(presetId);
+    public void deleteByPostId(Integer postId) {
+        postMapper.deleteByPostId(postId);
     }
 
 }
