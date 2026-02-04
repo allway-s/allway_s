@@ -8,8 +8,6 @@ export const RecentOrder = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
 
-
-  // [추가] 토큰에서 userId를 추출하는 공통 함수
   const getUserIdFromToken = () => {
     const token = localStorage.getItem("accessToken");
     if (!token) return null;
@@ -25,77 +23,64 @@ export const RecentOrder = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-
       const userId = getUserIdFromToken();
+      if (!userId) return;
 
-      if (!userId) {
-        console.log("사용자 ID를 찾을 수 없습니다");
-        return;
-      }
-
-      
       try {
-        const response = await api.get("/api/orders/history", {
-          params: {userId: userId}
+        const response = await api.get("/api/orders/history");
+        
+        // 매퍼의 SELECT 결과와 프론트엔드 매핑
+        const mappedData = response.data.map((order) => {
+          // 세트 메뉴일 경우 상품명 뒤에 세트 이름을 붙임
+          const fullName = order.setName 
+            ? `${order.itemName} (${order.setName})` 
+            : order.itemName;
+
+          // 음료나 사이드가 선택된 경우 재료 텍스트 뒤에 추가
+          let detailOptions = order.ingredientsText || "기본 구성";
+          if (order.drinkName) detailOptions += `, 음료: ${order.drinkName}`;
+          if (order.sideName) detailOptions += `, 사이드: ${order.sideName}`;
+
+          return {
+            ...order,
+            productName: fullName || "상품명 없음",
+            ingredients: detailOptions,
+            // 매퍼의 unit_price, ordered_at 대응
+            unitPrice: order.unitPrice || 0,
+            totalPrice: (order.unitPrice || 0) * (order.quantity || 1),
+            date: order.orderedAt ? order.orderedAt.split(' ')[0] : "날짜 정보 없음"
+          };
         });
-        setOrders(response.data);
+
+        setOrders(mappedData);
+        console.log("매핑 완료된 데이터:", mappedData);
       } catch (error) {
-        console.error("데이터를 가져오는데 실패했습니다.", error);
+        console.error("데이터 로드 실패:", error);
       }
     };
     fetchOrders();
   }, []);
 
   const handleScrapPreset = async (order) => {
-    // [수정] localStorage의 'user' 대신 'accessToken'을 직접 복호화하여 ID 추출
-    const getUserIdFromToken = () => {
-      const token = localStorage.getItem("accessToken");
-      if (!token) return null;
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => 
-          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-        const decoded = JSON.parse(jsonPayload);
-        // 토큰 내의 키값(userId 혹은 id 혹은 sub)에 맞춰 선택
-        return decoded.userId || decoded.id || decoded.sub;
-      } catch (e) { return null; }
-    };
-
-    const userIdFromToken = getUserIdFromToken();
-
-    if (!userIdFromToken) {
-      alert("로그인 정보가 유효하지 않습니다, 로그인 페이지로 이동합니다");
+    const userId = getUserIdFromToken();
+    if (!userId) {
+      alert("로그인이 필요합니다.");
       navigate('/login');
-      return;
-    }
-
-    // [중요] productId가 없는지 체크
-    if (!order.productId) {
-      console.error("주문 데이터에 productId가 없습니다:", order);
-      alert("상품 정보(ID)를 찾을 수 없어 저장할 수 없습니다.");
       return;
     }
 
     try {
       const presetReqDto = {
         productId: Number(order.productId),
-        userId: userIdFromToken,
-        presetName: `${order.productName} 프리셋`
+        userId: userId,
+        presetName: `${order.itemName} 프리셋`
       };
-
-      console.log("보내는 데이터:", presetReqDto);
-
       const response = await api.post("/api/preset/scrap", presetReqDto);
-
-      if (response.status === 201 || response.status === 200) {
-        alert('프리셋 저장에 성공했습니다!');
-      }
+      if (response.status === 201 || response.status === 200) alert('내 프리셋에 저장되었습니다!');
     } catch (error) {
-      console.error("프리셋 저장 실패:", error);
-      alert("인증 오류 또는 상품 정보의 누락으로 오류가 발생했습니다.");
+      alert("이미 저장된 프리셋이거나 저장 중 오류가 발생했습니다.");
     }
-  }; // handleScrapPreset 끝
+  };
 
   return (
     <div css={S.wrapper}>
@@ -110,18 +95,21 @@ export const RecentOrder = () => {
           orders.map((order, idx) => (
             <div key={idx} css={S.orderCard}>
               <div css={S.orderHeader}>
-                <span className="date">{order.orderedAt?.split('T')[0]}</span>
-                <span className="total">Total: {order.totalPrice?.toLocaleString()}원</span>
+                <span className="date">{order.date}</span>
+                <span className="total">수량: {order.quantity}개 / 합계: {Number(order.totalPrice).toLocaleString()}원</span>
               </div>
 
               <div css={S.itemRow}>
                 <div css={S.itemInfo}>
-                  <span className="name">{order.productName}</span>
-                  <span className="options">{order.ingredients}</span>
+                  <span className="name" style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#2d2d2d' }}>
+                    {order.productName}
+                  </span>
+                  <span className="options" style={{ color: '#666', fontSize: '0.95rem', marginTop: '6px', display: 'block' }}>
+                    구성: {order.ingredients}
+                  </span>
                 </div>
                 <div css={S.itemActions}>
-                  <span className="price">{order.unitPrice?.toLocaleString()}원</span>
-                  {/* alert 대신 실제 함수 handleScrapPreset을 연결합니다. */}
+                  <span className="price">단가 {Number(order.unitPrice).toLocaleString()}원</span>
                   <button css={S.saveBtn} onClick={() => handleScrapPreset(order)}>
                     내 프리셋에 저장
                   </button>
@@ -130,11 +118,13 @@ export const RecentOrder = () => {
             </div>
           ))
         ) : (
-          <div>주문 내역이 없습니다.</div>
+          <div style={{ textAlign: 'center', padding: '100px', color: '#888' }}>
+            최근 주문 내역이 없습니다.
+          </div>
         )}
       </main>
     </div>
   );
-}; // RecentOrder 컴포넌트 끝
+};
 
 export default RecentOrder;

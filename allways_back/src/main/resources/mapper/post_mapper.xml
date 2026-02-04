@@ -80,8 +80,6 @@
         ORDER BY p.like_count DESC, p.posted_at DESC;
     </select>
 
-
-
     <!-- 좋아요 토글 -->
     <insert id="insertLike">
         INSERT IGNORE INTO like_tb (

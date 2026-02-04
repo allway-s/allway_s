@@ -30,29 +30,35 @@
             return ResponseEntity.ok(createdPost);
         }
 
-        /**
-         * 전체 게시글 조회
-         * GET /api/posts?sortBy=like&userId=1
-         * sortBy: "like" (좋아요순) 또는 null (최신순)
-         * userId: 현재 로그인한 사용자 ID (좋아요 여부 확인용, 선택)
-         */
-        @GetMapping
-        public ResponseEntity<List<Post>> getAllPosts(
-                @RequestParam(required = false) Integer userId
-        ) {
-            List<Post> posts = postService.getAllPosts(userId);
-            return ResponseEntity.ok(posts);
-        }
+import com.korit.allways_back.dto.request.PostCreateRequestDto;
+import com.korit.allways_back.entity.Post;
+import com.korit.allways_back.security.PrincipalUser;
+import com.korit.allways_back.service.PostService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-        @PostMapping("/{postId}/like")
-        public ResponseEntity<Map<String, Boolean>> toggleLike(
-                @PathVariable Integer postId,
-                @RequestBody LikeRequestDto dto) {
-            boolean liked = postService.toggleLike(dto.getUserId(), postId);
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("liked", liked);
-            return ResponseEntity.ok(response);
+@RestController
+@RequestMapping("/api/posts")
+@RequiredArgsConstructor
+public class PostController {
+
+    private final PostService postService;
+
+    /**
+     * 게시글 생성
+     * POST /api/posts
+     * 작동 방식: 토큰에서 추출한 userId와 RequestBody의 프리셋 정보를 사용하여 게시글을 생성합니다.
+     */
+    @PostMapping
+    public ResponseEntity<Post> createPost(@RequestBody PostCreateRequestDto dto) {
+        PrincipalUser principalUser = PrincipalUser.get();
+        if (principalUser == null) {
+            return ResponseEntity.status(401).build(); // 인증되지 않은 경우
         }
 
         @DeleteMapping("/{postId}")
@@ -60,4 +66,23 @@
             postService.deleteByPostId(postId);
             return ResponseEntity.noContent().build();
         }
+
+        boolean liked = postService.toggleLike(principalUser.getUser().getUserId(), postId);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("liked", liked);
+        return ResponseEntity.ok(response);
     }
+
+    /**
+     * 프리셋 ID를 통한 게시글 삭제
+     * DELETE /api/posts/preset/{presetId}
+     * 작동 방식: 프리셋이 삭제될 때 해당 프리셋으로 작성된 커뮤니티 게시글도 함께 삭제합니다.
+     */
+    @DeleteMapping("/preset/{presetId}")
+    public ResponseEntity<Void> deleteByPresetId(@PathVariable Integer presetId) {
+        // 본인 확인 로직이 필요하다면 여기에 PrincipalUser 체크를 추가할 수 있습니다.
+        postService.deleteByPresetId(presetId);
+        return ResponseEntity.noContent().build();
+    }
+}

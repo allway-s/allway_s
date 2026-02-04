@@ -176,4 +176,10 @@ public class OrderService {
         int random = (int) (Math.random() * 1000);
         return String.format("ORD%s%03d", dateStr, random);
     }
+
+    @Transactional
+    public void cancelOrder(String orderNumber) {
+        log.info("주문 취소 처리: {}", orderNumber);
+        orderMapper.updateStatus(orderNumber, "CANCELLED");
+    }
 }

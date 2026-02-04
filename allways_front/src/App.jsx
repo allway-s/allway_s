@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// [수정] Navigate 임포트 추가 (페이지 강제 이동용)
-// [필수] Navigate: 조건에 맞지 않을 때 강제로 페이지를 되돌리는 역할
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { HomePage } from './pages/MainPage/HomePage.jsx';
 
@@ -9,11 +7,8 @@ import Signup from './pages/AuthPage/Signup.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
 import CartPage from './pages/CartPage/CartPage.jsx';
 import MenuPage from './pages/menu/MenuPage.jsx'; 
+import { Global, css } from '@emotion/react';
 
-
-import PresetImage1 from './assets/images/PresetImages/PresetImage1.png';
-import PresetImage2 from './assets/images/PresetImages/PresetImage2.png';
-import PresetImage3 from './assets/images/PresetImages/PresetImage3.png';
 import MyPreSet from './pages/MyPage/MyPreset.jsx';
 import RecentOrder from './pages/MyPage/RecentOrder.jsx';
 import { LoginSuccess } from './pages/AuthPage/LoginSuccess.jsx';
@@ -21,35 +16,40 @@ import Header from './components/Header.jsx';
 import MainLogo from './assets/images/MainUpperImages/MainLogo2.png';
 import CommunityPage from './pages/CommunityPage/CommunityPage.jsx';
 import CustomPage from './pages/order/CustomPage.jsx';
-import { api, ResponseInterceptor } from './apis/config/axiosConfig.js';
+import { ResponseInterceptor } from './apis/config/axiosConfig.js';
 import OrderSuccess from './pages/CartPage/OrderSuccess.jsx';
+import { getUserMe } from './apis/items/userApi.js';
+import { getPosts } from './apis/items/communityApi.js';
+import { ScrollToTop } from './utils/scrollToTop.js';
 
 
 function App() {
-  // 토큰이 있는지 검사하여 로그인 상태 결정
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
+  const [user, setUser] = useState(null); 
+  const [presets, setPresets] = useState([]); 
   const navigate = useNavigate();
 
-  // 토큰 유효성 검사
   useEffect(() => {
     ResponseInterceptor(navigate, setIsLoggedIn);
 
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-        api.get("/api/user/me").catch(() => {
-          console.log("토큰 검증 완료")
-        });
-    }
-  }, []);
+    const fetchData = async () => {
+      const token = localStorage.getItem("accessToken");
+      try {
+        if (token) {
+          const userRes = await getUserMe(); 
+          setUser(userRes.data);
+        }
+        
+        const postRes = await getPosts();
+        setPresets(postRes.data); 
+        
+      } catch (error) {
+      }
+    };
 
-  
-  const [presets] = useState([
-    { id: '1', title: '서브웨이클럽', likes: 150, author: 'JINHYUN1996', image: PresetImage1 },
-    { id: '2', title: '비엠티 추천', likes: 90, author: 'BAEKGYUN', image: PresetImage2 },
-    { id: '3', title: '토시비프 샐러드', likes: 210, author: '비건이지만고기먹습니다', image: PresetImage3 },
-  ]);
+    fetchData();
+  }, [isLoggedIn]);
 
-  const [user] = useState({ name: '진현', id: 'jinhyeon123' });
 
   // 로그인 확인
   const ProtectedRoute = ({ children }) => {
@@ -88,6 +88,19 @@ function App() {
   const handleLike = (id) => console.log(id + '번 좋아요!');
   const handleCopy = (preset) => console.log(preset.title + ' 복사됨!');
 
+  const globalStyles = css`
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        /* 전체 폰트나 배경색이 필요하다면 여기에 추가 */
+      }
+    `;
   return (
 
   //   <div>
@@ -99,6 +112,7 @@ function App() {
     {/* [변경점 1] Header 컴포넌트의 위치 
         - Routes 밖에 배치하여 모든 페이지(홈, 메뉴, 마이페이지 등)에서 
           헤더가 상단에 항상 고정되도록 했습니다.*/}
+      <Global styles={globalStyles} />
       <Header 
         isLoggedIn={isLoggedIn} 
         user={user} 
@@ -106,13 +120,14 @@ function App() {
         logoSrc={MainLogo}
       />
 
+      <ScrollToTop />
       <Routes>
         {/* 메인 홈페이지 */}
         <Route path="/" element={
             <HomePage
               isLoggedIn={isLoggedIn}
               onLogout={handleLogout}
-              communityPreSets={presets}
+              preset={presets}
               onStartOrder={handleStartOrder}
               onNavigateToCommunity={handleNavigateCommunity}
               onLike={handleLike}
