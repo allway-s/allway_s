@@ -35,7 +35,7 @@ function LittleCommunity() {
     if (isConfirm) {
       try {
         // 💡 고정값 1 대신 실제 로그인된 storedUser.id를 사용합니다.
-        const response = await axios.post('http://localhost:8080/api/preset/scrap', {
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/preset/scrap`, {
           userId: storedUser.id,
           productId: parseInt(preset.id),
           presetName: preset.title
@@ -111,5 +111,4 @@ function LittleCommunity() {
     );
   }
 
-export default LittleCommunity;   
- 
+export default LittleCommunity;
