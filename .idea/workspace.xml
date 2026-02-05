@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/PresetController.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/controller/PresetController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/PresetRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/dto/request/PresetRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PostMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PostMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PresetMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/mapper/PresetMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/PresetService.java" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/java/com/korit/allways_back/service/PresetService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/post_mapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/allways_back/src/main/resources/mapper/post_mapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/apis/items/communityApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/apis/items/communityApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/CartPage/OrderSuccess.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/CartPage/OrderSuccess.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/allways_front/src/pages/MyPage/MyPreset.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/allways_front/src/pages/MyPage/MyPreset.jsx" afterDir="false" />
-    </list>
+    <list default="true" id="f2fb4ff9-00c2-43f6-a6d8-b2210e4aff2b" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,6 +88,7 @@
       <workItem from="1770101970505" duration="240000" />
       <workItem from="1770191875939" duration="1361000" />
       <workItem from="1770193264463" duration="5000" />
+      <workItem from="1770198353276" duration="21000" />
     </task>
     <servers />
   </component>

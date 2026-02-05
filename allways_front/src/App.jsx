@@ -29,21 +29,26 @@ function App() {
   const [presets, setPresets] = useState([]); 
   const navigate = useNavigate();
 
+  // App.jsx 수정
   useEffect(() => {
     ResponseInterceptor(navigate, setIsLoggedIn);
 
     const fetchData = async () => {
       const token = localStorage.getItem("accessToken");
+      
       try {
         if (token) {
+          // ✅ 로그인된 경우에만 둘 다 호출
           const userRes = await getUserMe(); 
           setUser(userRes.data);
+          
+          const postRes = await getPosts();
+          setPresets(postRes.data); 
         }
-        
-        const postRes = await getPosts();
-        setPresets(postRes.data); 
+        // ✅ 로그인 안 된 경우 posts 호출하지 않음
         
       } catch (error) {
+        console.error("데이터 로딩 실패:", error);
       }
     };
 
