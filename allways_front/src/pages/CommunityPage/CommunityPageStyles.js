@@ -3,6 +3,9 @@ import { css } from '@emotion/react';
 export const s = {
   page: css`
     padding: 24px 0;
+    background: #f8f9fa;
+    min-height: 100vh;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   `,
 
   /* 상단 버튼/리스트가 모두 이 컨테이너 폭을 공유함 */
@@ -29,21 +32,28 @@ export const s = {
     height: 36px;
     width: 104px;
     padding: 0 36px 0 14px;
-    border-radius: 14px;
-    border: 1.5px solid #111;
+    border-radius: 20px;
+    border: 2px solid #008c45;
     background: #fff;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
+    color: #111;
     cursor: pointer;
+    transition: all 0.2s ease;
 
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23111' stroke-width='2'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23008c45' stroke-width='2'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
 
+    &:hover {
+      background: #f0fff0;
+      box-shadow: 0 2px 8px rgba(0, 140, 69, 0.15);
+    }
+
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 0 3px rgba(0, 140, 69, 0.2);
     }
   `,
 
@@ -52,14 +62,24 @@ export const s = {
     width: 166px;
     flex-shrink: 0;
     padding: 0 18px;
-    border-radius: 14px;
-    border: 1px solid #111;
-    background: #fff;
+    border-radius: 22px;
+    border: none;
+    background: #008c45;
+    color: white;
     font-weight: 700;
+    font-size: 14px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 140, 69, 0.2);
 
     &:hover {
-      transform: translateY(-1px);
+      background: #007038;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 140, 69, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   `,
 
@@ -78,20 +98,29 @@ export const s = {
     gap: 16px;
 
     width: 100%;
-    border: 1px solid #111;
-    border-radius: 22px;
+    border: 2px solid #e8e8e8;
+    border-radius: 16px;
     background: #fff;
     box-sizing: border-box;
     padding: 16px 18px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
 
-    overflow: hidden; /* ⭐ 어떤 상황에도 하트/텍스트가 카드 밖으로 못 나감 */
+    &:hover {
+      border-color: #008c45;
+      box-shadow: 0 4px 12px rgba(0, 140, 69, 0.1);
+      transform: translateY(-2px);
+    }
   `,
 
   thumb: css`
     width: 56px;
     height: 56px;
     object-fit: contain;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 4px;
   `,
 
   textArea: css`
@@ -109,7 +138,8 @@ export const s = {
     min-width: 0;
     margin: 0;
     font-size: 17px;
-    font-weight: 600;
+    font-weight: 700;
+    color: #111;
 
     white-space: nowrap;
     overflow: hidden;
@@ -121,7 +151,7 @@ export const s = {
     margin: 0;
     font-size: 14px;
     font-weight: 600;
-    color: #111;
+    color: #008c45;
 
     white-space: nowrap;
     overflow: hidden;
@@ -131,8 +161,8 @@ export const s = {
   subRow: css`
     margin-top: 4px;
     font-size: 13px;
-    font-weight: 700;
-    color: #666;
+    font-weight: 600;
+    color: #888;
 
     white-space: nowrap;
     overflow: hidden;
@@ -142,7 +172,8 @@ export const s = {
   desc: css`
     margin-top: 6px;
     font-size: 12px;
-    color: #444;
+    color: #666;
+    line-height: 1.4;
 
     white-space: nowrap;
     overflow: hidden;
@@ -162,9 +193,20 @@ export const s = {
   likeBtn: css`
     background: transparent;
     border: none;
-    padding: 0;
+    padding: 6px;
     cursor: pointer;
     line-height: 0;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+
+    &:hover {
+      background: #fff0f0;
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   `,
 
   heartMini: css`
@@ -174,7 +216,7 @@ export const s = {
 
   countMini: css`
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     color: #111;
   `,
 
@@ -182,16 +224,29 @@ export const s = {
   modalOverlay: css`
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     display: grid;
     place-items: center;
     padding: 24px;
     z-index: 9998;
+    backdrop-filter: blur(4px);
   `,
 
   modalBody: css`
     position: relative;
     width: min(520px, 100%);
+    animation: modalSlideIn 0.3s ease-out;
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   `,
 
   modalClose: css`
@@ -200,13 +255,25 @@ export const s = {
     top: 8px;
     width: 42px;
     height: 42px;
-    border-radius: 15px;
+    border-radius: 50%;
     background: #fff;
-    border: 1px solid #111;
-    font-size: 20px;
-    font-weight: 900;
+    border: 2px solid #e8e8e8;
+    font-size: 24px;
+    font-weight: 700;
     cursor: pointer;
     z-index: 9999;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+
+    &:hover {
+      background: #f5f5f5;
+      border-color: #008c45;
+      color: #008c45;
+      transform: rotate(90deg);
+    }
   `,
 
   saveBtn: css`
@@ -214,22 +281,33 @@ export const s = {
     left: 8px;
     top: 8px;
     height: 42px;
-    border-radius: 15px;
-    border: 1px solid #111;
+    padding: 0 18px;
+    border-radius: 21px;
+    border: 2px solid #008c45;
     background-color: #fff;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
+    color: #008c45;
     cursor: pointer;
     z-index: 9999;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #008c45;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 140, 69, 0.3);
+    }
   `,
 
   menuCard: css`
     position: relative;
     background: #fff;
-    border: 2px solid #111;
-    border-radius: 18px;
+    border: 3px solid #e8e8e8;
+    border-radius: 20px;
     padding: 26px;
     box-sizing: border-box;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   `,
 
   img: css`
@@ -238,6 +316,9 @@ export const s = {
     margin: 8px auto 24px;
     height: auto;
     object-fit: contain;
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 12px;
   `,
 
   modalTitle: css`
@@ -253,11 +334,14 @@ export const s = {
     gap: 10px;
     font-size: 16px;
     font-weight: 600;
-    color: #444;
+    color: #555;
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
 
     span {
       font-weight: 800;
-      color: #111;
+      color: #008c45;
     }
   `,
 

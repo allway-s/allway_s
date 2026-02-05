@@ -180,7 +180,6 @@ const MenuPage = () => {
                     <div css={s.modalBodyStyle} onClick={e => e.stopPropagation()}>
                         <h3 css={s.modalTitleStyle}>사이즈 선택</h3>
                         <p css={s.modalItemNameStyle}>{activeItem.itemName}</p>
-
                         <div css={s.modalButtonGroupStyle}>
                             <button css={s.sizeButtonStyle} onClick={() => handleSizeSelect(15)}>
                                 15cm

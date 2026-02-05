@@ -22,6 +22,7 @@ const CartPage = () => {
     const [open, setOpen] = useState(false);
     const [address, setAddress] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
+    const [ingredientNames, setIngredientNames] = useState({}); // 음료/사이드 이름 캐시
 
     useEffect(() => {
         loadCart();
@@ -179,12 +180,14 @@ const CartPage = () => {
 
     const renderPriceDetail = (item) => {
         const hasDetails = item.basePrice !== undefined || item.ingredientPrice !== undefined || item.setPrice !== undefined;
+        console.log(item);
         if (!hasDetails) return null;
         return (
             <div style={{ fontSize: '12px', color: '#888', marginTop: '5px', padding: '5px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
                 <div>기본: {(item.basePrice || 0).toLocaleString()}원</div>
-                {(item.ingredientPrice || 0) > 0 && <div>재료: +{item.ingredientPrice.toLocaleString()}원</div>}
-                {(item.setPrice || 0) > 0 && <div>세트: +{item.setPrice.toLocaleString()}원</div>}
+                {(item.ingredientPrice || 0) > 0 && <div>재료: {item.ingredientPrice.toLocaleString()}원</div>}
+                {(item.sidePrice || 0) > 0 && <div>사이드: {item.sidePrice.toLocaleString()}원</div>}
+                {(item.drinkPrice || 0) > 0 && <div>음료: {item.drinkPrice.toLocaleString()}원</div>}
             </div>
         );
     };
@@ -204,20 +207,34 @@ const CartPage = () => {
                         {cart.orders.map((item, index) => {
                             const unitPrice = item.price !== undefined ? item.price : (item.unitPrice || 0);
                             const itemTotal = unitPrice * item.quantity;
-
+                            console.log(item)
                             return (
                                 <div key={index} css={s.cartItemStyle}>
                                     <img src={item.imgUrl} alt={item.itemName} css={s.itemImgStyle} />
                                     <div css={s.itemInfoStyle}>
                                         <h3>{item.itemName}{item.size > 0 && <span> ({item.size}cm)</span>}</h3>
                                         
-                                        {item.setId && (
-                                            <div css={s.setInfoStyle}><strong>세트:</strong> {getSetName(item.setId)}</div>
+                                        {/* 세트 정보 표시 */}
+                                        {item.setId && item.setId !== 1 && (
+                                            <div css={s.setInfoStyle} style={{ marginBottom: '8px' }}>
+                                                <div><strong>세트:</strong> {getSetName(item.setId)}</div>
+                                                {item.selectedSideId && (
+                                                    <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                                                        └ 사이드: {item.selectedSideName}
+                                                    </div>
+                                                )}
+                                                {item.selectedDrinkId && (
+                                                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                                                        └ 음료: {item.selectedDrinkName}
+                                                    </div>
+                                                )}
+                                            </div>
                                         )}
-
-                                        {/* ✅ [수정된 부분] 커뮤니티 페이지처럼 분류해서 보여주기 */}
+                                        {/* 샌드위치/샐러드 재료 표시 */}
                                         <div css={s.ingredientListStyle} style={{ fontSize: '13px', color: '#555', marginTop: '8px' }}>
-                                            <div><strong>빵:</strong> {GetIngredientByCategory(item, 100)}</div>
+                                            {(item.itemId && item.itemId <= 42) ? (
+                                                <div><strong>빵:</strong> {GetIngredientByCategory(item, 100)}</div>
+                                            ) : null}
                                             <div><strong>치즈:</strong> {GetIngredientByCategory(item, 200)}</div>
                                             <div><strong>야채:</strong> {GetIngredientByCategory(item, 300)}</div>
                                             <div><strong>소스:</strong> {GetIngredientByCategory(item, 400)}</div>
