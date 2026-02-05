@@ -89,8 +89,6 @@ function CustomPage() {
     }, [setMenus]);
 
     // 선택된 세트의 구성 요소 가져오기
-    // 백엔드에서 이렇게 받는 DTO 참고 swagger
-
     useEffect(() => {
         if (selectedSetId && selectedSetId !== 1) {
             getSetDetail(selectedSetId)
@@ -151,12 +149,14 @@ function CustomPage() {
         });
     };
 
+    // ✅ 이름(name)을 저장
     const handleDrinkSelect = (ingredient) => {
-        setSelectedDrink(ingredient.ingredientId);
+        setSelectedDrink(ingredient.ingredientName);
     };
 
+    // ✅ 이름(name)을 저장
     const handleSideSelect = (ingredient) => {
-        setSelectedSide(ingredient.ingredientId);
+        setSelectedSide(ingredient.ingredientName);
     };
 
     const handleSelectAllVegetables = () => {
@@ -228,9 +228,9 @@ function CustomPage() {
             basePrice = Number(selectedItem?.price) || 0;
         }
 
-        // 세트 가격 계산 (공통)
-        const selectedDrinkData = drinkOptions.find(d => d.ingredientId === selectedDrink);
-        const selectedSideData = sideOptions.find(s => s.ingredientId === selectedSide);
+        // ✅ 이름으로 데이터 찾기
+        const selectedDrinkData = drinkOptions.find(d => d.ingredientName === selectedDrink);
+        const selectedSideData = sideOptions.find(s => s.ingredientName === selectedSide);
         
         const drinkPrice = selectedDrinkData ? (Number(selectedDrinkData.price) || 0) : 0;
         const sidePrice = selectedSideData ? (Number(selectedSideData.price) || 0) : 0;
@@ -256,8 +256,10 @@ function CustomPage() {
                 : selectedDetails.map(ing => ing.ingredientName),
             size: selectedItem?.size,
             setId: selectedSetId || null,
-            selectedDrinkId: selectedDrink || null,
-            selectedSideId: selectedSide || null,
+            selectedDrinkId: selectedDrinkData?.ingredientId || null,  // ✅ ID 저장
+            selectedSideId: selectedSideData?.ingredientId || null,    // ✅ ID 저장
+            selectedDrinkName: selectedDrink || null,  // ✅ 이름 저장
+            selectedSideName: selectedSide || null,    // ✅ 이름 저장
             // 가격 분해 정보
             basePrice: basePrice,
             ingredientPrice: ingredientExtraPrice,
@@ -298,7 +300,7 @@ function CustomPage() {
                                     onClick={() => handleSideSelect(side)}
                                     css={[
                                         s.ingredientCardStyle, 
-                                        selectedSide === side.ingredientId && s.ingredientCardSelectedStyle
+                                        selectedSide === side.ingredientName && s.ingredientCardSelectedStyle  // ✅ 이름으로 비교
                                     ]}
                                 >
                                     <div css={s.ingredientImageWrapperStyle}>
@@ -309,7 +311,7 @@ function CustomPage() {
                                                 css={s.ingredientImageStyle} 
                                             />
                                         )}
-                                        {selectedSide === side.ingredientId && (
+                                        {selectedSide === side.ingredientName && (  // ✅ 이름으로 비교
                                             <div css={s.selectedBadgeStyle}>✓</div>
                                         )}
                                     </div>
@@ -334,7 +336,7 @@ function CustomPage() {
                                     onClick={() => handleDrinkSelect(drink)}
                                     css={[
                                         s.ingredientCardStyle, 
-                                        selectedDrink === drink.ingredientId && s.ingredientCardSelectedStyle
+                                        selectedDrink === drink.ingredientName && s.ingredientCardSelectedStyle  // ✅ 이름으로 비교
                                     ]}
                                 >
                                     <div css={s.ingredientImageWrapperStyle}>
@@ -345,7 +347,7 @@ function CustomPage() {
                                                 css={s.ingredientImageStyle} 
                                             />
                                         )}
-                                        {selectedDrink === drink.ingredientId && (
+                                        {selectedDrink === drink.ingredientName && (  // ✅ 이름으로 비교
                                             <div css={s.selectedBadgeStyle}>✓</div>
                                         )}
                                     </div>

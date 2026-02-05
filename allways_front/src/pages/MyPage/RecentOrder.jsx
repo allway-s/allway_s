@@ -170,6 +170,7 @@ export const RecentOrder = () => {
                             {/* 주문 헤더 */}
                             <div css={S.orderHeader}>
                                 <span className="date">{order.date}</span>
+                                <span>{order.orderNumber}</span>
                                 <span className="total">
                                     수량: {order.totalQuantity}개 / 합계: {Number(order.totalPrice).toLocaleString()}원
                                 </span>
@@ -180,31 +181,17 @@ export const RecentOrder = () => {
                                 <div key={itemIdx} css={S.itemRow}>
                                     {/* 상품 이미지 */}
                                     <div css={S.itemImage}>
-                                        {item.imgUrl ? (
                                             <img
                                                 src={item.imgUrl}
                                                 alt={item.itemName}
                                                 style={{
                                                     width: '120px',
                                                     height: '120px',
-                                                    objectFit: 'cover',
+                                                    objectFit: 'contain',
                                                     borderRadius: '8px'
                                                 }}
                                             />
-                                        ) : (
-                                            <div style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                backgroundColor: '#f0f0f0',
-                                                borderRadius: '8px',
-                                                color: '#999'
-                                            }}>
-                                                이미지 없음
-                                            </div>
-                                        )}
+                                        
                                     </div>
 
                                     <div css={S.itemInfo}>
