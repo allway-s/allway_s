@@ -2,7 +2,7 @@ import axios from "axios";
 
 // axios 인스턴스 생성
 export const api = axios.create({
-    baseURL: "http://localhost:8080", // 서버 주소
+    baseURL: import.meta.env.VITE_API_BASE_URL, // 서버 주소
     withCredentials: true             // 쿠키 공유가 필요하다면 추가
 });
 

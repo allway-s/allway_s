@@ -7,7 +7,7 @@ const Login = () => {
 
   const handleOAuth2LoginOnClick = (clientName) => {
     window.location.href =
-      `http://localhost:8080/oauth2/authorization/${clientName}`;
+      `${import.meta.env.VITE_API_BASE_URL}/oauth2/authorization/${clientName}`;
   };
 
   return (
