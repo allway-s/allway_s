@@ -43,11 +43,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 토큰에서 값 꺼내기
                 // userId를 기준(다른 것도 써도됨, 이메일 같은 거)
                 int userId = jwtTokenProvider.getUserId(token);
-                System.out.println("Filter - 찾은 userId: " + userId);
 
                 // DB에서 실제 유저 정보 조회
                 User foundUser = userMapper.findByUserId(userId);
-                System.out.println("Filter - DB 조회 결과: " + foundUser);
+
                 if (foundUser != null) {
                     // ROLE_USER만 쓰니까 authorities에 이것만 직접 주입
                     Collection<? extends GrantedAuthority> authorities =

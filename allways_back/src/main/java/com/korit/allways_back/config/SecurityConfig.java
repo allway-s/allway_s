@@ -6,6 +6,7 @@ import com.korit.allways_back.security.JwtAuthenticationEntryPoint;
 import com.korit.allways_back.security.OAuth2SuccessHandler;
 import com.korit.allways_back.service.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -31,6 +32,9 @@ public class SecurityConfig {
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
+    @Value("${cors.allow-origin}")
+    private String allowOrigin;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 다른 도메인도 허용
@@ -44,26 +48,15 @@ public class SecurityConfig {
 
         // 권한 설정
         http.authorizeHttpRequests(auth -> {
-            // 로그인 관련으로 누구나 접근가능하게
-            auth.requestMatchers("/", "/login", "/signup").permitAll();
-            auth.requestMatchers("/api/auth/**").permitAll();
-
-            // [추가 및 수정] 마이페이지에서 호출하는 API들을 명시적으로 허용하거나 인증 설정
-            // 지금은 테스트 중이니 .permitAll()로 열어서 401이 발생하는지 먼저 확인합시다.
-            auth.requestMatchers("/api/presets/**", "/api/orders/**").permitAll();
+            // 로그인, 주문 관련으로 누구나 접근가능하게
+            auth.requestMatchers("/api/auth/**","/api/orders/**").permitAll();
             auth.requestMatchers("/api/payment/**").permitAll();
-
-            // 토큰 유효성 검사
-            auth.requestMatchers("/api/user/**").authenticated();
 
             // swagger 관련 필요한 설정
             auth.requestMatchers(
                     "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
                     "/swagger-resources/**", "/webjars/**", "/doc"
             ).permitAll();
-
-            // 나중에 authenticated 해줘야할 것들
-//            auth.requestMatchers("/api/**").permitAll();
 
             // 그 외 모든 요청은 인증 필요
             auth.anyRequest().authenticated();
@@ -92,7 +85,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+        corsConfiguration.setAllowedOrigins(List.of(allowOrigin));
         corsConfiguration.setAllowedMethods(List.of("*"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
