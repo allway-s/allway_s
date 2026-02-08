@@ -532,6 +532,7 @@ This project is private and proprietary.
 - [ ] 관리자 페이지
 - [ ] 환불 처리
 - [ ] 실패한 주문내역 6개월 후 삭제
+- [ ] 인증 및 결제로직 코드 최적화
 
 ---
 
