@@ -15,12 +15,16 @@
 | <img src="https://github.com/SMITHROWE-10.png" width="80"> | **SMITHROWE-10** | • DB 설계 및 구조 설정<br>•백엔드 로직 구현<br>•프론트엔드 전반 코드 리팩토링 | `MySQL`, `MyBatis`, `React` | [![GitHub](https://img.shields.io/badge/GitHub-Link-181717?logo=github)](https://github.com/SMITHROWE-10) |
 | <img src="https://github.com/HWANGDEOK.png" width="80"> | **HWANGDEOK** | • OAuth2(네이버, 구글) 연동 및 JWT 기반 인증/인가 구현<br>• Spring Security 필터 체인 구성 및 접근 제어 설계<br>• 결제 위변조 방지를 위한 PortOne V2 백엔드 검증 로직 구현|**Frontend**<br>![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)<br>**Backend**<br>![Java](https://img.shields.io/badge/Java%2021-007396?style=for-the-badge&logo=openjdk&logoColor=white)![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)![OAuth2](https://img.shields.io/badge/OAuth2-3C873A?style=for-the-badge&logo=auth0&logoColor=white)<br>**Database**<br>![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)![MyBatis](https://img.shields.io/badge/MyBatis-000000?style=for-the-badge&logo=mybatis&logoColor=white)<br>**DevOps**<br>![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)![GCP](https://img.shields.io/badge/Google%20Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white) | [![GitHub](https://img.shields.io/badge/GitHub-Link-181717?logo=github)](https://github.com/HWANGDEOK) |
 
-
 ### 🎯 주요 목표
 - 서브웨이 주문의 복잡함을 단순화
 - 사용자 간 레시피 공유를 통한 커뮤니티 형성
 - 개인화된 주문 경험 제공
 - 주문 내역 기반 재주문 편의성 제공
+
+---
+## ERD
+
+
 
 ---
 
