@@ -144,6 +144,33 @@
 - 재료 상세 표시
 - 프리셋 저장 기능
 
+#### -메인화면
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/6c32d777-3da0-441c-be1e-46cef065545d" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/d3adaa8b-7857-4257-a563-8bb0faa61e0e" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/62c5b47d-cfd4-435e-9a71-cb6cca8303ca" />
+
+#### -로그인 페이지
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/2e1899ce-24ed-4756-868f-5afab00b1baf" />
+
+#### -메뉴 페이지
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/cd0a42e5-7718-46da-9322-acb9caf5a8f5" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/9f3f83c4-4ebd-46f5-8394-248646b96c3e" />
+
+#### -커스터 마이징
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/122f85fc-ad78-4007-8ad4-81a9f0902b4c" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/28c70f3a-7fe7-415d-8ca0-14caf9085fb7" />
+
+#### 장바구니
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/51ff6313-da85-4877-81c5-bd27024d7b53" />
+
+#### 마이페이지 프리셋
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/2fc3ce17-ec34-4c7f-a649-10d43d94de97" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/15a04675-eb0d-4328-9602-74d804f8b181" />
+
+#### 커뮤니티
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/17d92f45-8e8f-4489-882b-dad6ea51c35c" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/ec33e27a-0b3b-4522-9316-ea6c44010265" />
+
 ---
 
 ## 📂 프로젝트 구조
